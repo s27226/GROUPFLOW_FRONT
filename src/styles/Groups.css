@@ -1,0 +1,76 @@
+.groups-container {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    justify-content: flex-start;
+    margin-top: 00px !important;
+
+}
+
+
+.group-card {
+    background-color: #16181c;
+    border: 1px solid #2f3336;
+    border-radius: 16px;
+    padding: 16px;
+
+
+    color: #e7e9ea;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.group-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.group-author {
+    font-weight: 600;
+    color: #fff;
+}
+
+
+
+.group-content {
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #16181c;
+    border: 1px solid #8b8b8b;
+    padding: 16px;
+}
+
+.group-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.like-btn, .comment-btn, .share-btn {
+    background: none;
+    border: none;
+    color: #1d9bf0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: transform 0.2s ease;
+}
+
+.like-btn:hover, .comment-btn:hover, .share-btn:hover {
+    transform: scale(1.1);
+}

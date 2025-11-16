@@ -1,0 +1,77 @@
+.feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    margin-top: 00px;
+}
+
+.post-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-top: 10px;
+    object-fit: cover;
+}
+
+.post-card {
+    background-color: #16181c;
+    border: 1px solid #2f3336;
+    border-radius: 16px;
+    padding: 16px;
+    color: #e7e9ea;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.post-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.post-author {
+    font-weight: 600;
+    color: #fff;
+}
+
+.post-time {
+    font-size: 0.85rem;
+    color: #8b8b8b;
+}
+
+.post-content {
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.like-btn, .comment-btn, .share-btn {
+    background: none;
+    border: none;
+    color: #1d9bf0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: transform 0.2s ease;
+}
+
+.like-btn:hover, .comment-btn:hover, .share-btn:hover {
+    transform: scale(1.1);
+}

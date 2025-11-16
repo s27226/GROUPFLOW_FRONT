@@ -1,19 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import ProjectsPage from './views/ProjectsPage';
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import MainPage from "./pages/MainPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ProjectChatPage from "./pages/ProjectViewPage";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ChatPage from "./pages/ChatPage";
+import CreateGroupPage from "./pages/CreateGroupPage";
+import MyProjectsPage from "./pages/MyProjectsPage";
+import UsersPage from "./pages/UsersPage";
+import FriendPage from "./pages/FriendPage";
 
-function App() {
-  return (
-      <BrowserRouter >
-        <Routes>
-
-          <Route index element={<Main />} />
-          <Route path="/dodaj-uwage" element={<DodajUwaga />} />
-          <Route path="/create-uwage" element={<CreateUwaga />} />
-        </Routes>
-      </BrowserRouter>
-  );
+function ProtectedRoute({ children }) {
+    const { user } = useAuth();
+    return user ? children : <Navigate to="/login" />;
 }
 
-export default App;
+export default function App() {
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/projects" element={<ProjectsPage />} />
+                    <Route path="/project/chat" element={<ProjectChatPage />} />
+                    <Route path="/chats" element={<ChatPage />} />
+                    <Route path="/creategroup" element={<CreateGroupPage />} />
+                    <Route path="/myprojects" element={<MyProjectsPage />} />
+                    <Route path="/findfriends" element={<UsersPage />} />
+                    <Route path="/friendslist" element={<FriendPage />} />
+                    <Route
+                        path="/"
+                        element={
+                            //<ProtectedRoute>
+                            <MainPage />
+                            //</ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
+}
