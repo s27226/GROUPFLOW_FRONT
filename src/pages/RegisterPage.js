@@ -49,7 +49,7 @@ export default function RegisterPage() {
 
             <div className="auth-right">
                 <div className="form-card wide">
-                    <h1>PLACEHOLDER_NAME</h1>
+                    <h1>Sign in</h1>
                     <input
                         placeholder="Name"
                         value={name}

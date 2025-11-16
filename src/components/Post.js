@@ -10,9 +10,9 @@ export default function Post({ author, time, content, image }) {
                     alt={author}
                     className="post-avatar"
                 />
-                <div>
-                    <h3 className="post-author">{author}</h3>
-                    <p className="post-time">{time}</p>
+                <div className="author-time">
+                    <span className="post-author">{author}</span>
+                    <span className="post-time">· {time}</span>
                 </div>
             </div>
 
@@ -22,9 +22,9 @@ export default function Post({ author, time, content, image }) {
             </div>
 
             <div className="post-actions">
-                <button className="like-btn"> Like</button>
-                <button className="comment-btn"> Comment</button>
-                <button className="share-btn"> share</button>
+                <button className="like-btn">Like</button>
+                <button className="comment-btn">Comment</button>
+                <button className="share-btn">Share</button>
             </div>
         </div>
     );

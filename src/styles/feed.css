@@ -1,71 +1,83 @@
 .feed-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
     padding: 20px;
     max-width: 600px;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
     overflow-x: hidden;
-}
-
-.post-image {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 12px;
-    margin-top: 10px;
-    object-fit: cover;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
 }
 
 .post-card {
-    background-color: #16181c;
-    border: 1px solid #2f3336;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 16px;
-    color: #e7e9ea;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .post-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
+.author-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1;
+}
 .post-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    align-self: flex-start;
 }
 
 .post-author {
     font-weight: 600;
-    color: #fff;
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1rem;
 }
 
 .post-time {
     font-size: 0.85rem;
-    color: #8b8b8b;
+    color: var(--text-secondary);
+    margin: 0 0 0;
 }
 
 .post-content {
-    margin-top: 12px;
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-family), serif;
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-top: 8px;
+    object-fit: cover;
 }
 
 .post-actions {
     display: flex;
     justify-content: space-around;
-    margin-top: 12px;
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-family), serif;
 }
 
 .like-btn, .comment-btn, .share-btn {
     background: none;
     border: none;
-    color: #1d9bf0;
+    color: var(--accent);
     cursor: pointer;
     font-size: 0.95rem;
     transition: transform 0.2s ease;

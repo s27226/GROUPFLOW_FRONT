@@ -1,20 +1,50 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Bell, MessageCircle } from "lucide-react";
+import React, {useState, useRef, useEffect} from "react";
+import {Bell, MessageCircle} from "lucide-react";
 import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
 import logo from "../images/logo.png";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
+import {useAuth} from "../context/AuthContext";
+import {useNavigate} from "react-router-dom";
+import {FaSearch} from "react-icons/fa";
+import NotificationItem from "./NotificationItem";
+import MessagePreview from "./MessagePreview";
+import PrivateChat from "./PrivateChat"
 
 function Navbar() {
-    const { logout } = useAuth();
+    const {logout} = useAuth();
     const navigate = useNavigate();
+
     const [menuOpen, setMenuOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [msgOpen, setMsgOpen] = useState(false);
-    const menuRef = useRef();
     const [searchQuery, setSearchQuery] = useState("");
+    const [activeChat, setActiveChat] = useState(null);
+
+    const menuRef = useRef();
+
+    const notifications = [
+        {
+            id: 1,
+            icon: <Bell size={18}/>,
+            text: "Alice reacted to your post",
+            time: "2h ago",
+            unread: true,
+        },
+    ];
+
+    const messages = [
+        {
+            id: 1,
+            image: defaultPfp,
+            name: "Alice",
+            lastMessage: "Men",
+            time: "5m ago",
+            onClick: () => {
+                setActiveChat({name: "Alice", image: defaultPfp});
+                setMsgOpen(false);
+            },
+        },
+    ];
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -30,19 +60,14 @@ function Navbar() {
 
     return (
         <nav className="navbar">
-            <div className="navbar-logo" onClick={() => (window.location.href = "/main")}>
+
+            <div className="navbar-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
                 <img src={logo} alt="Logo" className="logo-img"/>
                 <span className="logo-text">NameWIP</span>
             </div>
 
             <div className="search-bar-container">
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        console.log("Search submitted:", searchQuery);
-                        // TODO: add real search logic
-                    }}
-                >
+                <form onSubmit={(e) => e.preventDefault()}>
                     <div className="search-bar">
                         <FaSearch className="search-icon"/>
                         <input
@@ -55,8 +80,8 @@ function Navbar() {
                 </form>
             </div>
 
-
             <div className="navbar-right" ref={menuRef}>
+
                 <div
                     className="icon-wrapper spaced"
                     onClick={() => {
@@ -66,11 +91,26 @@ function Navbar() {
                     }}
                 >
                     <Bell size={24}/>
+
                     {notifOpen && (
                         <div className="dropdown-menu large">
                             <h4>Notifications</h4>
                             <div className="dropdown-scroll">
-                                <p>You have no new notifications.</p>
+
+                                {notifications.length === 0 ? (
+                                    <p>No notifications.</p>
+                                ) : (
+                                    notifications.map((n) => (
+                                        <NotificationItem
+                                            key={n.id}
+                                            icon={n.icon}
+                                            text={n.text}
+                                            time={n.time}
+                                            unread={n.unread}
+                                        />
+                                    ))
+                                )}
+
                             </div>
                         </div>
                     )}
@@ -85,11 +125,27 @@ function Navbar() {
                     }}
                 >
                     <MessageCircle size={24}/>
+
                     {msgOpen && (
                         <div className="dropdown-menu large">
                             <h4>Messages</h4>
                             <div className="dropdown-scroll">
-                                <p>No new messages.</p>
+
+                                {messages.length === 0 ? (
+                                    <p>No messages.</p>
+                                ) : (
+                                    messages.map((m) => (
+                                        <MessagePreview
+                                            key={m.id}
+                                            image={m.image}
+                                            name={m.name}
+                                            lastMessage={m.lastMessage}
+                                            time={m.time}
+                                            onClick={m.onClick}
+                                        />
+                                    ))
+                                )}
+
                             </div>
                         </div>
                     )}
@@ -108,8 +164,8 @@ function Navbar() {
 
                 {menuOpen && (
                     <div className="dropdown-menu">
-                        <button>Profile</button>
-                        <button>Settings</button>
+                        <button onClick={() => navigate("/profile")}>Profile</button>
+                        <button onClick={() => navigate("/settings")}>Settings</button>
                         <button>Help</button>
                         <hr/>
                         <button
@@ -118,10 +174,14 @@ function Navbar() {
                                 logout();
                                 navigate("/login");
                                 setMenuOpen(false);
-                            }}>
+                            }}
+                        >
                             Log Out
                         </button>
                     </div>
+                )}
+                {activeChat && (
+                    <PrivateChat user={activeChat} onClose={() => setActiveChat(null)} />
                 )}
             </div>
         </nav>

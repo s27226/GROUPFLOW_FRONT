@@ -30,5 +30,6 @@ export default function Feed() {
                 <Post key={index} {...post} />
             ))}
         </div>
+
     );
 }
