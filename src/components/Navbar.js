@@ -33,7 +33,7 @@ function Navbar() {
 
     return (
         <nav className="navbar">
-            <div className="navbar-logo" onClick={() => (window.location.href = "/main")}>
+            <div className="navbar-logo" onClick={() => (window.location.href = "/")}>
                 <img src={logo} alt="Logo" className="logo-img"/>
                 <span className="logo-text">NameWIP</span>
             </div>
@@ -46,7 +46,7 @@ function Navbar() {
                         localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
                         // TODO: add real search logic
 
-                        if ((location.pathname === "/") && (location.pathname === "/projects?")) {
+                        if ((location.pathname === "/") || (location.pathname === "/projects?")) {
 
                             navigate("/projects"); // zostajesz na Main
                         }
@@ -54,7 +54,7 @@ function Navbar() {
 
                             navigate("/myprojects");
                         }
-                        console.log(localStorage.getItem("searchQuery"));
+
 
                     }}
                 >
@@ -129,7 +129,7 @@ function Navbar() {
                         <button
                             className="My Projects"
                             onClick={() => {
-
+                                localStorage.clear()
                                 navigate("/myprojects");
                                 setMenuOpen(false);
                             }}>
@@ -138,7 +138,7 @@ function Navbar() {
                         <button
                             className="Chat"
                             onClick={() => {
-
+                                localStorage.clear()
                                 navigate("/chats");
                                 setMenuOpen(false);
                             }}>
@@ -147,7 +147,7 @@ function Navbar() {
                         <button
                             className="CreateGroup"
                             onClick={() => {
-
+                                localStorage.clear()
                                 navigate("/creategroup");
                                 setMenuOpen(false);
                             }}>
