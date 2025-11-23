@@ -89,3 +89,23 @@
 .Friend-button:hover {
     background: #ffffff25;
 }
+
+.menu-item {
+    display: flex;
+    align-items: center;
+
+    color: white;
+    text-decoration: none;
+
+    border-radius: 8px;
+    
+}
+.notification-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #ff4757; /* czerwony lub dowolny */
+    border-radius: 50%;
+    margin-left: 20px;
+    right: 5px;  /* przesuń tak, żeby dobrze leżało */
+    top: 8px;
+}

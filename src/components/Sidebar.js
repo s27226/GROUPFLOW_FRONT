@@ -1,16 +1,19 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     FaProjectDiagram,
     FaUserFriends,
     FaCalendarAlt,
     FaBookmark,
-    FaCompass,
+
     FaBars,
     FaChevronDown,
     FaChevronUp
+
 } from "react-icons/fa";
+import { FcInvite } from "react-icons/fc";
 import "../styles/Sidebar.css";
-import {useNavigate} from "react-router-dom";
+import {useNavigate,Link} from "react-router-dom";
+import {InvitationContext} from "../context/InvitationContext";
 
 
 export default function Sidebar() {
@@ -22,6 +25,10 @@ export default function Sidebar() {
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    const { invitationsCount } = useContext(InvitationContext);
+
+
 
     return (
         <>
@@ -91,8 +98,17 @@ export default function Sidebar() {
                         {isOpen && <span>Saved</span>}
                     </li>
                     <li>
-                        <FaCompass className="icon"/>
-                        {isOpen && <span>Discovery</span>}
+
+                        <FcInvite className="icon" />
+                        {isOpen && (
+                            <Link to="/invitations" className="menu-item">
+                                Invitations
+                                {invitationsCount > 0  && (
+                                    <span className="notification-dot">
+
+                                    </span>
+                                )}
+                            </Link>)}
                     </li>
                 </ul>
             </div>

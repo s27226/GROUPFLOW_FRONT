@@ -11,6 +11,7 @@
     width: 100%;
     margin-top: 920px;
     font-family: 'Poppins', sans-serif;
+    align-items: center;
 
 }
 
@@ -50,6 +51,6 @@
     display: flex;
     max-width: max-content;
     margin-top: auto;
-    margin-left: 150px;
+
     align-items: flex-start;
 }
