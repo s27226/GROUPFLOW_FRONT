@@ -1,11 +1,8 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-
 import Trending from "../components/Trending";
 import "../styles/MainComponents.css"
-
-
 import shrimp from "../images/shrimp.png";
 import Invitations from "../components/Invitations";
 

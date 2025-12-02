@@ -56,9 +56,24 @@ export default function SavedPage() {
             hidden: false,
             comments: []
         },
+        {
+            id: 5,
+            author: "Eve",
+            time: "3h ago",
+            content: "Its as shrimple as that",
+            image: null,
+            saved: true,
+            hidden: false,
+            sharedPost: {
+                id: 1,
+                author: "Alice",
+                time: "2h ago",
+                content: "hardcoded some test posts for viewing purposes (im gonna make the shrimp the coconut.png of our site)",
+                image: shrimp
+            },
+            comments: []
+        },
     ]);
-
-    const [undoTimeout, setUndoTimeout] = useState(null);
 
     const handleHidePost = (postId) => {
         setPosts(posts.map(post =>
@@ -105,6 +120,7 @@ export default function SavedPage() {
                                         comments={post.comments}
                                         saved={post.saved}
                                         hidden={post.hidden}
+                                        sharedPost={post.sharedPost}
                                         onHide={handleHidePost}
                                         onUndoHide={handleUndoHide}
                                         onSave={handleSavePost}

@@ -5,10 +5,7 @@ import Sidebar from "../components/Sidebar";
 import CreateGroup from "../components/CreateGroup";
 import "../styles/MainComponents.css";
 
-
-
 export default function CreateGroupPage() {
-
 
     return (
         <div className="maincomp-layout">

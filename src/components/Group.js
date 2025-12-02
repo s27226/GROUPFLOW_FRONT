@@ -12,7 +12,6 @@ export default function Group({id, name, description}) {
 
                 <div onClick={() => {
 
-                    // eslint-disable-next-line no-undef
                     navigate(`/project/chat`);
 
                 }}>

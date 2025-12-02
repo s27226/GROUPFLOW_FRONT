@@ -5,7 +5,6 @@
 }
 
 .chatbox-all{
-
     max-width: 800px;
     width: 800px;
 }
@@ -16,15 +15,13 @@
     border-radius: 12px;
     color: var(--text-primary);
     padding: 16px;
-    width: 760px;
+    width: 720px;
     height: 550px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-shadow: var(--shadow-soft);
     font-family: var(--font-family), serif;
-
-
 }
 
 .chatbox-title {

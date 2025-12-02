@@ -34,22 +34,37 @@ export default function ProjectProfilePage() {
 
     const posts = [
         {
+            id: 1,
             author: "John",
             time: "2h ago",
             content: "im putting whatever here",
             image: "https://picsum.photos/600/300?random=15",
+            saved: false,
+            sharedPost: null,
+            comments: [],
+            likes: 18,
         },
         {
+            id: 2,
             author: "Alice",
             time: "1d ago",
             content:
                 "majority of these damn posts are generated anyway cuz i lack creativity",
+            saved: false,
+            sharedPost: null,
+            comments: [],
+            likes: 25,
         },
         {
+            id: 3,
             author: "John",
             time: "3d ago",
             content: "Today is Today",
             image: "https://picsum.photos/600/300?random=20",
+            saved: false,
+            sharedPost: null,
+            comments: [],
+            likes: 9,
         },
     ];
 
@@ -114,11 +129,16 @@ export default function ProjectProfilePage() {
                                 <div className="feed-container">
                                     {posts.map((post, index) => (
                                         <Post
-                                            key={index}
+                                            key={post.id}
+                                            id={post.id}
                                             author={post.author}
                                             time={post.time}
                                             content={post.content}
                                             image={post.image}
+                                            comments={post.comments}
+                                            saved={post.saved}
+                                            sharedPost={post.sharedPost}
+                                            likes={post.likes}
                                         />
                                     ))}
                                 </div>

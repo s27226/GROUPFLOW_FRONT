@@ -8,10 +8,6 @@
     padding: 20px;
 }
 
-
-
-
-
 .invitation-card {
     background: var(--bg-secondary);
     padding: 16px;
@@ -20,6 +16,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 500px;
+    min-width: 500px;
 }
 
 .info h3 {

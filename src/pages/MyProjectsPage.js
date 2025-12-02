@@ -1,10 +1,8 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-
 import Groups from "../components/Groups";
 import "../styles/MainComponents.css";
-
 import shrimp from "../images/shrimp.png";
 import Trending from "../components/Trending";
 
@@ -28,19 +26,16 @@ export default function ProjectsPage() {
     ];
 
 
-
-
-
     return (
-        <div className="maincomp-layout">
-            <Navbar />
+        <div style={{marginTop: "420px"}}>
+            <Navbar/>
             <div className="maincomp-content">
-                <Sidebar />
+                <Sidebar/>
                 <div className="maincomp-center-wrapper">
                     <div className="maincomp-feed-wrapper">
-                        <Groups />
+                        <Groups/>
                     </div>
-                    <Trending projects={trendingProjects} />
+                    <Trending projects={trendingProjects}/>
                 </div>
             </div>
         </div>

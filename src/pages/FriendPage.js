@@ -29,10 +29,6 @@ export default function UsersPage() {
 
     ];
 
-
-
-
-
     return (
         <div className="maincomp-layout">
             <Navbar />

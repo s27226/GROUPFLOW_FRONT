@@ -7,7 +7,7 @@ import "../styles/ProjectViewPage.css";
 import {useNavigate, useParams} from "react-router-dom";
 import FilesView from "../components/FilesView";
 import TerminsView from "../components/TerminsView";
-import MemebersPanel from "../components/MemebersPanel";
+import MembersPanel from "../components/MembersPanel";
 
 
 export default function ProjectsViewPage() {
@@ -64,7 +64,7 @@ export default function ProjectsViewPage() {
                         </div>
                         <div className="tab-content">{renderContent()}</div>
                     </div>
-                    <MemebersPanel/>
+                    <MembersPanel/>
                 </div>
             </div>
         </div>

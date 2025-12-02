@@ -37,15 +37,23 @@ export default function ProfilePage() {
 
     const posts = [
         {
+            id: 1,
             author: "John",
             time: "2h ago",
             content: "Today is friday",
             image: "https://picsum.photos/600/300?random=15",
+            saved: false,
+            sharedPost: null,
+            likes: 12,
         },
         {
+            id: 2,
             author: "John",
             time: "1d ago",
             content: "Man",
+            saved: false,
+            sharedPost: null,
+            likes: 34,
             comments: [
                 {
                     user: "Alice",
@@ -108,10 +116,14 @@ export default function ProfilePage() {
             ]
         },
         {
+            id: 3,
             author: "John",
             time: "3d ago",
             content: "React",
             image: "https://picsum.photos/600/300?random=20",
+            saved: false,
+            sharedPost: null,
+            likes: 7,
         },
     ];
 
@@ -174,12 +186,16 @@ export default function ProfilePage() {
                                 <div className="feed-container">
                                     {posts.map((post, index) => (
                                         <Post
-                                            key={index}
+                                            key={post.id}
+                                            id={post.id}
                                             author={post.author}
                                             time={post.time}
                                             content={post.content}
                                             image={post.image}
-                                            comments={post.comments || []}   // ← IMPORTANT
+                                            comments={post.comments || []}
+                                            saved={post.saved}
+                                            sharedPost={post.sharedPost}
+                                            likes={post.likes}
                                         />
                                     ))}
                                 </div>

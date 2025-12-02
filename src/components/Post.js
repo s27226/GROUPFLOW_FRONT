@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/feed.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 
@@ -11,11 +12,15 @@ export default function Post({
     comments: initialComments,
     saved: initialSaved = false,
     hidden: initialHidden = false,
+    sharedPost = null,
+    isFullView = false,
+    likes: initialLikes = 0,
     onHide,
     onUndoHide,
     onSave
 }) {
-    const [likes, setLikes] = useState(0);
+    const navigate = useNavigate();
+    const [likes, setLikes] = useState(initialLikes);
     const [liked, setLiked] = useState(false);
     const [comments, setComments] = useState(initialComments || []);
     const [commentInput, setCommentInput] = useState("");
@@ -23,7 +28,7 @@ export default function Post({
     const [saved, setSaved] = useState(initialSaved);
     const [showHideToast, setShowHideToast] = useState(false);
 
-    const [showComments, setShowComments] = useState(false);
+    const [showComments, setShowComments] = useState(isFullView);
 
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;
@@ -31,12 +36,6 @@ export default function Post({
             (acc, c) => acc + 1 + countComments(c.replies),
             0
         );
-    };
-    const toggleLike = () => {
-        if (liked) setLikes(likes - 1);
-        else setLikes(likes + 1);
-
-        setLiked(!liked);
     };
 
     const submitComment = () => {
@@ -75,18 +74,40 @@ export default function Post({
         setShowHideToast(false);
     };
 
+    const handleShare = () => {
+        const postData = encodeURIComponent(JSON.stringify({
+            id,
+            author,
+            time,
+            content,
+            image
+        }));
+        navigate(`/project/new-post?share=${postData}`);
+    };
+
     return (
         <div className="post-card">
-            {/* HEADER */}
             <div className="post-header">
                 <img
                     src={`https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
                     alt={author}
                     className="post-avatar"
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate("/profile");
+                    }}
                 />
 
                 <div className="author-time">
-                    <span className="post-author">{author}</span>
+                    <span 
+                        className="post-author"
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate("/profile");
+                        }}
+                    >{author}</span>
                     <span className="post-time">· {time}</span>
                 </div>
 
@@ -108,35 +129,77 @@ export default function Post({
                 </div>
             </div>
 
-            <div className="post-content">
+            <div 
+                className="post-content"
+                style={{ cursor: isFullView ? "default" : "pointer" }}
+                onClick={() => !isFullView && navigate(`/post/${id}`)}
+            >
                 <p>{content}</p>
                 {image && <img src={image} alt="post" className="post-image"/>}
+                
+                {sharedPost && (
+                    <div className="post-shared-preview">
+                        <div className="post-shared-header">
+                            <span>Shared post from {sharedPost.author}</span>
+                        </div>
+                        <div className="post-shared-content">
+                            <div className="post-shared-info">
+                                <img
+                                    src={`https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                    alt={sharedPost.author}
+                                    className="post-shared-avatar"
+                                />
+                                <div>
+                                    <strong>{sharedPost.author}</strong>
+                                    <span> · {sharedPost.time}</span>
+                                </div>
+                            </div>
+                            <p className="post-shared-text">{sharedPost.content}</p>
+                            {sharedPost.image && (
+                                <img src={sharedPost.image} alt="shared" className="post-shared-image" />
+                            )}
+                            <a 
+                                href={`/post/${sharedPost.id}`}
+                                className="post-shared-link"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    navigate(`/post/${sharedPost.id}`);
+                                }}
+                            >
+                                View original post
+                            </a>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="post-actions">
                 <button
                     className="icon-btn"
-                    onClick={() =>
-                        setLikes(likes === 0 ? 1 : 0)
-                    }
+                    onClick={() => {
+                        setLiked(!liked);
+                        setLikes(liked ? initialLikes : initialLikes + 1);
+                    }}
                 >
                     <Heart
                         size={20}
-                        fill={likes ? "var(--accent)" : "none"}
-                        stroke={likes ? "var(--accent)" : "var(--text-secondary)"}
+                        fill={liked ? "var(--accent)" : "none"}
+                        stroke={liked ? "var(--accent)" : "var(--text-secondary)"}
                     />
                     <span>{likes}</span>
                 </button>
 
                 <button
                     className="icon-btn"
-                    onClick={() => setShowComments(!showComments)}
+                    onClick={() => !isFullView && setShowComments(!showComments)}
+                    style={{ cursor: isFullView ? "default" : "pointer" }}
                 >
                     <MessageCircle size={20}/>
                     <span>{countComments(comments)}</span>
                 </button>
 
-                <button className="icon-btn">
+                <button className="icon-btn" onClick={handleShare}>
                     <Share2 size={20}/>
                 </button>
             </div>

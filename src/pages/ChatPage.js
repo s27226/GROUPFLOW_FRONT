@@ -28,10 +28,8 @@ export default function ChatPage() {
                     <div className="maincomp-feed-wrapper">
 
                         <div className="chat-layout">
-                            {/* Lista użytkowników */}
                             <ChatList users={users} onSelectUser={setSelectedUser} selectedUser={selectedUser}/>
 
-                            {/* Okno rozmowy */}
                             <div className="chat-window-wrapper">
                                 {selectedUser ? (
                                     <ChatWindow user={selectedUser}/>

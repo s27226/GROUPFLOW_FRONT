@@ -15,12 +15,13 @@
 
 .left-section {
     flex: 1;
+    min-width: 450px;
     background-color: var(--bg-secondary);
-    padding: 24px;
+    padding: 32px;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .left-section h2 {
@@ -68,11 +69,11 @@
 
 .right-section {
     flex: 2;
+    min-width: 600px;
     background-color: var(--bg-secondary);
-    padding: 24px;
+    padding: 32px;
     border-radius: 12px;
     overflow-y: auto;
-    max-height: 600px;
     box-shadow: var(--shadow-soft);
 }
 

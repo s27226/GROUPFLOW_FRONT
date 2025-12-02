@@ -51,6 +51,10 @@
     font-size: 1rem;
 }
 
+.post-author:hover {
+    text-decoration: underline;
+}
+
 .post-time {
     font-size: 0.85rem;
     color: var(--text-secondary);
@@ -61,12 +65,23 @@
     font-family: var(--font-family), serif;
 }
 
+.post-content p {
+    transition: background 0.2s ease;
+    padding: 8px;
+    margin: -8px;
+    border-radius: 8px;
+}
+
+.post-content p:hover {
+    background-color: var(--bg-hover);
+}
+
 .post-image {
     width: 100%;
     height: auto;
     border-radius: 12px;
     margin-top: 8px;
-    object-fit: cover;
+    display: block;
 }
 
 .post-actions {
@@ -367,4 +382,76 @@
 
 .undo-btn:hover {
     background-color: color-mix(in srgb, var(--accent) 85%, #000);
+}
+
+.post-shared-preview {
+    margin-top: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--bg-accent);
+}
+
+.post-shared-header {
+    padding: 8px 12px;
+    background-color: var(--bg-hover);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.post-shared-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.post-shared-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-shared-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.post-shared-info strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.post-shared-info span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.post-shared-text {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.post-shared-image {
+    width: 100%;
+    border-radius: 8px;
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.post-shared-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.post-shared-link:hover {
+    text-decoration: underline;
+    color: color-mix(in srgb, var(--accent) 85%, #000);
 }

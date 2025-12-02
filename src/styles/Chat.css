@@ -6,7 +6,7 @@
     font-family: var(--font-family), serif;
     width: 800px;
     border-radius: 12px;
-    margin-top: -380px;
+    margin-top: var(--navbar-height);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
@@ -107,7 +107,43 @@
     background-color: #808080;
 }
 
-/* WIADOMOŚCI */
+/* CHAT CONTENT */
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-messages-area {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-bubble {
+    padding: 8px 12px;
+    border-radius: 12px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.chat-bubble.me {
+    align-self: flex-end;
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.chat-bubble.them {
+    align-self: flex-start;
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+
 .chat-messages {
     flex: 1;
     padding: 16px;
@@ -134,6 +170,43 @@
 }
 
 /* INPUT */
+.chat-input-area {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding: 8px;
+    gap: 8px;
+    background-color: var(--bg-accent);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    padding: 8px;
+}
+
+.chat-input-area input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.chat-input-area button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.chat-input-area button:hover {
+    background: color-mix(in srgb, var(--accent) 85%, #000);
+}
+
+
 .chat-input {
     display: flex;
     align-items: center;

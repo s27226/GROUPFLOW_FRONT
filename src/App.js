@@ -21,6 +21,7 @@ import InvitationsPage from "./pages/InvitationsPage";
 import {InvitationContext} from "./context/InvitationContext";
 import NewPostPage from "./pages/NewPostPage"
 import SavedPage from "./pages/SavedPage"
+import PostPage from "./pages/PostPage"
 import {useState} from "react";
 
 function ProtectedRoute({children}) {
@@ -57,6 +58,7 @@ export default function App() {
                         <Route path="/friendslist" element={<FriendPage/>}/>
                         <Route path="/invitations" element={<InvitationsPage/>}/>
                         <Route path="/Saved" element={<SavedPage/>}/>
+                        <Route path="/post/:postId" element={<PostPage/>}/>
                         <Route
                             path="/"
                             element={

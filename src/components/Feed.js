@@ -12,24 +12,27 @@ export default function Feed() {
             image: shrimp,
             saved: false,
             hidden: false,
+            likes: 42,
         },
         {
             id: 2,
             author: "Bob",
             time: "5h ago",
-            content: "THE FUCKING TOP POSTS IMAGE REFUSES TO STAY IN BOUNDS UNLESS I FORCE PUSH IT DOWN WITH MARGIN-TOP CAN IT NOT",
+            content: "Men",
             image: null,
             saved: false,
             hidden: false,
+            likes: 15,
         },
         {
             id: 3,
             author: "Charlie",
             time: "1d ago",
-            content: "We could use this page to leave each other comments when doing one anothers branches",
+            content: "Test32",
             image: "https://picsum.photos/600/300?random=2",
             saved: false,
             hidden: false,
+            likes: 8,
             comments: [{
                 user: "Frank",
                 time: "12h ago",
@@ -73,6 +76,7 @@ export default function Feed() {
             content: "Man",
             saved: false,
             hidden: false,
+            likes: 23,
             comments: [
                 {
                     user: "Alice",
@@ -133,6 +137,24 @@ export default function Feed() {
                     replies: []
                 }
             ]
+        },
+        {
+            id: 5,
+            author: "Eve",
+            time: "3h ago",
+            content: "Its as shrimple as that",
+            image: null,
+            saved: false,
+            hidden: false,
+            likes: 56,
+            sharedPost: {
+                id: 1,
+                author: "Alice",
+                time: "2h ago",
+                content: "hardcoded some test posts for viewing purposes (im gonna make the shrimp the coconut.png of our site)",
+                image: shrimp
+            },
+            comments: []
         }
     ]);
 

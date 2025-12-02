@@ -6,7 +6,7 @@
     width: 430px;
     color: var(--text-primary);
     font-family: var(--font-family), serif;
-    margin-top: 420px;
+    margin-top: 80px;
     margin-left: 50px;
 }
 .members-list {
@@ -18,7 +18,7 @@
 
 .member-header {
     display: flex;
-    align-items: center; /* kropka i imię w jednej linii */
+    align-items: center;
     gap: 8px;
 }
 
@@ -104,7 +104,6 @@
     background-color: #ef4444;
 }
 
-/* Układ statusu obok imienia */
 .member-item span:first-child {
     display: inline-block;
     vertical-align: middle;

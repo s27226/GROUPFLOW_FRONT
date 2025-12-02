@@ -9,7 +9,6 @@ export default function CreateGroup() {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [groupDescription, setGroupDescription] = useState("");
 
-    // Przykładowi użytkownicy (normalnie pobierzesz z backendu)
     const users = [
         {id: 1, name: "Oleh", email: "oleh@example.com"},
         {id: 2, name: "Julia", email: "julia@example.com"},
@@ -37,8 +36,6 @@ export default function CreateGroup() {
 
         console.log("Nowa grupa:", newGroup);
 
-        // tutaj możesz dodać POST do backendu, np.:
-        // await fetch("/api/groups", { method: "POST", body: JSON.stringify(newGroup) })
 
         alert(`Grupa "${groupName}" została utworzona!`);
         setGroupName("");

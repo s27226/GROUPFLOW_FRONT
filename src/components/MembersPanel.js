@@ -1,8 +1,10 @@
 import "../styles/MembersPanel.css"
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 
-export default function MemebersPanel() {
+export default function MembersPanel() {
+    const navigate = useNavigate();
 
     const members = [
         {id: 1, name: "Jan Kowalski", status: "available", avatar: "https://i.pravatar.cc/40?img=3",},
@@ -18,7 +20,8 @@ export default function MemebersPanel() {
                     <div
                         key={member.id}
                         className={`member-item ${member.status}`}
-
+                        onClick={() => navigate("/profile")}
+                        style={{ cursor: "pointer" }}
                     >
 
                         <div className="member-header">
