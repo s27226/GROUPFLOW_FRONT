@@ -29,12 +29,12 @@ export default function ProjectsViewPage() {
 
 
     return (
-        <div className="main-layout">
+        <div className="view-page-main-layout">
             <Navbar />
-            <div className="main-content">
+            <div className="view-page-main-content">
                 <Sidebar />
                 <div className="feed-projects-wrapper">
-                    <div className="feed-wrapper">
+                    <div className="main-feed-wrapper">
 
                         <button className="back-btn" onClick={() => navigate("/myprojects")}>
                             ← Back to projects

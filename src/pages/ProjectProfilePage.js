@@ -86,11 +86,11 @@ export default function ProjectProfilePage() {
 
                             <section className="owned-projects">
                                 <h3>Members</h3>
-                                <div className="members-scroll">
+                                <div className="profile-members-scroll">
                                     {project.members?.map((member, index) => (
                                         <div
                                             key={index}
-                                            className="member-card clickable"
+                                            className="profile-member-card clickable"
                                             onClick={() =>
                                                 navigate(`/profile`)
                                             }
@@ -98,10 +98,10 @@ export default function ProjectProfilePage() {
                                             <img
                                                 src={member.image}
                                                 alt={member.name}
-                                                className="member-pfp"
+                                                className="profile-member-pfp"
                                             />
-                                            <p className="member-name">{member.name}</p>
-                                            <p className="member-role">{member.role}</p>
+                                            <p className="profile-member-name">{member.name}</p>
+                                            <p className="profile-member-role">{member.role}</p>
                                         </div>
                                     ))}
                                 </div>

@@ -39,6 +39,10 @@
     max-width: none;
 }
 
+.search-icon {
+    color: var(--text-secondary);
+}
+
 .search-bar input {
     flex: 1;
     width: auto;
@@ -142,6 +146,12 @@
     position: relative;
     cursor: pointer;
     transition: transform 0.2s ease;
+    color: var(--text-primary);
+}
+
+.icon-wrapper.spaced svg {
+    color: var(--text-primary);
+    stroke: var(--text-primary);
 }
 
 .icon-wrapper.spaced:active {

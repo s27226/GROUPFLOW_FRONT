@@ -33,7 +33,7 @@ export default function ChatWindow({ user }) {
         <div className="chat-window">
             <div className="chat-header">
                 <h3>{user.name}</h3>
-                <div className={`status-dot ${user.online ? "online" : "offline"}`}></div>
+                <div className={`chat-status-dot ${user.online ? "online" : "offline"}`}></div>
             </div>
 
             <div className="chat-content">

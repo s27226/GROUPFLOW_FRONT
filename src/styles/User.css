@@ -1,11 +1,11 @@
 .project-members-panel {
-    background-color: #0f1419;
-    border: 2px solid #1f2933;
+    background-color: var(--bg-main);
+    border: 2px solid var(--border-color);
     border-radius: 24px;
     padding: 48px;
     width: 430px;
-    color: #e7e9ea;
-    font-family: "Poppins", sans-serif;
+    color: var(--text-primary);
+    font-family: var(--font-family), serif;
     margin-top: 420px;
     margin-left: 50px;
 }

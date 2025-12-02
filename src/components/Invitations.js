@@ -6,9 +6,9 @@ import {InvitationContext} from "../context/InvitationContext";
 
 export default function Invitations() {
     const [invitations, setInvitations] = useState([
-        { id: 1, name: "Jan Kowalski", type: "friend" },
-        { id: 2, name: "Grupa A", type: "group" },
-        { id: 3, name: "Kasia Nowak", type: "friend" },
+        {id: 1, name: "Jan Kowalski", type: "friend"},
+        {id: 2, name: "Grupa A", type: "group"},
+        {id: 3, name: "Kasia Nowak", type: "friend"},
     ]);
 
     const handleAccept = (id) => {
@@ -22,7 +22,7 @@ export default function Invitations() {
 
     };
 
-    const { setInvitationsCount } = useContext(InvitationContext);
+    const {setInvitationsCount} = useContext(InvitationContext);
 
     useEffect(() => {
         setInvitationsCount(invitations.length);

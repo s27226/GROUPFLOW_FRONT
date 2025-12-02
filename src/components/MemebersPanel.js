@@ -2,13 +2,12 @@ import "../styles/MembersPanel.css"
 import React from "react";
 
 
-
 export default function MemebersPanel() {
 
     const members = [
-        { id: 1, name: "Jan Kowalski", status: "available",avatar: "https://i.pravatar.cc/40?img=3", },
-        { id: 2, name: "Kasia Nowak", status: "away",avatar: "https://i.pravatar.cc/40?img=3", },
-        { id: 3, name: "Piotr Zieliński", status: "offline",avatar: "https://i.pravatar.cc/40?img=3", },
+        {id: 1, name: "Jan Kowalski", status: "available", avatar: "https://i.pravatar.cc/40?img=3",},
+        {id: 2, name: "Kasia Nowak", status: "away", avatar: "https://i.pravatar.cc/40?img=3",},
+        {id: 3, name: "Piotr Zieliński", status: "offline", avatar: "https://i.pravatar.cc/40?img=3",},
     ];
 
     return (

@@ -2,9 +2,9 @@ import React from "react";
 
 const FilesView = () => {
     const files = [
-        { name: "project-plan.pdf", size: "1.2 MB" },
-        { name: "design-draft.png", size: "820 KB" },
-        { name: "notes.txt", size: "3 KB" },
+        {name: "project-plan.pdf", size: "1.2 MB"},
+        {name: "design-draft.png", size: "820 KB"},
+        {name: "notes.txt", size: "3 KB"},
     ];
 
     return (

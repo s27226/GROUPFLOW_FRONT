@@ -10,7 +10,7 @@ import {
     FaChevronUp
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
-import {useNavigate,Link} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import {InvitationContext} from "../context/InvitationContext";
 import {FcInvite} from "react-icons/fc";
 
@@ -19,7 +19,7 @@ export default function Sidebar() {
     const navigate = useNavigate();
     const [projectsOpen, setProjectsOpen] = useState(false);
     const [friendsOpen, setFriendsOpen] = useState(false);
-    const { invitationsCount } = useContext(InvitationContext);
+    const {invitationsCount} = useContext(InvitationContext);
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -34,15 +34,15 @@ export default function Sidebar() {
                 <ul>
                     <li onClick={() => setProjectsOpen(!projectsOpen)}>
                         <FaProjectDiagram className="icon"/>
-                        {isOpen && <span>My Projects</span>}
+                        {isOpen && <span>Top Projects</span>}
                         {isOpen && (projectsOpen ? <FaChevronUp className="chevron"/> :
                             <FaChevronDown className="chevron"/>)}
                     </li>
                     {projectsOpen && isOpen && (
                         <ul className="sublist">
-                            <li>test 1</li>
-                            <li>test 2</li>
-                            <li>test 3</li>
+                            <li onClick={() => navigate("/project/chat")}>test 1</li>
+                            <li onClick={() => navigate("/project/chat")}>test 2</li>
+                            <li onClick={() => navigate("/project/chat")}>test 3</li>
                         </ul>
                     )}
 
@@ -59,7 +59,7 @@ export default function Sidebar() {
                                 <button
                                     className="Friend-button"
                                     onClick={() => {
-                                        localStorage.clear()
+                                        localStorage.removeItem("searchQuery");
                                         navigate("/findfriends");
 
                                     }}>
@@ -71,7 +71,7 @@ export default function Sidebar() {
                                 <button
                                     className="Friend-button"
                                     onClick={() => {
-                                        localStorage.clear()
+                                        localStorage.removeItem("searchQuery");
                                         navigate("/friendslist");
 
                                     }}>
@@ -87,17 +87,17 @@ export default function Sidebar() {
                         <FaCalendarAlt className="icon"/>
                         {isOpen && <span>Calendar</span>}
                     </li>
-                    <li>
+                    <li onClick={() => navigate("/Saved")}>
                         <FaBookmark className="icon"/>
                         {isOpen && <span>Saved</span>}
                     </li>
                     <li>
 
-                        <FcInvite className="icon" />
+                        <FcInvite className="icon"/>
                         {isOpen && (
                             <Link to="/invitations" className="menu-item">
                                 Invitations
-                                {invitationsCount > 0  && (
+                                {invitationsCount > 0 && (
                                     <span className="notification-dot">
 
                                     </span>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Termins.css";
@@ -8,7 +8,7 @@ const TerminsView = () => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [events, setEvents] = useState({});
-    const [newEvent, setNewEvent] = useState({ title: "", time: "" });
+    const [newEvent, setNewEvent] = useState({title: "", time: ""});
 
     const handleAddEvent = () => {
         if (!newEvent.title.trim() || !newEvent.time.trim()) return;
@@ -18,12 +18,12 @@ const TerminsView = () => {
             ...events,
             [dateKey]: [
                 ...(events[dateKey] || []),
-                { title: newEvent.title, time: newEvent.time },
+                {title: newEvent.title, time: newEvent.time},
             ],
         };
 
         setEvents(updatedEvents);
-        setNewEvent({ title: "", time: "" });
+        setNewEvent({title: "", time: ""});
     };
 
     const handleDayClick = (date) => setSelectedDate(date);

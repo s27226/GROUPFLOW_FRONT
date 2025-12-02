@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/NotificationItem.css";
 
-export default function NotificationItem({ icon, text, time, unread }) {
+export default function NotificationItem({icon, text, time, unread}) {
     return (
         <div className={`notif-item ${unread ? "unread" : ""}`}>
             <div className="notif-icon">{icon}</div>

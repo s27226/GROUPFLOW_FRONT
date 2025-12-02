@@ -1,8 +1,8 @@
 import React from "react";
 import "../styles/Groups.css";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
-export default function Group({id, name, description }) {
+export default function Group({id, name, description}) {
     const navigate = useNavigate();
 
 
@@ -10,7 +10,7 @@ export default function Group({id, name, description }) {
         <div className="group-card">
             <div className="group-header">
 
-                <div  onClick={() => {
+                <div onClick={() => {
 
                     // eslint-disable-next-line no-undef
                     navigate(`/project/chat`);

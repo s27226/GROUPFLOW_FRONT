@@ -11,12 +11,12 @@ export default function CreateGroupPage() {
 
 
     return (
-        <div className="main-layout">
+        <div className="maincomp-layout">
             <Navbar />
-            <div className="main-content">
+            <div className="maincomp-content">
                 <Sidebar />
-                <div className="center-wrapper">
-                    <div className="feed-wrapper">
+                <div className="maincomp-center-wrapper">
+                    <div className="maincomp-feed-wrapper">
                        <CreateGroup />
                     </div>
 

@@ -2,12 +2,26 @@ import React, { useState } from "react";
 import "../styles/feed.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 
-export default function Post({ author, time, content, image, comments: initialComments }) {
+export default function Post({ 
+    id,
+    author, 
+    time, 
+    content, 
+    image, 
+    comments: initialComments,
+    saved: initialSaved = false,
+    hidden: initialHidden = false,
+    onHide,
+    onUndoHide,
+    onSave
+}) {
     const [likes, setLikes] = useState(0);
-    const [liked, setLiked] = useState(false); // ❤️ NEW
+    const [liked, setLiked] = useState(false);
     const [comments, setComments] = useState(initialComments || []);
     const [commentInput, setCommentInput] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+    const [saved, setSaved] = useState(initialSaved);
+    const [showHideToast, setShowHideToast] = useState(false);
 
     const [showComments, setShowComments] = useState(false);
 
@@ -43,6 +57,24 @@ export default function Post({ author, time, content, image, comments: initialCo
         setCommentInput("");
     };
 
+    const handleSavePost = () => {
+        setSaved(!saved);
+        if (onSave) onSave(id);
+        setMenuOpen(false);
+    };
+
+    const handleHidePost = () => {
+        if (onHide) onHide(id);
+        setShowHideToast(true);
+        setMenuOpen(false);
+        setTimeout(() => setShowHideToast(false), 5000);
+    };
+
+    const handleUndoHide = () => {
+        if (onUndoHide) onUndoHide(id);
+        setShowHideToast(false);
+    };
+
     return (
         <div className="post-card">
             {/* HEADER */}
@@ -65,8 +97,10 @@ export default function Post({ author, time, content, image, comments: initialCo
 
                     {menuOpen && (
                         <div className="post-dropdown-menu">
-                            <button>Save Post</button>
-                            <button>Hide Post</button>
+                            <button onClick={handleSavePost}>
+                                {saved ? "Unsave Post" : "Save Post"}
+                            </button>
+                            <button onClick={handleHidePost}>Hide Post</button>
                             <button>Block User</button>
                             <button>Report</button>
                         </div>
@@ -138,6 +172,15 @@ export default function Post({ author, time, content, image, comments: initialCo
                             }}
                         />
                     ))}
+                </div>
+            )}
+
+            {showHideToast && (
+                <div className="hide-toast">
+                    <span>Post hidden</span>
+                    <button onClick={handleUndoHide} className="undo-btn">
+                        Undo
+                    </button>
                 </div>
             )}
         </div>

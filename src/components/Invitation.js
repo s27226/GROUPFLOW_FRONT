@@ -1,12 +1,7 @@
 import React from "react";
 import "../styles/Invitation.css";
 
-
-
-
-
-
-export default function Invitation({ data, onAccept,onReject }) {
+export default function Invitation({data, onAccept, onReject}) {
 
 
     return (

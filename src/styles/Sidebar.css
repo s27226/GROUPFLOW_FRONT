@@ -77,6 +77,61 @@
     scrollbar-color: var(--border-color, #2f3336) transparent;
 }
 
+.sidebar .menu-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    flex: 1;
+}
+
+.sidebar .menu-item:hover {
+    color: var(--accent);
+}
+
+.notification-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--error);
+    border-radius: 50%;
+    margin-left: 4px;
+}
+
+.Friend-button {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.Friend-button:hover {
+    background-color: var(--bg-hover);
+}
+
+.sublist {
+    padding-left: 30px;
+    list-style: none;
+}
+
+.sublist li {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.sublist li:hover {
+    background-color: var(--bg-hover);
+}
+
 .sidebar img {
     max-width: 100%;
     height: auto;

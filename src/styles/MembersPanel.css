@@ -1,11 +1,11 @@
 .project-members-panel {
-    background-color: #0f1419;
-    border: 1px solid #1f2933;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 16px;
     width: 430px;
-    color: #e7e9ea;
-    font-family: "Poppins", sans-serif;
+    color: var(--text-primary);
+    font-family: var(--font-family), serif;
     margin-top: 420px;
     margin-left: 50px;
 }
@@ -27,7 +27,7 @@
 .member-item {
     display: flex;
     flex-direction: column;
-    background-color: #1a1e22;
+    background-color: var(--bg-secondary);
     padding: 8px 10px;
     border-radius: 8px;
     transition: background 0.2s;
@@ -47,8 +47,8 @@
 }
 
 .project-members-panel li {
-    background: #161b22;
-    border: 1px solid #2f3336;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 8px;
     margin-bottom: 8px;
@@ -57,14 +57,14 @@
 }
 
 .project-members-panel li:hover {
-    background: #1d9bf0;
+    background: var(--accent);
     color: white;
 }
 
 .member-item {
     display: flex;
     flex-direction: column;
-    background-color: #1a1e22;
+    background-color: var(--bg-secondary);
     padding: 8px 10px;
     border-radius: 8px;
     transition: background 0.2s;
@@ -72,7 +72,7 @@
 }
 
 .member-item:hover {
-    background-color: #24292e;
+    background-color: var(--bg-hover);
 }
 
 .member-name {
@@ -81,7 +81,7 @@
 
 .status-text {
     font-size: 12px;
-    color: #aab0b6;
+    color: var(--text-secondary);
 }
 
 .status-dot {

@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/PrivateChat.css";
 
 export default function PrivateChat({ user, onClose }) {
+    const navigate = useNavigate();
     const [messages, setMessages] = useState([
         { from: "them", text: "Hope this doesnt break anythin" },
         { from: "me", text: "Test" },
@@ -25,17 +27,17 @@ export default function PrivateChat({ user, onClose }) {
     };
 
     return (
-        <div className="chat-window">
-            <div className="chat-header">
-                <span>{user.name}</span>
+        <div className="priv-chat-window">
+            <div className="priv-chat-header">
+                <span onClick={() => navigate("/profile")} style={{cursor: "pointer"}}>{user.name}</span>
                 <button onClick={onClose}>×</button>
             </div>
 
-            <div className="chat-body">
+            <div className="priv-chat-body">
                 {messages.map((msg, idx) => (
                     <div
                         key={idx}
-                        className={`chat-bubble ${msg.from === "me" ? "me" : "them"}`}
+                        className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
                     >
                         {msg.text}
                     </div>
@@ -43,7 +45,7 @@ export default function PrivateChat({ user, onClose }) {
                 <div ref={bottomRef} />
             </div>
 
-            <div className="chat-input-area">
+            <div className="priv-chat-input-area">
                 <input
                     type="text"
                     placeholder="Type a message..."

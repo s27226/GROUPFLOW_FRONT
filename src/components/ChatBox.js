@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "../styles/ChatBox.css";
 
 
@@ -19,8 +19,6 @@ const ChatBox = () => {
             self: true,
         },
     ]);
-
-
 
 
     const [input, setInput] = useState("");
@@ -49,53 +47,50 @@ const ChatBox = () => {
 
     return (
 
-        <div className="chat-all">
+        <div className="chatbox-all">
 
-            <div className="chat-container">
-
-
+            <div className="chatbox-container">
 
 
-            <h2 className="chat-title">Project 1</h2>
+                <h2 className="chatbox-title">Project 1</h2>
 
 
-
-            <div className="chat-content">
-                <div className="messages-area">
-                    {messages.map((msg) => (
-                        <div
-                            key={msg.id}
-                            className={`message-row ${msg.self ? "self" : ""}`}
-                        >
-                            {!msg.self && (
-                                <img src={msg.avatar} alt={msg.user} className="avatar" />
-                            )}
-                            <div className="message-content">
-                                {!msg.self && <div className="username">{msg.user}</div>}
-                                <div className={`message-bubble ${msg.self ? "self-bubble" : ""}`}>
-                                    {msg.text}
+                <div className="chatbox-content">
+                    <div className="chatbox-messages-area">
+                        {messages.map((msg) => (
+                            <div
+                                key={msg.id}
+                                className={`chatbox-message-row ${msg.self ? "self" : ""}`}
+                            >
+                                {!msg.self && (
+                                    <img src={msg.avatar} alt={msg.user} className="chatbox-avatar"/>
+                                )}
+                                <div className="chatbox-message-content">
+                                    {!msg.self && <div className="chatbox-username">{msg.user}</div>}
+                                    <div className={`chatbox-message-bubble ${msg.self ? "chatbox-self-bubble" : ""}`}>
+                                        {msg.text}
+                                    </div>
                                 </div>
+                                {msg.self && (
+                                    <img src={msg.avatar} alt={msg.user} className="chatbox-avatar"/>
+                                )}
                             </div>
-                            {msg.self && (
-                                <img src={msg.avatar} alt={msg.user} className="avatar" />
-                            )}
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
 
-                <div className="chat-input-area">
-                    <input
-                        type="text"
+                    <div className="chatbox-input-area">
+                        <input
+                            type="text"
 
-                        placeholder="Napisz Wiadomość"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyPress}
-                    />
-                    <button onClick={sendMessage}>Wyślij</button>
+                            placeholder="Napisz Wiadomość"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                        />
+                        <button onClick={sendMessage}>Wyślij</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
         </div>
     );

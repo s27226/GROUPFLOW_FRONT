@@ -1,14 +1,13 @@
-
 import React from "react";
 
 export default function ChatSideBar() {
 
 
     return (
-        <div className="chat-sidebar">
-            <button className="sidebar-btn">📁 Files</button>
-            <button className="sidebar-btn active">✉️ Messages</button>
-            <button className="sidebar-btn">🕒 Termins</button>
+        <div className="chatbox-sidebar">
+            <button className="chatbox-sidebar-btn">📁 Files</button>
+            <button className="chatbox-sidebar-btn active">✉️ Messages</button>
+            <button className="chatbox-sidebar-btn">🕒 Termins</button>
         </div>
     );
 

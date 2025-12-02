@@ -63,7 +63,7 @@ function Navbar() {
 
             <div className="navbar-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
                 <img src={logo} alt="Logo" className="logo-img"/>
-                <span className="logo-text">NameWIP</span>
+                <span className="logo-text">GroupFlow</span>
             </div>
 
             <div className="search-bar-container">
@@ -145,7 +145,7 @@ function Navbar() {
 
                     {msgOpen && (
                         <div className="dropdown-menu large">
-                            <h4>Messages</h4>
+                            <h4 onClick={() => navigate("/chats")} style={{cursor: "pointer"}}>Messages</h4>
                             <div className="dropdown-scroll">
 
                                 {messages.length === 0 ? (
@@ -187,7 +187,7 @@ function Navbar() {
                         <button
                             className="My Projects"
                             onClick={() => {
-                                localStorage.clear()
+                                localStorage.removeItem("searchQuery");
                                 navigate("/myprojects");
                                 setMenuOpen(false);
                             }}>
@@ -196,7 +196,7 @@ function Navbar() {
                         <button
                             className="Chat"
                             onClick={() => {
-                                localStorage.clear()
+                                localStorage.removeItem("searchQuery");
                                 navigate("/chats");
                                 setMenuOpen(false);
                             }}>
@@ -205,7 +205,7 @@ function Navbar() {
                         <button
                             className="CreateGroup"
                             onClick={() => {
-                                localStorage.clear()
+                                localStorage.removeItem("searchQuery");
                                 navigate("/creategroup");
                                 setMenuOpen(false);
                             }}>

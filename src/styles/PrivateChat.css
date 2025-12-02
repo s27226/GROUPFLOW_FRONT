@@ -1,4 +1,4 @@
-.chat-window {
+.priv-chat-window {
     position: fixed;
     bottom: 24px;
     right: 24px;
@@ -14,7 +14,7 @@
     z-index: 999;
 }
 
-.chat-header {
+.priv-chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -26,7 +26,7 @@
     gap: 8px;
 }
 
-.chat-header img {
+.priv-chat-header img {
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -34,7 +34,7 @@
     flex-shrink: 0;
 }
 
-.chat-header span {
+.priv-chat-header span {
     flex: 1;
     margin-left: 6px;
     font-weight: 600;
@@ -44,7 +44,7 @@
     text-overflow: ellipsis;
 }
 
-.chat-header button {
+.priv-chat-header button {
     background: none;
     border: none;
     font-size: 1.2rem;
@@ -53,7 +53,7 @@
     flex-shrink: 0;
 }
 
-.chat-body {
+.priv-chat-body {
     flex: 1;
     padding: 8px;
     overflow-y: auto;
@@ -62,27 +62,27 @@
     gap: 6px;
 }
 
-.chat-bubble {
+.priv-chat-bubble {
     padding: 6px 10px;
     border-radius: 12px;
     max-width: 80%;
     word-wrap: break-word;
 }
 
-.chat-bubble.me {
+.priv-chat-bubble.me {
     align-self: flex-end;
     background-color: var(--accent);
     color: #fff;
 }
 
-.chat-bubble.them {
+.priv-chat-bubble.them {
     align-self: flex-start;
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
 }
 
-.chat-input-area {
+.priv-chat-input-area {
     display: flex;
     padding: 6px 8px;
     border-top: 1px solid var(--border-color);
@@ -90,7 +90,7 @@
     background-color: var(--bg-accent);
 }
 
-.chat-input-area input {
+.priv-chat-input-area input {
     flex: 1;
     padding: 6px 8px;
     border-radius: 8px;
@@ -100,12 +100,12 @@
     outline: none;
 }
 
-[data-theme="dark"] .chat-input-area input {
+[data-theme="dark"] .priv-chat-input-area input {
     background-color: var(--bg-accent);
     color: var(--text-primary);
 }
 
-.chat-input-area button {
+.priv-chat-input-area button {
     background-color: var(--accent);
     color: #fff;
     border: none;

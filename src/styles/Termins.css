@@ -2,11 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #e7e9ea;
-    background-color: #0f1419;
+    color: var(--text-primary);
+    background-color: var(--bg-main);
     min-height:calc(100vh - 500px) ;
-
-    font-family: "Poppins", sans-serif;
+    font-family: var(--font-family), serif;
 
 }
 
@@ -14,35 +13,40 @@
     font-size: 24px;
     margin-bottom: 20px;
     font-weight: 600;
-    color: #e7e9ea;
+    color: var(--text-primary);
 }
 
 .calendar-section {
-    background-color: #1a1e22;
+    background-color: var(--bg-secondary);
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-soft);
 }
 
 .react-calendar {
     width: 320px;
     background-color: transparent;
     border: none;
-    color: #e7e9ea;
+    color: var(--text-primary);
 }
 
 .react-calendar__tile {
-    background-color: #1a1e22;
-    color: #e7e9ea;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
 }
 
+.react-calendar__tile:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
 .react-calendar__navigation__label{
-    color: #e7e9ea;
+    color: var(--text-primary);
 }
 .react-calendar__navigation__arrow {
-    color: #e7e9ea;
+    color: var(--text-primary);
 }
 
 .react-calendar__tile--now {
@@ -56,11 +60,11 @@
 }
 
 .event-panel {
-    background-color: #1a1e22;
+    background-color: var(--bg-secondary);
     border-radius: 12px;
     padding: 20px;
     width: 360px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-soft);
 }
 
 .highlight {
@@ -73,14 +77,14 @@
 }
 
 .event-item {
-    background-color: #0f1419;
+    background-color: var(--bg-main);
     padding: 8px 12px;
     border-radius: 8px;
     margin-bottom: 8px;
 }
 
 .no-events {
-    color: #aab0b6;
+    color: var(--text-secondary);
     font-style: italic;
 }
 
@@ -91,16 +95,16 @@
 }
 
 .add-event input {
-    background-color: #0f1419;
-    color: #e7e9ea;
-    border: 1px solid #2f3336;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 8px;
     outline: none;
 }
 
 .add-event button {
-    background-color: #2563eb;
+    background-color: var(--accent);
     border: none;
     color: white;
     padding: 8px;
@@ -111,5 +115,5 @@
 }
 
 .add-event button:hover {
-    background-color: #1d4ed8;
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
 }

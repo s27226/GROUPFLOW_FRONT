@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "../styles/CreateGroup.css";
 
 export default function CreateGroup() {
@@ -11,10 +11,10 @@ export default function CreateGroup() {
 
     // Przykładowi użytkownicy (normalnie pobierzesz z backendu)
     const users = [
-        { id: 1, name: "Oleh", email: "oleh@example.com" },
-        { id: 2, name: "Julia", email: "julia@example.com" },
-        { id: 3, name: "Jan", email: "jan@example.com" },
-        { id: 4, name: "Tomek", email: "tomek@example.com" },
+        {id: 1, name: "Oleh", email: "oleh@example.com"},
+        {id: 2, name: "Julia", email: "julia@example.com"},
+        {id: 3, name: "Jan", email: "jan@example.com"},
+        {id: 4, name: "Tomek", email: "tomek@example.com"},
     ];
 
     const toggleUser = (user) => {
@@ -24,7 +24,6 @@ export default function CreateGroup() {
             setSelectedUsers([...selectedUsers, user]);
         }
     };
-
 
 
     const handleSubmit = (e) => {
@@ -43,7 +42,8 @@ export default function CreateGroup() {
 
         alert(`Grupa "${groupName}" została utworzona!`);
         setGroupName("");
-        setSelectedUsers("");
+        setGroupDescription("");
+        setSelectedUsers([]);
         setMembers([]);
     };
 

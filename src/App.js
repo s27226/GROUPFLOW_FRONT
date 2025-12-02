@@ -19,6 +19,9 @@ import UsersPage from "./pages/UsersPage";
 import FriendPage from "./pages/FriendPage";
 import InvitationsPage from "./pages/InvitationsPage";
 import {InvitationContext} from "./context/InvitationContext";
+import NewPostPage from "./pages/NewPostPage"
+import SavedPage from "./pages/SavedPage"
+import {useState} from "react";
 
 function ProtectedRoute({children}) {
     const {user} = useAuth();
@@ -26,6 +29,10 @@ function ProtectedRoute({children}) {
 }
 
 export default function App() {
+    const [invitationsCount, setInvitationsCount] = useState(
+        Number(localStorage.getItem("InvitationsCount")) || 0
+    );
+
     return (
         <InvitationContext.Provider value={{invitationsCount, setInvitationsCount}}>
             <AuthProvider>
@@ -39,6 +46,7 @@ export default function App() {
                         <Route path="/profile/edit" element={<ProfileEditPage/>}/>
                         <Route path="/project" element={<ProjectProfilePage/>}/>
                         <Route path="/project/edit" element={<ProjectEditFrontPage/>}/>
+                        <Route path="/project/new-post" element={<NewPostPage/>}/>
                         <Route path="/chat/:username" element={<PrivateChat/>}/>
                         <Route path="/projects" element={<ProjectsPage/>}/>
                         <Route path="/project/chat" element={<ProjectChatPage/>}/>
@@ -48,6 +56,7 @@ export default function App() {
                         <Route path="/findfriends" element={<UsersPage/>}/>
                         <Route path="/friendslist" element={<FriendPage/>}/>
                         <Route path="/invitations" element={<InvitationsPage/>}/>
+                        <Route path="/Saved" element={<SavedPage/>}/>
                         <Route
                             path="/"
                             element={

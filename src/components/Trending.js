@@ -1,8 +1,8 @@
 import React from "react";
 import "../styles/Trending.css";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 /*/${project.name.toLowerCase().replace(/\s+/g, "-")} this is for the project link, atm we just have the base page*/
-export default function Trending({ projects }) {
+export default function Trending({projects}) {
     const navigate = useNavigate();
 
     return (
@@ -15,7 +15,7 @@ export default function Trending({ projects }) {
                         className="trending-card"
                         onClick={() => navigate(`/project`)}
                     >
-                        <img src={project.image} alt={project.name} className="trending-img" />
+                        <img src={project.image} alt={project.name} className="trending-img"/>
                         <div className="trending-info">
                             <h4 className="trending-name">{project.name}</h4>
                             <p className="trending-desc">{project.description}</p>

@@ -1,12 +1,8 @@
 import React from "react";
 import "../styles/Groups.css";
-
-
-
 import Group from "./Group";
 
-
-export default function Groups({ projects }) {
+export default function Groups({projects }) {
     let baseGroups = [
         {
             id:1,
