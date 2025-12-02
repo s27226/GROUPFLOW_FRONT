@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     FaProjectDiagram,
     FaUserFriends,
@@ -10,13 +10,16 @@ import {
     FaChevronUp
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
+import {useNavigate,Link} from "react-router-dom";
+import {InvitationContext} from "../context/InvitationContext";
+import {FcInvite} from "react-icons/fc";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
-
+    const navigate = useNavigate();
     const [projectsOpen, setProjectsOpen] = useState(false);
     const [friendsOpen, setFriendsOpen] = useState(false);
-
+    const { invitationsCount } = useContext(InvitationContext);
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -51,9 +54,32 @@ export default function Sidebar() {
                     </li>
                     {friendsOpen && isOpen && (
                         <ul className="sublist">
-                            <li>test1</li>
-                            <li>test2</li>
-                            <li>test3</li>
+                            <li>
+
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        localStorage.clear()
+                                        navigate("/findfriends");
+
+                                    }}>
+                                    Find Friends
+                                </button>
+                            </li>
+                            <li>
+
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        localStorage.clear()
+                                        navigate("/friendslist");
+
+                                    }}>
+                                    Friend List
+                                </button>
+
+                            </li>
+
                         </ul>
                     )}
 
@@ -66,8 +92,17 @@ export default function Sidebar() {
                         {isOpen && <span>Saved</span>}
                     </li>
                     <li>
-                        <FaCompass className="icon"/>
-                        {isOpen && <span>Discovery</span>}
+
+                        <FcInvite className="icon" />
+                        {isOpen && (
+                            <Link to="/invitations" className="menu-item">
+                                Invitations
+                                {invitationsCount > 0  && (
+                                    <span className="notification-dot">
+
+                                    </span>
+                                )}
+                            </Link>)}
                     </li>
                 </ul>
             </div>

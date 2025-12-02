@@ -4,7 +4,7 @@ import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
 import logo from "../images/logo.png";
 import {useAuth} from "../context/AuthContext";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
 import NotificationItem from "./NotificationItem";
 import MessagePreview from "./MessagePreview";
@@ -19,7 +19,7 @@ function Navbar() {
     const [msgOpen, setMsgOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeChat, setActiveChat] = useState(null);
-
+    const location = useLocation();
     const menuRef = useRef();
 
     const notifications = [
@@ -67,7 +67,24 @@ function Navbar() {
             </div>
 
             <div className="search-bar-container">
-                <form onSubmit={(e) => e.preventDefault()}>
+                <form
+                    onSubmit={(e) => {
+
+                        console.log("Search submitted:", searchQuery);
+                        localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
+                        // TODO: add real search logic
+
+                        if ((location.pathname === "/") || (location.pathname === "/projects?")) {
+
+                            navigate("/projects");
+                        } else if (location.pathname === "/myprojects") {
+
+                            navigate("/myprojects");
+                        }
+
+
+                    }}
+                >
                     <div className="search-bar">
                         <FaSearch className="search-icon"/>
                         <input
@@ -167,6 +184,33 @@ function Navbar() {
                         <button onClick={() => navigate("/profile")}>Profile</button>
                         <button onClick={() => navigate("/settings")}>Settings</button>
                         <button>Help</button>
+                        <button
+                            className="My Projects"
+                            onClick={() => {
+                                localStorage.clear()
+                                navigate("/myprojects");
+                                setMenuOpen(false);
+                            }}>
+                            My Projects
+                        </button>
+                        <button
+                            className="Chat"
+                            onClick={() => {
+                                localStorage.clear()
+                                navigate("/chats");
+                                setMenuOpen(false);
+                            }}>
+                            Chats
+                        </button>
+                        <button
+                            className="CreateGroup"
+                            onClick={() => {
+                                localStorage.clear()
+                                navigate("/creategroup");
+                                setMenuOpen(false);
+                            }}>
+                            Create new Group
+                        </button>
                         <hr/>
                         <button
                             className="logout"
@@ -181,7 +225,7 @@ function Navbar() {
                     </div>
                 )}
                 {activeChat && (
-                    <PrivateChat user={activeChat} onClose={() => setActiveChat(null)} />
+                    <PrivateChat user={activeChat} onClose={() => setActiveChat(null)}/>
                 )}
             </div>
         </nav>

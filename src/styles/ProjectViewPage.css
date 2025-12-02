@@ -1,0 +1,201 @@
+
+.feed-projects-wrapper {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    box-sizing: border-box;
+    width: 200%;
+    max-width: 1200px;
+    margin-top: -400px;
+
+}
+
+.feed-wrapper {
+    flex: 1;
+    max-width: 800px;
+    width: 120%;
+}
+
+
+/* Główne tło i layout */
+.main-layout {
+    background-color: #000;
+    color: #e7e9ea;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 80px;
+    font-family: 'Poppins', sans-serif;
+}
+
+/*.feed-projects-wrapper {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    flex: 1;*/
+/*    padding: 20px;*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*.feed-wrapper {*/
+/*    background-color: #0f1419;*/
+/*    border: 1px solid #2f3336;*/
+/*    border-radius: 12px;*/
+/*    padding: 20px;*/
+/*    width: 700px;*/
+/*    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);*/
+/*}*/
+
+/* Nagłówek + przyciski */
+.back-btn {
+    background: none;
+    border: none;
+    color: #1d9bf0;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+
+/* Zakładki */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background-color: #161b22;
+    border: 1px solid #2f3336;
+    color: #e7e9ea;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background-color: #2f3336;
+}
+
+.tab-btn.active {
+    background-color: #1d9bf0;
+    border-color: #1d9bf0;
+    color: #fff;
+}
+
+/* Zawartość */
+.tab-content {
+    background-color: #161b22;
+    border: 1px solid #2f3336;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2f3336 #0f1419;
+}
+
+/* Scrollbar (dla Chrome) */
+.tab-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: #0f1419;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background-color: #2f3336;
+    border-radius: 4px;
+}
+
+/* Pliki */
+.files-view h2 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.files-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f1419;
+    padding: 10px 12px;
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.file-item:hover {
+    background: #2f3336;
+}
+
+/* Terminarz */
+.termins-view h2 {
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.termins-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.termins-list li {
+    background: #0f1419;
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.termins-add {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.termins-add input {
+    background: #161b22;
+    border: 1px solid #2f3336;
+    color: #e7e9ea;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.termins-add button {
+    background: #1d9bf0;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.termins-add button:hover {
+    background: #1a8cd8;
+}

@@ -1,0 +1,33 @@
+.users-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 100%;
+}
+.user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #1a1a1a;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 350px;   /* dopasuj do potrzeb */
+}
+
+.add-btn {
+    background: #ffffff15;
+    border: 1px solid #fff2;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.add-btn:hover {
+    background: #ffffff30;
+}

@@ -46,6 +46,66 @@ export default function ProfilePage() {
             author: "John",
             time: "1d ago",
             content: "Man",
+            comments: [
+                {
+                    user: "Alice",
+                    time: "5h ago",
+                    text: "Lmao fr",
+                    likes: 2,
+                    liked: false,
+                    menuOpen: false,
+                    replies: [
+                        {
+                            user: "Bob",
+                            time: "4h ago",
+                            text: "Nah cause he's right",
+                            likes: 1,
+                            liked: false,
+                            menuOpen: false,
+                            replies: [
+                                {
+                                    user: "Charlie",
+                                    time: "3h ago",
+                                    text: "Fax machine noises",
+                                    likes: 0,
+                                    liked: false,
+                                    menuOpen: false,
+                                    replies: [
+                                        {
+                                            user: "Dave",
+                                            time: "2h ago",
+                                            text: "This thread goes hard",
+                                            likes: 0,
+                                            liked: false,
+                                            menuOpen: false,
+                                            replies: [
+                                                {
+                                                    user: "Eve",
+                                                    time: "1h ago",
+                                                    text: "Reply at depth 5 (should stop indenting further!)",
+                                                    likes: 0,
+                                                    liked: false,
+                                                    menuOpen: false,
+                                                    replies: []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    user: "Frank",
+                    time: "12h ago",
+                    text: "I feel this in my bones",
+                    likes: 3,
+                    liked: false,
+                    menuOpen: false,
+                    replies: []
+                }
+            ]
         },
         {
             author: "John",
@@ -119,6 +179,7 @@ export default function ProfilePage() {
                                             time={post.time}
                                             content={post.content}
                                             image={post.image}
+                                            comments={post.comments || []}   // ← IMPORTANT
                                         />
                                     ))}
                                 </div>

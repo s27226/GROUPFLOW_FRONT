@@ -2,8 +2,10 @@ import React, {useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "../styles/SettingsPage.css";
+import {useNavigate} from "react-router-dom";
 
 export default function SettingsPage() {
+    const navigate = useNavigate();
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
     const [fontSize, setFontSize] = useState(localStorage.getItem("fontSize") || "medium");
     const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
@@ -22,7 +24,6 @@ export default function SettingsPage() {
     };
 
     const handleLanguageChange = (lang) => {
-        //setLanguage(lang); PLACEHOLDER until we get a translation going
         localStorage.setItem("language", lang);
     };
 
@@ -113,6 +114,19 @@ export default function SettingsPage() {
                                     Large
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                    <div className="option-section">
+                        <div className="option-row">
+                            <div className="option-label">
+                                <span>Reset Password</span>
+                                <p className="option-description">
+                                    Change your account password
+                                </p>
+                            </div>
+                            <button onClick={() => navigate("/settings/reset-pass")}>
+                                Reset
+                            </button>
                         </div>
                     </div>
                 </div>

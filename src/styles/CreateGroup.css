@@ -1,0 +1,259 @@
+.create-group-page {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    background-color: #0f1419;
+    color: #e7e9ea;
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    margin: 40px auto;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    font-family: "Poppins", sans-serif;
+    margin-top: -400px !important;
+}
+
+.left-section {
+    flex: 1;
+    background-color: #1a1e22;
+    padding: 24px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.left-section h2 {
+    color: #1d9bf0;
+}
+
+.create-group-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.create-group-form input,
+.create-group-form textarea {
+    background-color: #1c1f23;
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    color: #e7e9ea;
+    padding: 10px 12px;
+    outline: none;
+    resize: none;
+}
+
+.create-group-form input:focus,
+.create-group-form textarea:focus {
+    border-color: #1d9bf0;
+}
+
+.submit-btn {
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    align-self: flex-start;
+}
+
+.submit-btn:hover {
+    background-color: #1a8cd8;
+}
+
+.right-section {
+    flex: 1.5;
+    background-color: #1a1e22;
+    padding: 24px;
+    border-radius: 12px;
+    overflow-y: auto;
+    max-height: 600px;
+
+}
+
+.participants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.participants-header .count {
+    font-size: 14px;
+    color: #999;
+}
+
+.participants-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1c1f23;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.participants-table th,
+.participants-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #2f3336;
+}
+
+.participants-table th {
+    background-color: #2f3336;
+    color: #ccc;
+    font-weight: 500;
+}
+
+.participants-table tr:hover {
+    background-color: #24292e;
+}
+
+.participants-table tr.selected {
+    background-color: rgba(0,0,0,0.21) !important;
+    color: white;
+}
+
+.toggle-btn {
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2f3336;
+    color: #e7e9ea;
+    transition: background 0.2s;
+}
+
+.toggle-btn.add:hover {
+    background-color: #1d9bf0;
+    color: white;
+}
+
+.toggle-btn.remove {
+    background-color: #f04a4a;
+}
+
+.toggle-btn.remove:hover {
+    background-color: #d93d3d;
+}
+
+
+
+
+.create-group-layout {
+    background-color: #0f1419;
+    min-height:calc(100vh - 400px) ;
+    color: #e7e9ea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    margin-top: -400px;
+}
+
+.create-group-container {
+    background-color: #161b22;
+    border: 1px solid #2f3336;
+    border-radius: 12px;
+    padding: 32px;
+    width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.create-group-container h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #fff;
+}
+
+.create-group-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.create-group-form label {
+    font-size: 14px;
+    color: #b0b3b8;
+}
+
+.create-group-form input,
+.create-group-form textarea {
+    background-color: #0f1419;
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    padding: 10px;
+    color: #e7e9ea;
+    font-size: 14px;
+}
+
+.create-group-form input:focus,
+.create-group-form textarea:focus {
+    outline: none;
+    border-color: #1d9bf0;
+}
+
+textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+.member-input {
+    display: flex;
+    gap: 8px;
+}
+
+.member-input button {
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s ease;
+}
+
+.member-input button:hover {
+    background-color: #147cd1;
+}
+
+.members-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.members-list li {
+    background-color: #0f1419;
+    border: 1px solid #2f3336;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    color: #e7e9ea;
+    font-size: 14px;
+}
+
+.submit-btn {
+    background-color: #1d9bf0;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.submit-btn:hover {
+    background-color: #147cd1;
+}

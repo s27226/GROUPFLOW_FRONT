@@ -11,7 +11,7 @@
 .main-content {
     display: flex;
     width: 100%;
-    margin-top: 600px;
+    margin-top: 840px;
     /*still havent figured wtf to do with the margin when it has a hard time telling images apart*/
     box-sizing: border-box;
 }
