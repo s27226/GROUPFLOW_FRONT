@@ -54,6 +54,24 @@ export default function Feed() {
     if (loading) return <p>Loading posts...</p>;
     if (error) return <p>{error}</p>;
 
+    const handleHidePost = (postId) => {
+        setPosts(posts.map(post => 
+            post.id === postId ? { ...post, hidden: true } : post
+        ));
+    };
+
+    const handleUndoHide = (postId) => {
+        setPosts(posts.map(post => 
+            post.id === postId ? { ...post, hidden: false } : post
+        ));
+    };
+
+    const handleSavePost = (postId) => {
+        setPosts(posts.map(post => 
+            post.id === postId ? { ...post, saved: !post.saved } : post
+        ));
+    };
+
     return (
         <div className="feed-container">
             {posts?.length === 0 ? (
@@ -67,6 +85,9 @@ export default function Feed() {
                         content={post.content}
                         title={post.title}
                         image={post.imageUrl || null}
+                        onHide={handleHidePost}
+                        onUndoHide={handleUndoHide}
+                        onSave={handleSavePost}
                     />
                 ))
             )}

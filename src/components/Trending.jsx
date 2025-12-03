@@ -25,7 +25,7 @@ export default function Trending({ projects, loading = false }) {
             <h3>Trending Projects</h3>
             <ul>
                 {projects.map((project) => (
-                    <li key={project.id} className="trending-card">
+                    <li key={project.id} className="trending-card" onClick={() => navigate(`/project`)}>
                         <img 
                             src={project.image} 
                             alt={project.name} 

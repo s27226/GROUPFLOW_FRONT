@@ -54,12 +54,12 @@ export default function MainPage() {
     }, []);
 
     return (
-        <div className="main-layout">
+        <div className="mainpage-layout">
             <Navbar />
-            <div className="main-content">
+            <div className="mainpage-content">
                 <Sidebar />
-                <div className="feed-trending-wrapper">
-                    <div className="feed-wrapper">
+                <div className="mainpage-feed-trending-wrapper">
+                    <div className="mainpage-feed-wrapper">
                         <Feed />
                     </div>
                     <Trending 
