@@ -6,15 +6,56 @@ import logo from "../images/logo.png";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import axios from "axios";
+import { API_CONFIG, getAuthHeaders } from "../config/api";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
 
 function Navbar() {
-    const { logout } = useAuth();
+    const { logout, user, updateUser } = useAuth();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [msgOpen, setMsgOpen] = useState(false);
     const menuRef = useRef();
     const [searchQuery, setSearchQuery] = useState("");
+    const [loadingUser, setLoadingUser] = useState(false);
+
+    // Fetch current user data on mount
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            if (user) return; // Already loaded
+            
+            setLoadingUser(true);
+            try {
+                const res = await axios.post(
+                    API_CONFIG.GRAPHQL_ENDPOINT,
+                    {
+                        query: GRAPHQL_QUERIES.GET_CURRENT_USER,
+                        variables: {},
+                    },
+                    {
+                        headers: getAuthHeaders(),
+                    }
+                );
+
+                if (res.data.errors) {
+                    console.error("Failed to fetch user:", res.data.errors[0].message);
+                    return;
+                }
+
+                const userData = res.data.data.users.me;
+                if (userData) {
+                    updateUser(userData);
+                }
+            } catch (err) {
+                console.error("Failed to fetch current user:", err);
+            } finally {
+                setLoadingUser(false);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [user, updateUser]);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -95,19 +136,37 @@ function Navbar() {
                     )}
                 </div>
 
-                <img
-                    src={defaultPfp}
-                    alt="User"
-                    className="user-pfp"
+                <div 
+                    className="user-info-wrapper"
                     onClick={() => {
                         setMenuOpen(!menuOpen);
                         setNotifOpen(false);
                         setMsgOpen(false);
                     }}
-                />
+                >
+                    <img
+                        src={defaultPfp}
+                        alt="User"
+                        className="user-pfp"
+                    />
+                    {user && !loadingUser && (
+                        <span className="user-nickname">
+                            {user.nickname}
+                        </span>
+                    )}
+                </div>
 
                 {menuOpen && (
                     <div className="dropdown-menu">
+                        {user && (
+                            <>
+                                <div className="dropdown-user-info">
+                                    <strong>{user.name} {user.surname}</strong>
+                                    <small>{user.email}</small>
+                                </div>
+                                <hr/>
+                            </>
+                        )}
                         <button>Profile</button>
                         <button>Settings</button>
                         <button>Help</button>

@@ -3,10 +3,29 @@ import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function ProtectedRoute({ children }) {
-    const { user } = useAuth();
-    return user ? children : <Navigate to="/login" />;
+    const { token } = useAuth();
+
+    // No token, redirect
+    if (!token) return <Navigate to="/login" replace />;
+
+    try {
+        const decoded = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+
+        // Token expired?
+        if (decoded.exp && decoded.exp < currentTime) {
+            console.warn("Token expired");
+            return <Navigate to="/login" replace />;
+        }
+    } catch (err) {
+        console.error("Invalid token:", err);
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 }
 
 export default function App() {
@@ -19,9 +38,9 @@ export default function App() {
                     <Route
                         path="/"
                         element={
-                            //<ProtectedRoute>
+                            <ProtectedRoute>
                                 <MainPage />
-                            //</ProtectedRoute>
+                            </ProtectedRoute>
                         }
                     />
                 </Routes>

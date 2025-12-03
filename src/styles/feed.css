@@ -1,3 +1,11 @@
+body,
+html,
+#root {
+    margin: 0;
+    padding: 0;
+    height: auto;
+}
+
 .feed-container {
     display: flex;
     flex-direction: column;
@@ -7,7 +15,8 @@
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
-    overflow-x: hidden;
+    overflow: visible;
+    max-height: none;
 }
 
 .post-image {
@@ -52,17 +61,19 @@
 
 .post-content {
     margin-top: 12px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
 .post-actions {
     display: flex;
     justify-content: space-around;
     margin-top: 12px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
-.like-btn, .comment-btn, .share-btn {
+.like-btn,
+.comment-btn,
+.share-btn {
     background: none;
     border: none;
     color: #1d9bf0;
@@ -71,6 +82,8 @@
     transition: transform 0.2s ease;
 }
 
-.like-btn:hover, .comment-btn:hover, .share-btn:hover {
+.like-btn:hover,
+.comment-btn:hover,
+.share-btn:hover {
     transform: scale(1.1);
 }
