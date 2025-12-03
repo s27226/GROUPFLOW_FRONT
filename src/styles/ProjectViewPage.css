@@ -1,0 +1,150 @@
+
+.feed-projects-wrapper {
+    position: fixed;
+    left: var(--sidebar-width);
+    top: var(--navbar-height);
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.main-feed-wrapper {
+    flex: 1;
+    max-width: 800px;
+    min-width: 0;
+}
+
+
+/* Główne tło i layout */
+.view-page-main-layout {
+    background-color: #000;
+    color: #e7e9ea;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-page-main-content {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    font-family: var(--font-family), serif;
+}
+
+/*.feed-projects-wrapper {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    flex: 1;*/
+/*    padding: 20px;*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+/*.feed-wrapper {*/
+/*    background-color: #0f1419;*/
+/*    border: 1px solid #2f3336;*/
+/*    border-radius: 12px;*/
+/*    padding: 20px;*/
+/*    width: 700px;*/
+/*    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);*/
+/*}*/
+
+/* Nagłówek + przyciski */
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+
+/* Zakładki */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background-color: var(--border-color);
+}
+
+.tab-btn.active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* Zawartość */
+.tab-content {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-main);
+}
+
+/* Scrollbar (dla Chrome) */
+.tab-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+/* Pliki */
+.files-view h2 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.files-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-main);
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.file-item:hover {
+    background: var(--border-color);
+}

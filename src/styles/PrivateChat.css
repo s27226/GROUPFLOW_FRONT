@@ -1,0 +1,115 @@
+.priv-chat-window {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 280px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    z-index: 999;
+}
+
+.priv-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    font-weight: 600;
+    background-color: var(--bg-accent);
+    border-bottom: 1px solid var(--border-color);
+    min-height: 48px;
+    gap: 8px;
+}
+
+.priv-chat-header img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.priv-chat-header span {
+    flex: 1;
+    margin-left: 6px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.priv-chat-header button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.priv-chat-body {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.priv-chat-bubble {
+    padding: 6px 10px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.priv-chat-bubble.me {
+    align-self: flex-end;
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.priv-chat-bubble.them {
+    align-self: flex-start;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.priv-chat-input-area {
+    display: flex;
+    padding: 6px 8px;
+    border-top: 1px solid var(--border-color);
+    gap: 6px;
+    background-color: var(--bg-accent);
+}
+
+.priv-chat-input-area input {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    outline: none;
+}
+
+[data-theme="dark"] .priv-chat-input-area input {
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+}
+
+.priv-chat-input-area button {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+}

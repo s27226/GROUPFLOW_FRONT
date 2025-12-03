@@ -1,0 +1,147 @@
+
+.chatbox-tab-content{
+    width: 100%;
+    margin-right: 335px;
+}
+
+.chatbox-all{
+    max-width: 800px;
+    width: 800px;
+}
+
+
+.chatbox-container {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 16px;
+    width: 720px;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-soft);
+    font-family: var(--font-family), serif;
+}
+
+.chatbox-title {
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    font-weight: 600;
+}
+
+.chatbox-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 40px;
+    min-width: 120px;
+}
+
+.chatbox-sidebar-btn {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.chatbox-sidebar-btn.active {
+    background: #e7e9ea;
+    font-weight: 500;
+}
+
+.chatbox-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.chatbox-messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+
+}
+
+.chatbox-message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.chatbox-message-row.self {
+    justify-content: flex-end;
+}
+
+.chatbox-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.chatbox-message-content {
+    max-width: 70%;
+}
+
+.chatbox-username {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+    margin-left: 4px;
+}
+
+.chatbox-message-bubble {
+    background-color: var(--bg-accent);
+    border-radius: 18px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.chatbox-self-bubble {
+    background-color: var(--accent);
+    color: white;
+}
+
+
+.chatbox-input-area {
+    display: flex;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    gap: 8px;
+}
+
+.chatbox-input-area input {
+    flex: 1;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 12px;
+    outline: none;
+}
+
+.chatbox-input-area button {
+    background-color: var(--accent);
+    border: none;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chatbox-input-area button:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+}
