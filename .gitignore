@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 .vscode
 .env
-copilot-instructions.md
+.github/copilot/
+package-lock.json

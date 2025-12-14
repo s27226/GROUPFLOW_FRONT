@@ -6,7 +6,7 @@ import { server } from './mocks/server';
 // Start MSW server before all tests
 beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
 
-// Reset handlers after each test  
+// Reset handlers after each test
 afterEach(() => {
   server.resetHandlers();
   cleanup();
@@ -35,7 +35,7 @@ const localStorageMock = {
 
 global.localStorage = localStorageMock;
 
-// Suppress console errors in tests (optional)
+// Suppress console errors in tests
 global.console = {
   ...console,
   error: vi.fn(),

@@ -1,26 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { useGraphQL } from "../hooks/useGraphQL";
 
 export default function ProfileEditPage() {
-    const user = {
-        name: "John",
-        handle: "@John",
-        bio: "Professional homeless man",
-        banner: "https://picsum.photos/900/200?random=10",
-        pfp: "https://api.dicebear.com/9.x/identicon/svg?seed=ShrimpDev",
-        abt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    };
-
-    const [name, setName] = useState(user.name);
-    const [bio, setBio] = useState(user.bio);
-    const [banner, setBanner] = useState(user.banner);
-    const [pfp, setPfp] = useState(user.pfp);
-    const [abt, setAbt] = useState(user.abt);
-
     const navigate = useNavigate();
+    const { user: authUser } = useAuth();
+    const { executeQuery } = useGraphQL();
+    
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [name, setName] = useState("");
+    const [bio, setBio] = useState("");
+    const [banner, setBanner] = useState("");
+    const [pfp, setPfp] = useState("");
+    const [abt, setAbt] = useState("");
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const data = await executeQuery(
+                    GRAPHQL_QUERIES.GET_CURRENT_USER,
+                    {}
+                );
+
+                if (!data) {
+                    console.error("Failed to fetch user");
+                    setLoading(false);
+                    return;
+                }
+
+                const userData = data.users.me;
+                setUser(userData);
+                setName(userData.name || "");
+                setBio(userData.bio || "");
+                setBanner(userData.banner || "https://picsum.photos/900/200?random=10");
+                setPfp(userData.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userData.nickname}`);
+                setAbt(userData.about || "");
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching user:", err);
+                setLoading(false);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [executeQuery]);
 
     const handleFileUpload = (e, type) => {
         const file = e.target.files[0];
@@ -33,6 +63,24 @@ export default function ProfileEditPage() {
         };
         reader.readAsDataURL(file);
     };
+
+    const handleSave = () => {
+        if (user && user.id) {
+            navigate(`/profile/${user.id}`);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="edit-layout">
+                <Navbar />
+                <div className="edit-content">
+                    <Sidebar />
+                    <LoadingSpinner />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="edit-layout">
@@ -90,7 +138,7 @@ export default function ProfileEditPage() {
                         <textarea value={abt} onChange={(e) => setAbt(e.target.value)} />
                     </div>
 
-                    <button className="edit-btn" onClick={() => navigate("/profile")}>
+                    <button className="edit-btn" onClick={handleSave}>
                         Save Changes
                     </button>
                 </div>

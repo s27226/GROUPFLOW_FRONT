@@ -13,7 +13,6 @@
     width: 100%;
     padding-top: 80px;
     font-family: "Poppins", sans-serif;
-    /*from merge*/
     box-sizing: border-box;
 }
 
@@ -30,7 +29,6 @@
 .mainpage-feed-wrapper {
     flex: 1;
     max-width: 600px;
-    /*from merge*/
     width: 100%;
     box-sizing: border-box;
 }

@@ -38,14 +38,14 @@
     box-sizing: border-box;
     align-items: flex-start;
     justify-content: center;
-    max-width: 1200px;
-    width: 100%;
+    width: 840px;
+    max-width: 840px;
 }
 
 .maincomp-feed-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
+    width: 800px;
     max-width: 800px;
-    width: 100%;
 }

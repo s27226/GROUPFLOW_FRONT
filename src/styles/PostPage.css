@@ -2,9 +2,8 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    max-width: 900px;
-    width: 100%;
-    margin-top: 520px;
+    width: 556px;
+    margin-top: 0;
 }
 
 .postpage-back-btn {

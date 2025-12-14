@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {Bell, MessageCircle} from "lucide-react";
 import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
@@ -6,15 +6,15 @@ import logo from "../images/logo.png";
 import {useAuth} from "../context/AuthContext";
 import {useLocation, useNavigate} from "react-router-dom";
 import {FaSearch} from "react-icons/fa";
-import axios from "axios";
-import { API_CONFIG, getAuthHeaders } from "../config/api";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import NotificationItem from "./NotificationItem";
 import MessagePreview from "./MessagePreview";
-import PrivateChat from "./PrivateChat"
+import PrivateChat from "./PrivateChat";
+import { useClickOutside } from "../hooks/useClickOutside";
+import { useGraphQL } from "../hooks/useGraphQL";
 
 function Navbar() {
-    const { logout, user, updateUser } = useAuth();
+    const { logout, user, updateUser, token } = useAuth();
 
     const navigate = useNavigate();
 
@@ -23,31 +23,20 @@ function Navbar() {
     const [msgOpen, setMsgOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [loadingUser, setLoadingUser] = useState(false);
+    const [friends, setFriends] = useState([]);
+    const [loadingFriends, setLoadingFriends] = useState(false);
+    const { executeQuery } = useGraphQL();
 
     // Fetch current user data on mount
     useEffect(() => {
         const fetchCurrentUser = async () => {
-            if (user) return; // Already loaded
+            if (user || !token) return; // Already loaded or not authenticated
             
             setLoadingUser(true);
             try {
-                const res = await axios.post(
-                    API_CONFIG.GRAPHQL_ENDPOINT,
-                    {
-                        query: GRAPHQL_QUERIES.GET_CURRENT_USER,
-                        variables: {},
-                    },
-                    {
-                        headers: getAuthHeaders(),
-                    }
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
 
-                if (res.data.errors) {
-                    console.error("Failed to fetch user:", res.data.errors[0].message);
-                    return;
-                }
-
-                const userData = res.data.data.users.me;
+                const userData = data.users.me;
                 if (userData) {
                     updateUser(userData);
                 }
@@ -59,10 +48,38 @@ function Navbar() {
         };
 
         fetchCurrentUser();
-    }, [user, updateUser]);
+    }, [user, updateUser, executeQuery, token]);
+    
+    // Fetch friends list
+    useEffect(() => {
+        const fetchFriends = async () => {
+            if (!token || !user) return; // Not authenticated or user not loaded
+            
+            setLoadingFriends(true);
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
+
+                const friendsList = data.friendship.myfriends || [];
+                setFriends(friendsList);
+            } catch (err) {
+                console.error("Failed to fetch friends:", err);
+            } finally {
+                setLoadingFriends(false);
+            }
+        };
+
+        fetchFriends();
+    }, [user, executeQuery, token]);
+    
     const [activeChat, setActiveChat] = useState(null);
     const location = useLocation();
-    const menuRef = useRef();
+    
+    // Close all dropdowns when clicking outside
+    const menuRef = useClickOutside(() => {
+        setMenuOpen(false);
+        setNotifOpen(false);
+        setMsgOpen(false);
+    }, menuOpen || notifOpen || msgOpen);
 
     const notifications = [
         {
@@ -74,31 +91,23 @@ function Navbar() {
         },
     ];
 
-    const messages = [
-        {
-            id: 1,
-            image: defaultPfp,
-            name: "Alice",
-            lastMessage: "Men",
-            time: "5m ago",
-            onClick: () => {
-                setActiveChat({name: "Alice", image: defaultPfp});
-                setMsgOpen(false);
-            },
+    // Convert friends to message format
+    const messages = friends.slice(0, 5).map(friend => ({
+        id: friend.id,
+        image: friend.profilePic || defaultPfp,
+        name: `${friend.name} ${friend.surname}`,
+        lastMessage: "Click to chat",
+        time: "",
+        onClick: () => {
+            setActiveChat({
+                id: friend.id,
+                name: `${friend.name} ${friend.surname}`,
+                nickname: friend.nickname,
+                image: friend.profilePic || defaultPfp
+            });
+            setMsgOpen(false);
         },
-    ];
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
-                setMenuOpen(false);
-                setNotifOpen(false);
-                setMsgOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }));
 
     return (
         <nav className="navbar">
@@ -241,27 +250,10 @@ function Navbar() {
                                 <hr/>
                             </>
                         )}
-                        <button onClick={() => navigate("/profile")}>Profile</button>
+                        <button onClick={() => navigate(`/profile/${user?.id}`)}>Profile</button>
+                        <button onClick={() => navigate("/profile-tags")}>My Skills & Interests</button>
                         <button onClick={() => navigate("/settings")}>Settings</button>
                         <button>Help</button>
-                        <button
-                            className="My Projects"
-                            onClick={() => {
-                                localStorage.removeItem("searchQuery");
-                                navigate("/myprojects");
-                                setMenuOpen(false);
-                            }}>
-                            My Projects
-                        </button>
-                        <button
-                            className="Chat"
-                            onClick={() => {
-                                localStorage.removeItem("searchQuery");
-                                navigate("/chats");
-                                setMenuOpen(false);
-                            }}>
-                            Chats
-                        </button>
                         <button
                             className="CreateGroup"
                             onClick={() => {
@@ -285,7 +277,15 @@ function Navbar() {
                     </div>
                 )}
                 {activeChat && (
-                    <PrivateChat user={activeChat} onClose={() => setActiveChat(null)}/>
+                    <PrivateChat 
+                        user={activeChat} 
+                        currentUserId={user?.id}
+                        onClose={() => setActiveChat(null)}
+                        onExpand={() => {
+                            navigate('/chats', { state: { selectedUser: activeChat } });
+                            setActiveChat(null);
+                        }}
+                    />
                 )}
             </div>
         </nav>

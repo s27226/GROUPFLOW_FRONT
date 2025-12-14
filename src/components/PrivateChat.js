@@ -1,47 +1,55 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useChat } from "../hooks/useChat";
 import "../styles/PrivateChat.css";
 
-export default function PrivateChat({ user, onClose }) {
+export default function PrivateChat({ user, currentUserId, onClose, onExpand }) {
     const navigate = useNavigate();
-    const [messages, setMessages] = useState([
-        { from: "them", text: "Hope this doesnt break anythin" },
-        { from: "me", text: "Test" },
-        { from: "them", text: "Men" },
-    ]);
-    const [input, setInput] = useState("");
-    const bottomRef = useRef();
-
-    useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
-    const sendMessage = () => {
-        if (!input.trim()) return;
-        setMessages([...messages, { from: "me", text: input }]);
-        setInput("");
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") sendMessage();
-    };
+    const { 
+        messages, 
+        input, 
+        setInput, 
+        loading, 
+        sendMessage, 
+        handleKeyPress, 
+        bottomRef 
+    } = useChat(user, currentUserId);
 
     return (
         <div className="priv-chat-window">
             <div className="priv-chat-header">
-                <span onClick={() => navigate("/profile")} style={{cursor: "pointer"}}>{user.name}</span>
-                <button onClick={onClose}>×</button>
+                <span onClick={() => navigate(`/profile/${user.id}`)} style={{cursor: "pointer"}}>
+                    {user.name}
+                </span>
+                <div className="priv-chat-header-actions">
+                    {onExpand && (
+                        <button 
+                            onClick={onExpand} 
+                            title="Open in full screen"
+                            className="priv-chat-expand-btn"
+                        >
+                            ⛶
+                        </button>
+                    )}
+                    <button onClick={onClose} title="Close">×</button>
+                </div>
             </div>
 
             <div className="priv-chat-body">
-                {messages.map((msg, idx) => (
-                    <div
-                        key={idx}
-                        className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
-                    >
-                        {msg.text}
-                    </div>
-                ))}
+                {loading ? (
+                    <p className="priv-chat-loading">Loading messages...</p>
+                ) : messages.length === 0 ? (
+                    <p className="priv-chat-no-messages">No messages yet. Start the conversation!</p>
+                ) : (
+                    messages.map((msg) => (
+                        <div
+                            key={msg.id}
+                            className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
+                        >
+                            {msg.text}
+                        </div>
+                    ))
+                )}
                 <div ref={bottomRef} />
             </div>
 
@@ -51,9 +59,12 @@ export default function PrivateChat({ user, onClose }) {
                     placeholder="Type a message..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={handleKeyPress}
+                    disabled={loading}
                 />
-                <button onClick={sendMessage}>Send</button>
+                <button onClick={sendMessage} disabled={loading || !input.trim()}>
+                    Send
+                </button>
             </div>
         </div>
     );

@@ -1,131 +1,152 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Post from "../components/Post";
+import ProfileBanner from "../components/ProfileBanner";
+import SkeletonPost from "../components/ui/SkeletonPost";
+import SkeletonCard from "../components/ui/SkeletonCard";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { useNavigate, useParams } from "react-router-dom";
+import { usePosts } from "../hooks/usePosts";
+import { useAuth } from "../context/AuthContext";
+import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
-import { useNavigate } from "react-router-dom";
-import shrimp from "../images/shrimp.png";
 
 export default function ProfilePage() {
-    const projects = [
-        {
-            name: "Shrimp Tracker",
-            description: "A small app to track your shrimp collection",
-            image: shrimp,
-        },
-        {
-            name: "Task Manager 2",
-            description: "Some more hardcoded posts for designing stuff",
-            image: "https://picsum.photos/60?random=2",
-        },
-    ];
-
-    const user = {
-        name: "John",
-        handle: "@John",
-        bio: "Professional homeless man",
-        banner: "https://picsum.photos/900/200?random=10",
-        pfp: "https://api.dicebear.com/9.x/identicon/svg?seed=ShrimpDev",
-        abt:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\n" +
-            "                                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
-        projects: projects,
-    };
-
+    const { userId } = useParams();
     const navigate = useNavigate();
+    const { user: authUser } = useAuth();
+    const { executeQuery } = useGraphQL();
+    
+    const [user, setUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    
+    const { posts: allPosts, loading: postsLoading } = usePosts();
+    
+    // Filter posts by current user
+    const posts = useMemo(() => {
+        if (!user || !allPosts) return [];
+        return allPosts.filter(post => post.user?.id === user.id);
+    }, [allPosts, user]);
 
-    const posts = [
-        {
-            id: 1,
-            author: "John",
-            time: "2h ago",
-            content: "Today is friday",
-            image: "https://picsum.photos/600/300?random=15",
-            saved: false,
-            sharedPost: null,
-            likes: 12,
-        },
-        {
-            id: 2,
-            author: "John",
-            time: "1d ago",
-            content: "Man",
-            saved: false,
-            sharedPost: null,
-            likes: 34,
-            comments: [
-                {
-                    user: "Alice",
-                    time: "5h ago",
-                    text: "Lmao fr",
-                    likes: 2,
-                    liked: false,
-                    menuOpen: false,
-                    replies: [
-                        {
-                            user: "Bob",
-                            time: "4h ago",
-                            text: "Nah cause he's right",
-                            likes: 1,
-                            liked: false,
-                            menuOpen: false,
-                            replies: [
-                                {
-                                    user: "Charlie",
-                                    time: "3h ago",
-                                    text: "Fax machine noises",
-                                    likes: 0,
-                                    liked: false,
-                                    menuOpen: false,
-                                    replies: [
-                                        {
-                                            user: "Dave",
-                                            time: "2h ago",
-                                            text: "This thread goes hard",
-                                            likes: 0,
-                                            liked: false,
-                                            menuOpen: false,
-                                            replies: [
-                                                {
-                                                    user: "Eve",
-                                                    time: "1h ago",
-                                                    text: "Reply at depth 5 (should stop indenting further!)",
-                                                    likes: 0,
-                                                    liked: false,
-                                                    menuOpen: false,
-                                                    replies: []
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    user: "Frank",
-                    time: "12h ago",
-                    text: "I feel this in my bones",
-                    likes: 3,
-                    liked: false,
-                    menuOpen: false,
-                    replies: []
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                // Always fetch current user for comparison
+                const currentUserData = await executeQuery(
+                    GRAPHQL_QUERIES.GET_CURRENT_USER,
+                    {}
+                );
+
+                if (currentUserData) {
+                    setCurrentUser(currentUserData.users.me);
                 }
-            ]
-        },
-        {
-            id: 3,
-            author: "John",
-            time: "3d ago",
-            content: "React",
-            image: "https://picsum.photos/600/300?random=20",
-            saved: false,
-            sharedPost: null,
-            likes: 7,
-        },
-    ];
+
+                // Fetch user details (either from userId param or current user)
+                const userData = await executeQuery(
+                    userId ? GRAPHQL_QUERIES.GET_USER_BY_ID : GRAPHQL_QUERIES.GET_CURRENT_USER,
+                    userId ? { id: parseInt(userId) } : {}
+                );
+
+                if (!userData) {
+                    console.error("User not found");
+                    setLoading(false);
+                    return;
+                }
+
+                const userInfo = userId 
+                    ? userData.users.getuserbyid 
+                    : userData.users.me;
+
+                if (!userInfo) {
+                    console.error("User not found");
+                    setLoading(false);
+                    return;
+                }
+
+                setUser({
+                    id: userInfo.id,
+                    name: userInfo.name,
+                    surname: userInfo.surname,
+                    handle: `@${userInfo.nickname}`,
+                    bio: "Professional developer", // TODO: Add bio field to backend
+                    banner: `https://picsum.photos/900/200?random=${userInfo.id}`,
+                    pfp: `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
+                    abt: `Member since ${new Date(userInfo.joined).toLocaleDateString()}`,
+                });
+
+                // Fetch user's projects
+                const projectsData = await executeQuery(
+                    GRAPHQL_QUERIES.GET_USER_PROJECTS,
+                    { userId: userInfo.id }
+                );
+
+                if (projectsData) {
+                    const projects = projectsData.project.userprojects || [];
+                    setProjects(projects.map(project => ({
+                        id: project.id,
+                        name: project.name,
+                        description: project.description,
+                        image: project.imageUrl || `https://picsum.photos/60?random=${project.id}`,
+                    })));
+                }
+
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch user profile:", err);
+                setLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, [userId, executeQuery]);
+
+    if (loading || postsLoading) {
+        return (
+            <div className="profile-layout">
+                <Navbar />
+                <div className="profile-content">
+                    <Sidebar />
+                    <div className="profile-main">
+                        <div className="profile-banner skeleton" style={{ width: '900px', height: '200px' }}></div>
+                        <div className="profile-header">
+                            <div className="profile-pfp skeleton" style={{ width: '120px', height: '120px', borderRadius: '50%' }}></div>
+                            <div style={{ flex: 1 }}>
+                                <div className="skeleton" style={{ height: '30px', width: '200px', marginBottom: '10px' }}></div>
+                                <div className="skeleton" style={{ height: '20px', width: '150px', marginBottom: '10px' }}></div>
+                                <div className="skeleton" style={{ height: '16px', width: '300px' }}></div>
+                            </div>
+                        </div>
+                        <div className="profile-body">
+                            <div className="profile-left">
+                                <SkeletonCard count={2} />
+                            </div>
+                            <div className="profile-right">
+                                <SkeletonPost count={2} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className="profile-layout">
+                <Navbar />
+                <div className="profile-content">
+                    <Sidebar />
+                    <div className="profile-main">
+                        <p>User not found</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="profile-layout">
@@ -134,22 +155,22 @@ export default function ProfilePage() {
                 <Sidebar />
 
                 <div className="profile-main">
-                    <div className="profile-banner">
-                        <img src={user.banner} alt="Banner" />
-                    </div>
+                    <ProfileBanner src={user.banner} alt="Banner" />
 
                     <div className="profile-header">
                         <img src={user.pfp} alt="Profile" className="profile-pfp" />
                         <div className="profile-info">
-                            <h2>{user.name}</h2>
+                            <h2>{user.name} {user.surname}</h2>
                             <p className="username">{user.handle}</p>
                             <p className="bio">{user.bio}</p>
-                            <button
-                                className="edit-btn"
-                                onClick={() => navigate("/profile/edit")}
-                            >
-                                Edit Profile
-                            </button>
+                            {currentUser && user.id === currentUser.id && (
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => navigate('/profile/edit')}
+                                >
+                                    Edit Profile
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -157,25 +178,28 @@ export default function ProfilePage() {
                         <div className="profile-left">
                             <section className="about-me">
                                 <h3>About Me</h3>
-                                <p>Local man</p>
                                 <p>{user.abt}</p>
                             </section>
 
                             <section className="owned-projects">
                                 <h3>Part of projects</h3>
                                 <div className="projects-scroll">
-                                    {user.projects?.map((proj, index) => (
-                                        <div
-                                            key={index}
-                                            className="project-card clickable"
-                                            onClick={() =>
-                                                navigate(`/project`)
-                                            }
-                                        >
-                                            <img src={proj.image} alt={proj.name} />
-                                            <p>{proj.name}</p>
-                                        </div>
-                                    ))}
+                                    {projects.length === 0 ? (
+                                        <p>No projects yet</p>
+                                    ) : (
+                                        projects.map((proj) => (
+                                            <div
+                                                key={proj.id}
+                                                className="project-card clickable"
+                                                onClick={() =>
+                                                    navigate(`/project/${proj.id}`)
+                                                }
+                                            >
+                                                <img src={proj.image} alt={proj.name} />
+                                                <p>{proj.name}</p>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </section>
                         </div>
@@ -184,20 +208,25 @@ export default function ProfilePage() {
                             <div className="profile-posts">
                                 <h3>Activity</h3>
                                 <div className="feed-container">
-                                    {posts.map((post, index) => (
-                                        <Post
-                                            key={post.id}
-                                            id={post.id}
-                                            author={post.author}
-                                            time={post.time}
-                                            content={post.content}
-                                            image={post.image}
-                                            comments={post.comments || []}
-                                            saved={post.saved}
-                                            sharedPost={post.sharedPost}
-                                            likes={post.likes}
-                                        />
-                                    ))}
+                                    {posts.length === 0 ? (
+                                        <p>No posts yet</p>
+                                    ) : (
+                                        posts.map((post) => (
+                                            <Post
+                                                key={post.id}
+                                                id={post.id}
+                                                author={post.user.nickname}
+                                                authorId={post.user.id}
+                                                time={post.time}
+                                                content={post.content}
+                                                image={post.imageUrl}
+                                                comments={[]}
+                                                saved={false}
+                                                sharedPost={post.sharedPost}
+                                                likes={0}
+                                            />
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </div>

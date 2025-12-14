@@ -11,11 +11,10 @@ html,
     flex-direction: column;
     gap: 12px;
     padding: 20px;
-    max-width: 600px;
+    max-width: 556px;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
-    /*from merge*/
     overflow: visible;
     max-height: none;
 }
@@ -27,10 +26,8 @@ html,
     border-radius: 12px;
     margin-top: 10px;
     object-fit: cover;
-    /*from merge*/
     overflow-x: hidden;
     color: var(--text-primary);
-    /*from merge*/
 }
 
 .post-card {
@@ -44,6 +41,7 @@ html,
     flex-direction: column;
     gap: 4px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .post-header {
@@ -84,10 +82,8 @@ html,
 }
 
 .post-content {
-    /*from merge*/
     margin-top: 12px;
     font-family: "Poppins", sans-serif;
-    /*from merge*/
     font-family: var(--font-family), serif;
 }
 
@@ -108,18 +104,14 @@ html,
     border-radius: 12px;
     margin-top: 8px;
     display: block;
-    /*from merge*/
 }
 
 .post-actions {
     display: flex;
     justify-content: space-around;
-    /*from merge*/
     margin-top: 12px;
     font-family: "Poppins", sans-serif;
-    /*from merge*/
     font-family: var(--font-family), serif;
-    /*from merge*/
 }
 
 .like-btn,

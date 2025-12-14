@@ -1,20 +1,57 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";
-
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/ProjectViewPage.css";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FilesView from "../components/FilesView";
 import TerminsView from "../components/TerminsView";
 import MembersPanel from "../components/MembersPanel";
+import ProjectInfoPanel from "../components/ProjectInfoPanel";
 
 
 export default function ProjectsViewPage() {
 
     const { id } = useParams();
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState("messages"); // domyślnie chat
+    const { executeQuery } = useGraphQL();
+    const [activeTab, setActiveTab] = useState("messages");
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const data = await executeQuery(
+                    GRAPHQL_QUERIES.GET_PROJECT_BY_ID,
+                    { id: parseInt(id) }
+                );
+
+                if (!data) {
+                    console.error("No data received");
+                    setLoading(false);
+                    return;
+                }
+
+                const projectData = data.project?.projectbyid;
+                if (!projectData) {
+                    console.error("Project not found");
+                    setLoading(false);
+                    return;
+                }
+
+                setProject(projectData);
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch project:", err);
+                setLoading(false);
+            }
+        };
+
+        fetchProject();
+    }, [id, executeQuery]);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -27,6 +64,40 @@ export default function ProjectsViewPage() {
         }
     };
 
+    if (loading) {
+        return (
+            <div className="view-page-main-layout">
+                <Navbar />
+                <div className="view-page-main-content">
+                    <Sidebar />
+                    <div className="feed-projects-wrapper">
+                        <div className="main-feed-wrapper">
+                            <p>Loading project...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!project) {
+        return (
+            <div className="view-page-main-layout">
+                <Navbar />
+                <div className="view-page-main-content">
+                    <Sidebar />
+                    <div className="feed-projects-wrapper">
+                        <div className="main-feed-wrapper">
+                            <p>Project not found</p>
+                            <button className="back-btn" onClick={() => navigate("/myprojects")}>
+                                ← Back to projects
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="view-page-main-layout">
@@ -39,6 +110,11 @@ export default function ProjectsViewPage() {
                         <button className="back-btn" onClick={() => navigate("/myprojects")}>
                             ← Back to projects
                         </button>
+
+                        <div className="project-header">
+                            <h2>{project.name}</h2>
+                            <p>{project.description}</p>
+                        </div>
 
                         <div className="tabs">
                             <button
@@ -64,9 +140,12 @@ export default function ProjectsViewPage() {
                         </div>
                         <div className="tab-content">{renderContent()}</div>
                     </div>
-                    <MembersPanel/>
+                    <div className="project-sidebar-panels">
+                        <ProjectInfoPanel project={project} projectId={id} />
+                        <MembersPanel project={project} projectId={id} />
+                    </div>
                 </div>
             </div>
         </div>
-            );
-            }
+    );
+}

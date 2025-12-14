@@ -6,9 +6,31 @@
     width: 430px;
     color: var(--text-primary);
     font-family: var(--font-family), serif;
-    margin-top: 80px;
+    margin-top: 0;
     margin-left: 50px;
 }
+
+.project-profile-link-panel {
+    margin-bottom: 16px;
+}
+
+.view-profile-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.view-profile-btn:hover {
+    background-color: #1a8cd8;
+}
+
 .members-list {
     display: flex;
     flex-direction: column;
@@ -22,7 +44,12 @@
     gap: 8px;
 }
 
-
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
 .member-item {
     display: flex;
@@ -76,6 +103,18 @@
 }
 
 .member-name {
+    font-weight: 500;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.member-role {
+    font-size: 0.75rem;
+    color: #1d9bf0;
     font-weight: 500;
 }
 

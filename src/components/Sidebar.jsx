@@ -2,20 +2,18 @@ import React, {useContext, useState} from "react";
 import {
     FaProjectDiagram,
     FaUserFriends,
-    FaCalendarAlt,
+    FaComments,
     FaBookmark,
-    FaCompass,
     FaBars,
     FaChevronDown,
     FaChevronUp
 } from "react-icons/fa";
-import axios from "axios";
-import { API_CONFIG, getAuthHeaders } from "../config/api";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Sidebar.css";
 import {useNavigate, Link} from "react-router-dom";
 import {InvitationContext} from "../context/InvitationContext";
 import {FcInvite} from "react-icons/fc";
+import { useGraphQL } from "../hooks/useGraphQL";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
@@ -28,6 +26,7 @@ export default function Sidebar() {
     const [loadingProjects, setLoadingProjects] = useState(false);
     const [loadingFriends, setLoadingFriends] = useState(false);
     const {invitationsCount} = useContext(InvitationContext);
+    const { executeQuery } = useGraphQL();
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -38,22 +37,9 @@ export default function Sidebar() {
         
         setLoadingProjects(true);
         try {
-            const res = await axios.post(
-                API_CONFIG.GRAPHQL_ENDPOINT,
-                {
-                    query: GRAPHQL_QUERIES.GET_MY_PROJECTS,
-                    variables: {},
-                },
-                {
-                    headers: getAuthHeaders(),
-                }
-            );
+            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
 
-            if (res.data.errors) {
-                throw new Error(res.data.errors[0].message);
-            }
-
-            setProjects(res.data.data.project.myprojects || []);
+            setProjects(data.project.myprojects || []);
         } catch (err) {
             console.error("Failed to fetch projects:", err);
         }
@@ -65,22 +51,9 @@ export default function Sidebar() {
         
         setLoadingFriends(true);
         try {
-            const res = await axios.post(
-                API_CONFIG.GRAPHQL_ENDPOINT,
-                {
-                    query: GRAPHQL_QUERIES.GET_MY_FRIENDS,
-                    variables: {},
-                },
-                {
-                    headers: getAuthHeaders(),
-                }
-            );
+            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
 
-            if (res.data.errors) {
-                throw new Error(res.data.errors[0].message);
-            }
-
-            setFriends(res.data.data.friendship.myfriends || []);
+            setFriends(data.friendship.myfriends || []);
         } catch (err) {
             console.error("Failed to fetch friends:", err);
         }
@@ -109,27 +82,10 @@ export default function Sidebar() {
 
             <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
                 <ul>
-                    <li onClick={handleProjectsToggle}>
+                    <li onClick={() => navigate("/myprojects")}>
                         <FaProjectDiagram className="icon"/>
-                        {isOpen && <span>Top Projects</span>}
-                        {isOpen && (projectsOpen ? <FaChevronUp className="chevron"/> :
-                            <FaChevronDown className="chevron"/>)}
+                        {isOpen && <span>My Projects</span>}
                     </li>
-                    {projectsOpen && isOpen && (
-                        <ul className="sublist">
-                            {loadingProjects ? (
-                                <li>Loading...</li>
-                            ) : projects.length === 0 ? (
-                                <li>No projects yet</li>
-                            ) : (
-                                projects.map((project) => (
-                                    <li key={project.id} title={project.description} onClick={() => navigate("/project/chat")}>
-                                        {project.name}
-                                    </li>
-                                ))
-                            )}
-                        </ul>
-                    )}
 
                     <li onClick={handleFriendsToggle}>
                         <FaUserFriends className="icon"/>
@@ -140,37 +96,31 @@ export default function Sidebar() {
                     {friendsOpen && isOpen && (
                         <ul className="sublist">
                             <li>
-
                                 <button
                                     className="Friend-button"
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/findfriends");
-
                                     }}>
                                     Find Friends
                                 </button>
                             </li>
                             <li>
-
                                 <button
                                     className="Friend-button"
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/friendslist");
-
                                     }}>
                                     Friend List
                                 </button>
-
                             </li>
-
                         </ul>
                     )}
 
-                    <li>
-                        <FaCalendarAlt className="icon"/>
-                        {isOpen && <span>Calendar</span>}
+                    <li onClick={() => navigate("/chats")}>
+                        <FaComments className="icon"/>
+                        {isOpen && <span>Chats</span>}
                     </li>
                     <li onClick={() => navigate("/Saved")}>
                         <FaBookmark className="icon"/>

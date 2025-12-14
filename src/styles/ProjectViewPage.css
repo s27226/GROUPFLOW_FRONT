@@ -18,6 +18,12 @@
     min-width: 0;
 }
 
+.project-sidebar-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 80px;
+}
 
 /* Główne tło i layout */
 .view-page-main-layout {
@@ -66,15 +72,35 @@
     text-decoration: underline;
 }
 
+.project-header {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.project-header h2 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.project-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
 /* Zakładki */
-.tabs {
+.project-view-page .tabs {
     display: flex;
     justify-content: center;
     gap: 12px;
     margin-bottom: 20px;
 }
 
-.tab-btn {
+.project-view-page .tab-btn {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
@@ -85,11 +111,11 @@
     transition: all 0.2s ease;
 }
 
-.tab-btn:hover {
+.project-view-page .tab-btn:hover {
     background-color: var(--border-color);
 }
 
-.tab-btn.active {
+.project-view-page .tab-btn.active {
     background-color: var(--accent);
     border-color: var(--accent);
     color: #fff;

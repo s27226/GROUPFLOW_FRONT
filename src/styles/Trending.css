@@ -84,3 +84,45 @@
     scrollbar-width: thin;
     scrollbar-color: #2f3336 transparent;
 }
+
+.trending-owner {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b6b6b;
+    margin-top: 2px;
+}
+
+.trending-stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 0.8rem;
+}
+
+.trending-stats span {
+    color: #8b8b8b;
+}
+
+.trending-load-more {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.trending-load-more:hover:not(:disabled) {
+    background-color: #2a2a2a;
+}
+
+.trending-load-more:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.my-projects-link-btn { width: 100%; padding: 12px; margin-top: 16px; background-color: #1d9bf0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: background-color 0.2s ease; } .my-projects-link-btn:hover { background-color: #1a8cd8; }

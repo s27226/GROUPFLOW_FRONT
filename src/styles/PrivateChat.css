@@ -44,6 +44,12 @@
     text-overflow: ellipsis;
 }
 
+.priv-chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .priv-chat-header button {
     background: none;
     border: none;
@@ -51,6 +57,17 @@
     cursor: pointer;
     color: var(--text-primary);
     flex-shrink: 0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.priv-chat-header button:hover {
+    background-color: var(--bg-secondary);
+}
+
+.priv-chat-expand-btn {
+    font-size: 1rem !important;
 }
 
 .priv-chat-body {
@@ -60,6 +77,14 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.priv-chat-loading,
+.priv-chat-no-messages {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+    font-size: 0.9rem;
 }
 
 .priv-chat-bubble {
@@ -112,4 +137,14 @@
     border-radius: 8px;
     padding: 6px 12px;
     cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.priv-chat-input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.priv-chat-input-area button:not(:disabled):hover {
+    opacity: 0.9;
 }

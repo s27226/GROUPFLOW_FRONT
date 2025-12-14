@@ -1,72 +1,139 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import Post from "../components/Post";
+import ProfileBanner from "../components/ProfileBanner";
+import SkeletonPost from "../components/ui/SkeletonPost";
+import SkeletonCard from "../components/ui/SkeletonCard";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { useNavigate, useParams } from "react-router-dom";
+import { useProjectPosts } from "../hooks/usePosts";
+import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
-import { useNavigate } from "react-router-dom";
-import shrimp from "../images/shrimp.png";
 
 export default function ProjectProfilePage() {
+    const { projectId } = useParams();
     const navigate = useNavigate();
+    const { executeQuery } = useGraphQL();
 
-    const members = [
-        {
-            name: "John",
-            role: "Lead Developer",
-            image: "https://api.dicebear.com/9.x/identicon/svg?seed=ShrimpDev",
-        },
-        {
-            name: "Alice",
-            role: "Designer",
-            image: "https://picsum.photos/60?random=2",
-        },
-    ];
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+    
+    const { posts, loading: postsLoading } = useProjectPosts(projectId);
 
-    const project = {
-        name: "Shrimp Tracker",
-        description: "A small app",
-        banner: "https://picsum.photos/900/200?random=10",
-        image: shrimp,
-        members: members,
-    };
+    useEffect(() => {
+        const fetchProjectProfile = async () => {
+            if (!projectId) {
+                setLoading(false);
+                return;
+            }
 
-    const posts = [
-        {
-            id: 1,
-            author: "John",
-            time: "2h ago",
-            content: "im putting whatever here",
-            image: "https://picsum.photos/600/300?random=15",
-            saved: false,
-            sharedPost: null,
-            comments: [],
-            likes: 18,
-        },
-        {
-            id: 2,
-            author: "Alice",
-            time: "1d ago",
-            content:
-                "majority of these damn posts are generated anyway cuz i lack creativity",
-            saved: false,
-            sharedPost: null,
-            comments: [],
-            likes: 25,
-        },
-        {
-            id: 3,
-            author: "John",
-            time: "3d ago",
-            content: "Today is Today",
-            image: "https://picsum.photos/600/300?random=20",
-            saved: false,
-            sharedPost: null,
-            comments: [],
-            likes: 9,
-        },
-    ];
+            try {
+                // Fetch project details
+                const data = await executeQuery(
+                    GRAPHQL_QUERIES.GET_PROJECT_BY_ID,
+                    { id: parseInt(projectId) }
+                );
+
+                console.log("Project response:", data);
+
+                if (!data) {
+                    console.error("No data received");
+                    setLoading(false);
+                    return;
+                }
+
+                // projectbyid returns an array, so we need to get the first element
+                const projectArray = data.project?.projectbyid;
+                const projectData = Array.isArray(projectArray) ? projectArray[0] : projectArray;
+
+                console.log("Project data:", projectData);
+
+                if (!projectData) {
+                    console.error("Project not found - projectData is null");
+                    setLoading(false);
+                    return;
+                }
+
+                setProject({
+                    id: projectData.id,
+                    name: projectData.name,
+                    description: projectData.description,
+                    banner: `https://picsum.photos/900/200?random=${projectData.id}`,
+                    image: projectData.imageUrl || `https://picsum.photos/200?random=${projectData.id}`,
+                    members: [
+                        // Add owner as first member
+                        {
+                            userId: projectData.owner.id,
+                            name: projectData.owner.nickname || projectData.owner.name,
+                            role: 'Owner',
+                            image: projectData.owner.profilePic || `https://i.pravatar.cc/60?u=${projectData.owner.id}`,
+                        },
+                        // Add collaborators
+                        ...(projectData.collaborators?.map(collab => ({
+                            userId: collab.user.id,
+                            name: collab.user.nickname || collab.user.name,
+                            role: collab.role,
+                            image: collab.user.profilePic || `https://i.pravatar.cc/60?u=${collab.user.id}`,
+                        })) || [])
+                    ],
+                    owner: projectData.owner,
+                });
+
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch project profile:", err);
+                setLoading(false);
+            }
+        };
+
+        fetchProjectProfile();
+    }, [projectId]);
+
+    if (loading || postsLoading) {
+        return (
+            <div className="profile-layout">
+                <Navbar />
+                <div className="profile-content">
+                    <Sidebar />
+                    <div className="profile-main">
+                        <div className="profile-banner skeleton" style={{ width: '900px', height: '200px' }}></div>
+                        <div className="profile-header">
+                            <div className="profile-pfp skeleton" style={{ width: '120px', height: '120px', borderRadius: '50%' }}></div>
+                            <div style={{ flex: 1 }}>
+                                <div className="skeleton" style={{ height: '30px', width: '200px', marginBottom: '10px' }}></div>
+                                <div className="skeleton" style={{ height: '40px', width: '150px' }}></div>
+                            </div>
+                        </div>
+                        <div className="profile-body">
+                            <div className="profile-left">
+                                <SkeletonCard count={2} />
+                            </div>
+                            <div className="profile-right">
+                                <SkeletonPost count={2} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!project) {
+        return (
+            <div className="profile-layout">
+                <Navbar />
+                <div className="profile-content">
+                    <Sidebar />
+                    <div className="profile-main">
+                        <p>Project not found</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="profile-layout">
@@ -75,9 +142,7 @@ export default function ProjectProfilePage() {
                 <Sidebar />
 
                 <div className="profile-main">
-                    <div className="profile-banner">
-                        <img src={project.banner} alt="Banner" />
-                    </div>
+                    <ProfileBanner src={project.banner} alt="Project Banner" />
 
                     <div className="profile-header">
                         <img src={project.image} alt="Project" className="profile-pfp" />
@@ -107,7 +172,7 @@ export default function ProjectProfilePage() {
                                             key={index}
                                             className="profile-member-card clickable"
                                             onClick={() =>
-                                                navigate(`/profile`)
+                                                navigate(`/profile/${member.userId}`)
                                             }
                                         >
                                             <img
@@ -127,20 +192,25 @@ export default function ProjectProfilePage() {
                             <div className="profile-posts">
                                 <h3>Activity</h3>
                                 <div className="feed-container">
-                                    {posts.map((post, index) => (
-                                        <Post
-                                            key={post.id}
-                                            id={post.id}
-                                            author={post.author}
-                                            time={post.time}
-                                            content={post.content}
-                                            image={post.image}
-                                            comments={post.comments}
-                                            saved={post.saved}
-                                            sharedPost={post.sharedPost}
-                                            likes={post.likes}
-                                        />
-                                    ))}
+                                    {posts.length === 0 ? (
+                                        <p>No activity yet</p>
+                                    ) : (
+                                        posts.map((post) => (
+                                            <Post
+                                                key={post.id}
+                                                id={post.id}
+                                                author={post.user.nickname}
+                                                authorId={post.user.id}
+                                                time={post.time}
+                                                content={post.content}
+                                                image={post.imageUrl}
+                                                comments={[]}
+                                                saved={false}
+                                                sharedPost={post.sharedPost}
+                                                likes={0}
+                                            />
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -148,9 +218,8 @@ export default function ProjectProfilePage() {
                 </div>
             </div>
             <button
-                //todo
                 className="create-post-btn"
-                onClick={() => navigate("/project/new-post")}
+                onClick={() => navigate(`/project/${projectId}/new-post`)}
             >
                 <Plus size={26} />
             </button>

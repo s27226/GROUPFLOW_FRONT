@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LazyImage from "./ui/LazyImage";
 import "../styles/feed.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 export default function Post({ 
     id,
-    author, 
+    author,
+    authorId,
     time, 
     content, 
     image, 
@@ -29,6 +32,8 @@ export default function Post({
     const [showHideToast, setShowHideToast] = useState(false);
 
     const [showComments, setShowComments] = useState(isFullView);
+    
+    const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;
@@ -95,7 +100,7 @@ export default function Post({
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
                         e.stopPropagation();
-                        navigate("/profile");
+                        if (authorId) navigate(`/profile/${authorId}`);
                     }}
                 />
 
@@ -105,13 +110,13 @@ export default function Post({
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("/profile");
+                            if (authorId) navigate(`/profile/${authorId}`);
                         }}
                     >{author}</span>
                     <span className="post-time">· {time}</span>
                 </div>
 
-                <div className="post-dots">
+                <div className="post-dots" ref={menuRef}>
                     <button onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreVertical size={20}/>
                     </button>
@@ -135,7 +140,14 @@ export default function Post({
                 onClick={() => !isFullView && navigate(`/post/${id}`)}
             >
                 <p>{content}</p>
-                {image && <img src={image} alt="post" className="post-image"/>}
+                {image && (
+                    <LazyImage 
+                        src={image} 
+                        alt="post" 
+                        className="post-image"
+                        aspectRatio={16/9}
+                    />
+                )}
                 
                 {sharedPost && (
                     <div className="post-shared-preview">
@@ -156,7 +168,12 @@ export default function Post({
                             </div>
                             <p className="post-shared-text">{sharedPost.content}</p>
                             {sharedPost.image && (
-                                <img src={sharedPost.image} alt="shared" className="post-shared-image" />
+                                <LazyImage 
+                                    src={sharedPost.image} 
+                                    alt="shared" 
+                                    className="post-shared-image"
+                                    aspectRatio={16/9}
+                                />
                             )}
                             <a 
                                 href={`/post/${sharedPost.id}`}
@@ -253,7 +270,7 @@ export default function Post({
 function Comment({comment, update, depth = 0}) {
     const maxDepth = 4;
     const safeDepth = Math.min(depth, maxDepth);
-    const leftMargin = safeDepth * 20; // limit indent
+    const leftMargin = safeDepth * 20;
 
     const [replyOpen, setReplyOpen] = useState(false);
     const [replyText, setReplyText] = useState("");

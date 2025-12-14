@@ -3,7 +3,7 @@ import React from "react";
 export default function ChatList({users, onSelectUser, selectedUser}) {
     return (
         <div className="chat-list">
-            <h3> Użytkownicy</h3>
+            <h3 className="text-center"> Friends </h3>
             <ul>
                 {users.map((u) => (
                     <li

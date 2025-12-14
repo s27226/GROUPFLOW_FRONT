@@ -32,11 +32,17 @@
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: var(--bg-accent);
-    padding: 8px 16px;
+    background-color: var(--bg-secondary);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     width: 900px;
     max-width: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus-within {
+    border-color: var(--accent);
 }
 
 .search-icon {
@@ -51,7 +57,12 @@
     outline: none;
     color: var(--text-primary);
     padding-left: 12px;
-    font-size: 1.15rem;
+    font-size: 1rem;
+    font-family: var(--font-family);
+}
+
+.search-bar input::placeholder {
+    color: var(--text-secondary);
 }
 
 .navbar-right {

@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import './skeletons.css';
 
 :root {
-  /* 🌑 Dark mode defaults */
+  /* Dark mode */
   --bg-main: #0f1419;
   --bg-secondary: #16181c;
   --bg-accent: #1d1f23;
@@ -30,7 +31,7 @@
 
 }
 
-/* ☀️ Light theme  */
+/* Light theme  */
 [data-theme="light"] {
   --bg-main: #ffffff;
   --bg-secondary: #f4f4f4;
