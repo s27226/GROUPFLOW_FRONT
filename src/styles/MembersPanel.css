@@ -1,0 +1,150 @@
+.project-members-panel {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    width: 430px;
+    color: var(--text-primary);
+    font-family: var(--font-family), serif;
+    margin-top: 0;
+    margin-left: 50px;
+}
+
+.project-profile-link-panel {
+    margin-bottom: 16px;
+}
+
+.view-profile-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.view-profile-btn:hover {
+    background-color: #1a8cd8;
+}
+
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+.member-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.member-item {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.project-members-panel h3 {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.project-members-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.project-members-panel li {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.project-members-panel li:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.member-item {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.member-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.member-name {
+    font-weight: 500;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.member-role {
+    font-size: 0.75rem;
+    color: #1d9bf0;
+    font-weight: 500;
+}
+
+.status-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+.member-item.available .status-dot {
+    background-color: #22c55e;
+}
+
+.member-item.away .status-dot {
+    background-color: #facc15;
+}
+
+.member-item.offline .status-dot {
+    background-color: #ef4444;
+}
+
+.member-item span:first-child {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+}

@@ -1,0 +1,138 @@
+import {useContext, useState} from "react";
+
+
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import "../styles/Sidebar.css";
+import {useNavigate} from "react-router-dom";
+import {InvitationContext} from "../context/InvitationContext";
+import { useGraphQL } from "../hooks/useGraphQL";
+
+export default function Sidebar() {
+    const [isOpen, setIsOpen] = useState(true);
+    const [projectsOpen, setProjectsOpen] = useState(false);
+    const [friendsOpen, setFriendsOpen] = useState(false);
+    const navigate = useNavigate();
+    // Dynamic data state
+    const [projects, setProjects] = useState([]);
+    const [friends, setFriends] = useState([]);
+    const [loadingProjects, setLoadingProjects] = useState(false);
+    const [loadingFriends, setLoadingFriends] = useState(false);
+    const {invitationsCount} = useContext(InvitationContext);
+    const { executeQuery } = useGraphQL();
+
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const fetchProjects = async () => {
+        if (projects.length > 0) return; // Don't fetch if already loaded
+        
+        setLoadingProjects(true);
+        try {
+            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
+
+            setProjects(data.project.myprojects || []);
+        } catch (err) {
+            console.error("Failed to fetch projects:", err);
+        }
+        setLoadingProjects(false);
+    };
+
+    const fetchFriends = async () => {
+        if (friends.length > 0) return; // Don't fetch if already loaded
+        
+        setLoadingFriends(true);
+        try {
+            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
+
+            setFriends(data.friendship.myfriends || []);
+        } catch (err) {
+            console.error("Failed to fetch friends:", err);
+        }
+        setLoadingFriends(false);
+    };
+
+    const handleProjectsToggle = () => {
+        setProjectsOpen(!projectsOpen);
+        if (!projectsOpen && projects.length === 0) {
+            fetchProjects();
+        }
+    };
+
+    const handleFriendsToggle = () => {
+        setFriendsOpen(!friendsOpen);
+        if (!friendsOpen && friends.length === 0) {
+            fetchFriends();
+        }
+    };
+
+    return (
+        <>
+            <div className="sidebar-toggle" onClick={toggleSidebar}>
+                <FaBars/>
+            </div>
+
+            <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
+                <ul>
+                    <li onClick={() => navigate("/myprojects")}>
+                        <FaProjectDiagram className="icon"/>
+                        {isOpen && <span>My Projects</span>}
+                    </li>
+
+                    <li onClick={handleFriendsToggle}>
+                        <FaUserFriends className="icon"/>
+                        {isOpen && <span>Friends</span>}
+                        {isOpen && (friendsOpen ? <FaChevronUp className="chevron"/> :
+                            <FaChevronDown className="chevron"/>)}
+                    </li>
+                    {friendsOpen && isOpen && (
+                        <ul className="sublist">
+                            <li>
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        localStorage.removeItem("searchQuery");
+                                        navigate("/findfriends");
+                                    }}>
+                                    Find Friends
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        localStorage.removeItem("searchQuery");
+                                        navigate("/friendslist");
+                                    }}>
+                                    Friend List
+                                </button>
+                            </li>
+                        </ul>
+                    )}
+
+                    <li onClick={() => navigate("/chats")}>
+                        <FaComments className="icon"/>
+                        {isOpen && <span>Chats</span>}
+                    </li>
+                    <li onClick={() => navigate("/Saved")}>
+                        <FaBookmark className="icon"/>
+                        {isOpen && <span>Saved</span>}
+                    </li>
+                    <li>
+
+                        <FcInvite className="icon"/>
+                        {isOpen && (
+                            <Link to="/invitations" className="menu-item">
+                                Invitations
+                                {invitationsCount > 0 && (
+                                    <span className="notification-dot">
+
+                                    </span>
+                                )}
+                            </Link>)}
+                    </li>
+                </ul>
+            </div>
+        </>
+    );
+}

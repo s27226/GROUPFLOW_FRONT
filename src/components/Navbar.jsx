@@ -1,0 +1,290 @@
+import {useState, useEffect} from "react";
+import "../styles/NavBar.css";
+import defaultPfp from "../images/default-pfp.png";
+import logo from "../images/logo.png";
+import {useAuth} from "../context/AuthContext";
+import {useLocation, useNavigate} from "react-router-dom";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { useClickOutside } from "../hooks/useClickOutside";
+import { useGraphQL } from "../hooks/useGraphQL";
+
+function Navbar() {
+    const { logout, user, updateUser, token } = useAuth();
+
+    const navigate = useNavigate();
+
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [notifOpen, setNotifOpen] = useState(false);
+    const [msgOpen, setMsgOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [friends, setFriends] = useState([]);
+    const [loadingFriends, setLoadingFriends] = useState(false);
+    const { executeQuery } = useGraphQL();
+
+    // Fetch current user data on mount
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            if (user || !token) return; // Already loaded or not authenticated
+            
+            setLoadingUser(true);
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
+
+                const userData = data.users.me;
+                if (userData) {
+                    updateUser(userData);
+                }
+            } catch (err) {
+                console.error("Failed to fetch current user:", err);
+            } finally {
+                setLoadingUser(false);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [user, updateUser, executeQuery, token]);
+    
+    // Fetch friends list
+    useEffect(() => {
+        const fetchFriends = async () => {
+            if (!token || !user) return; // Not authenticated or user not loaded
+            
+            setLoadingFriends(true);
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
+
+                const friendsList = data.friendship.myfriends || [];
+                setFriends(friendsList);
+            } catch (err) {
+                console.error("Failed to fetch friends:", err);
+            } finally {
+                setLoadingFriends(false);
+            }
+        };
+
+        fetchFriends();
+    }, [user, executeQuery, token]);
+    
+    const [activeChat, setActiveChat] = useState(null);
+    const location = useLocation();
+    
+    // Close all dropdowns when clicking outside
+    const menuRef = useClickOutside(() => {
+        setMenuOpen(false);
+        setNotifOpen(false);
+        setMsgOpen(false);
+    }, menuOpen || notifOpen || msgOpen);
+
+    const notifications = [
+        {
+            id: 1,
+            icon: <Bell size={18}/>,
+            text: "Alice reacted to your post",
+            time: "2h ago",
+            unread: true,
+        },
+    ];
+
+    // Convert friends to message format
+    const messages = friends.slice(0, 5).map(friend => ({
+        id: friend.id,
+        image: friend.profilePic || defaultPfp,
+        name: `${friend.name} ${friend.surname}`,
+        lastMessage: "Click to chat",
+        time: "",
+        onClick: () => {
+            setActiveChat({
+                id: friend.id,
+                name: `${friend.name} ${friend.surname}`,
+                nickname: friend.nickname,
+                image: friend.profilePic || defaultPfp
+            });
+            setMsgOpen(false);
+        },
+    }));
+
+    return (
+        <nav className="navbar">
+
+            <div className="navbar-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
+                <img src={logo} alt="Logo" className="logo-img"/>
+                <span className="logo-text">GroupFlow</span>
+            </div>
+
+            <div className="search-bar-container">
+                <form
+                    onSubmit={(e) => {
+
+                        console.log("Search submitted:", searchQuery);
+                        localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
+                        // TODO: add real search logic
+
+                        if ((location.pathname === "/") || (location.pathname === "/projects?")) {
+
+                            navigate("/projects");
+                        } else if (location.pathname === "/myprojects") {
+
+                            navigate("/myprojects");
+                        }
+
+
+                    }}
+                >
+                    <div className="search-bar">
+                        <FaSearch className="search-icon"/>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </form>
+            </div>
+
+            <div className="navbar-right" ref={menuRef}>
+
+                <div
+                    className="icon-wrapper spaced"
+                    onClick={() => {
+                        setNotifOpen(!notifOpen);
+                        setMsgOpen(false);
+                        setMenuOpen(false);
+                    }}
+                >
+                    <Bell size={24}/>
+
+                    {notifOpen && (
+                        <div className="dropdown-menu large">
+                            <h4>Notifications</h4>
+                            <div className="dropdown-scroll">
+
+                                {notifications.length === 0 ? (
+                                    <p>No notifications.</p>
+                                ) : (
+                                    notifications.map((n) => (
+                                        <NotificationItem
+                                            key={n.id}
+                                            icon={n.icon}
+                                            text={n.text}
+                                            time={n.time}
+                                            unread={n.unread}
+                                        />
+                                    ))
+                                )}
+
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div
+                    className="icon-wrapper spaced"
+                    onClick={() => {
+                        setMsgOpen(!msgOpen);
+                        setNotifOpen(false);
+                        setMenuOpen(false);
+                    }}
+                >
+                    <MessageCircle size={24}/>
+
+                    {msgOpen && (
+                        <div className="dropdown-menu large">
+                            <h4 onClick={() => navigate("/chats")} style={{cursor: "pointer"}}>Messages</h4>
+                            <div className="dropdown-scroll">
+
+                                {messages.length === 0 ? (
+                                    <p>No messages.</p>
+                                ) : (
+                                    messages.map((m) => (
+                                        <MessagePreview
+                                            key={m.id}
+                                            image={m.image}
+                                            name={m.name}
+                                            lastMessage={m.lastMessage}
+                                            time={m.time}
+                                            onClick={m.onClick}
+                                        />
+                                    ))
+                                )}
+
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div 
+                    className="user-info-wrapper"
+                    onClick={() => {
+                        setMenuOpen(!menuOpen);
+                        setNotifOpen(false);
+                        setMsgOpen(false);
+                    }}
+                >
+                    <img
+                        src={defaultPfp}
+                        alt="User"
+                        className="user-pfp"
+                    />
+                    {user && !loadingUser && (
+                        <span className="user-nickname">
+                            {user.nickname}
+                        </span>
+                    )}
+                </div>
+
+                {menuOpen && (
+                    <div className="dropdown-menu">
+                        {user && (
+                            <>
+                                <div className="dropdown-user-info">
+                                    <strong>{user.name} {user.surname}</strong>
+                                    <small>{user.email}</small>
+                                </div>
+                                <hr/>
+                            </>
+                        )}
+                        <button onClick={() => navigate(`/profile/${user?.id}`)}>Profile</button>
+                        <button onClick={() => navigate("/profile-tags")}>My Skills & Interests</button>
+                        <button onClick={() => navigate("/settings")}>Settings</button>
+                        <button>Help</button>
+                        <button
+                            className="CreateGroup"
+                            onClick={() => {
+                                localStorage.removeItem("searchQuery");
+                                navigate("/creategroup");
+                                setMenuOpen(false);
+                            }}>
+                            Create new Group
+                        </button>
+                        <hr/>
+                        <button
+                            className="logout"
+                            onClick={() => {
+                                logout();
+                                navigate("/login");
+                                setMenuOpen(false);
+                            }}
+                        >
+                            Log Out
+                        </button>
+                    </div>
+                )}
+                {activeChat && (
+                    <PrivateChat 
+                        user={activeChat} 
+                        currentUserId={user?.id}
+                        onClose={() => setActiveChat(null)}
+                        onExpand={() => {
+                            navigate('/chats', { state: { selectedUser: activeChat } });
+                            setActiveChat(null);
+                        }}
+                    />
+                )}
+            </div>
+        </nav>
+    );
+}
+
+export default Navbar;

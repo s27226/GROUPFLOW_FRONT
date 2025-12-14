@@ -1,0 +1,39 @@
+.msg-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.msg-preview:hover {
+    background-color: var(--bg-hover);
+}
+
+.msg-pfp {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.msg-info {
+    flex-grow: 1;
+}
+
+.msg-name {
+    font-weight: 600;
+    margin: 0;
+}
+
+.msg-last {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.msg-time {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
