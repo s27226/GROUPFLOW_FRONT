@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/User.css";
 
 export default function User({id, avatar, name, status}) {

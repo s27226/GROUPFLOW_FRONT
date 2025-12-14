@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import LoadingSpinner from "../components/ui/LoadingSpinner";
+import { useState, useEffect } from "react";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";

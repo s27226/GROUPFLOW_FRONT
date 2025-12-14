@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import SkeletonCard from "../components/ui/SkeletonCard";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";

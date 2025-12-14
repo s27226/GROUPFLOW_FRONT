@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { useState } from "react";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import shrimp from "../images/shrimp.png";

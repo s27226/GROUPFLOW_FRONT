@@ -1,11 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import Post from "../components/Post";
-import ProfileBanner from "../components/ProfileBanner";
-import SkeletonPost from "../components/ui/SkeletonPost";
-import SkeletonCard from "../components/ui/SkeletonCard";
+import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts } from "../hooks/usePosts";

@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import Layout from "../components/Layout";
-import Post from "../components/Post";
-import SkeletonPost from "../components/ui/SkeletonPost";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useSavedPosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";

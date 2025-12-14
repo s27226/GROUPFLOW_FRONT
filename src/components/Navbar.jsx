@@ -1,15 +1,10 @@
-import React, {useState, useEffect} from "react";
-import {Bell, MessageCircle} from "lucide-react";
+import {useState, useEffect} from "react";
 import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
 import logo from "../images/logo.png";
 import {useAuth} from "../context/AuthContext";
 import {useLocation, useNavigate} from "react-router-dom";
-import {FaSearch} from "react-icons/fa";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
-import NotificationItem from "./NotificationItem";
-import MessagePreview from "./MessagePreview";
-import PrivateChat from "./PrivateChat";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { useGraphQL } from "../hooks/useGraphQL";
 

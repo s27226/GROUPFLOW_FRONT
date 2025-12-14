@@ -1,6 +1,3 @@
-import React from "react";
-import Layout from "../components/Layout";
-import ProfileTagsEditor from "../components/ProfileTagsEditor";
 
 export default function ProfileTagsPage() {
     return (

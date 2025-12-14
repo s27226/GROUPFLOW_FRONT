@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LazyImage from "./ui/LazyImage";
 import "../styles/feed.css";
-import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
 
 export default function Post({ 

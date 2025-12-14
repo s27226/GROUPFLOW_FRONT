@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
-import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Friends.css";
 import { useSearchQuery } from "../hooks/useSearchQuery";
 import { useGraphQL } from "../hooks/useGraphQL";

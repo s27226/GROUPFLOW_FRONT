@@ -1,4 +1,3 @@
-import React from 'react';
 import { useImageLoaded } from '../hooks/useImageLoaded';
 
 const ProfileBanner = ({ src, alt = "Banner" }) => {
