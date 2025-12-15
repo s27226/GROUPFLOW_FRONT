@@ -15,7 +15,9 @@ export default [
             parserOptions: {
                 requireConfigFile: false,
                 babelOptions: {
-                    presets: ["@babel/preset-react"],
+                    presets: [
+                        ["@babel/preset-react", { runtime: "automatic" }]
+                    ],
                 },
                 ecmaVersion: "latest",
                 sourceType: "module",
@@ -45,6 +47,7 @@ export default [
 
             "react/jsx-uses-react": "off",
             "react/react-in-jsx-scope": "off",
+            "react/jsx-uses-vars": "error",
             "react/prop-types": "off",
 
             "react-hooks/rules-of-hooks": "error",
