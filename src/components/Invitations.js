@@ -1,11 +1,10 @@
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Invitation.css";
 import Invitation from "./Invitation";
-import {InvitationContext} from "../context/InvitationContext";
+import { InvitationContext } from "../context/InvitationContext";
 import { useGraphQL } from "../hooks/useGraphQL";
 import LoadingSpinner from "./ui/LoadingSpinner";
-
 
 export default function Invitations() {
     const [friendRequests, setFriendRequests] = useState([]);
@@ -22,10 +21,12 @@ export default function Invitations() {
                     executeQuery(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, { first: 50 })
                 ]);
 
-                const friendReqs = friendRequestsData?.friendRequest?.allfriendrequests?.nodes || [];
-                const groupInvs = groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes || [];
+                const friendReqs =
+                    friendRequestsData?.friendRequest?.allfriendrequests?.nodes || [];
+                const groupInvs =
+                    groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes || [];
 
-                const formattedFriendRequests = friendReqs.map(req => ({
+                const formattedFriendRequests = friendReqs.map((req) => ({
                     id: req.id,
                     name: `${req.requester.name} ${req.requester.surname}`,
                     nickname: req.requester.nickname,
@@ -33,7 +34,7 @@ export default function Invitations() {
                     sent: req.sent
                 }));
 
-                const formattedGroupInvitations = groupInvs.map(inv => ({
+                const formattedGroupInvitations = groupInvs.map((inv) => ({
                     id: inv.id,
                     name: inv.project.name,
                     description: inv.project.description,
@@ -56,11 +57,11 @@ export default function Invitations() {
 
     const handleRemove = (id) => {
         // Remove invitation from the appropriate list
-        setFriendRequests(prev => prev.filter(inv => inv.id !== id));
-        setGroupInvitations(prev => prev.filter(inv => inv.id !== id));
+        setFriendRequests((prev) => prev.filter((inv) => inv.id !== id));
+        setGroupInvitations((prev) => prev.filter((inv) => inv.id !== id));
     };
 
-    const {setInvitationsCount} = useContext(InvitationContext);
+    const { setInvitationsCount } = useContext(InvitationContext);
 
     useEffect(() => {
         const totalCount = friendRequests.length + groupInvitations.length;
@@ -81,15 +82,15 @@ export default function Invitations() {
     return (
         <div className="invitations-container">
             <h1>Invitations</h1>
-            
+
             <div className="tabs">
-                <button 
+                <button
                     className={`tab ${activeTab === "friends" ? "active" : ""}`}
                     onClick={() => setActiveTab("friends")}
                 >
                     Friend Requests ({friendRequests.length})
                 </button>
-                <button 
+                <button
                     className={`tab ${activeTab === "groups" ? "active" : ""}`}
                     onClick={() => setActiveTab("groups")}
                 >
@@ -100,17 +101,11 @@ export default function Invitations() {
             <div className="invitations-list">
                 {currentInvitations.length === 0 ? (
                     <p className="empty">
-                        {activeTab === "friends" 
-                            ? "No friend requests" 
-                            : "No group invitations"}
+                        {activeTab === "friends" ? "No friend requests" : "No group invitations"}
                     </p>
                 ) : (
-                    currentInvitations.map(inv => (
-                        <Invitation
-                            key={inv.id}
-                            data={inv}
-                            onRemove={handleRemove}
-                        />
+                    currentInvitations.map((inv) => (
+                        <Invitation key={inv.id} data={inv} onRemove={handleRemove} />
                     ))
                 )}
             </div>

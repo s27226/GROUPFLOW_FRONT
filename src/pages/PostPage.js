@@ -30,10 +30,7 @@ export default function PostPage() {
                             ) : error ? (
                                 <p className="error-message">{error}</p>
                             ) : (
-                                <Post 
-                                    {...post}
-                                    isFullView={true}
-                                />
+                                <Post {...post} isFullView={true} />
                             )}
                         </div>
                     </div>

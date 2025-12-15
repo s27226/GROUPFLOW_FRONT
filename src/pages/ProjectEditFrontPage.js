@@ -10,7 +10,7 @@ export default function ProjectEditPage() {
         name: "Shrimp Tracker",
         description: "A small app",
         banner: "https://picsum.photos/900/200?random=10",
-        logo: shrimp,
+        logo: shrimp
     };
 
     const [name, setName] = useState(project.name);

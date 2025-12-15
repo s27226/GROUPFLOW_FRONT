@@ -6,11 +6,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
-import ProfileEditPage from "./pages/ProfileEditPage"
-import ProjectProfilePage from "./pages/ProjectProfilePage"
-import ProjectEditFrontPage from "./pages/ProjectEditFrontPage"
+import ProfileEditPage from "./pages/ProfileEditPage";
+import ProjectProfilePage from "./pages/ProjectProfilePage";
+import ProjectEditFrontPage from "./pages/ProjectEditFrontPage";
 import ProjectChatPage from "./pages/ProjectViewPage";
-import ProjectsPage from "./pages/ProjectsPage"
+import ProjectsPage from "./pages/ProjectsPage";
 import PrivateChat from "./components/PrivateChat";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChatPage from "./pages/ChatPage";
@@ -21,10 +21,10 @@ import FriendPage from "./pages/FriendPage";
 import { useState } from "react";
 import { useInvitationPolling } from "./hooks/useInvitationPolling";
 import InvitationsPage from "./pages/InvitationsPage";
-import {InvitationContext} from "./context/InvitationContext";
-import NewPostPage from "./pages/NewPostPage"
-import SavedPage from "./pages/SavedPage"
-import PostPage from "./pages/PostPage"
+import { InvitationContext } from "./context/InvitationContext";
+import NewPostPage from "./pages/NewPostPage";
+import SavedPage from "./pages/SavedPage";
+import PostPage from "./pages/PostPage";
 import ProfileTagsPage from "./pages/ProfileTagsPage";
 
 function ProtectedRoute({ children }) {
@@ -48,7 +48,6 @@ function ProtectedRoute({ children }) {
     }
 
     return children;
-
 }
 
 function AppContent({ setInvitationsCount }) {
@@ -57,27 +56,27 @@ function AppContent({ setInvitationsCount }) {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="/profile/:userId" element={<ProfilePage/>}/>
-                <Route path="/settings" element={<SettingsPage/>}/>
-                <Route path="/settings/reset-pass" element={<ResetPasswordPage/>}/>
-                <Route path="/profile/edit" element={<ProfileEditPage/>}/>
-                <Route path="/project/:projectId" element={<ProjectProfilePage/>}/>
-                <Route path="/project/:projectId/edit" element={<ProjectEditFrontPage/>}/>
-                <Route path="/project/:projectId/new-post" element={<NewPostPage/>}/>
-                <Route path="/chat/:username" element={<PrivateChat/>}/>
-                <Route path="/projects" element={<ProjectsPage/>}/>
-                <Route path="/project/:id/workspace" element={<ProjectChatPage/>}/>
-                <Route path="/chats" element={<ChatPage/>}/>
-                <Route path="/creategroup" element={<CreateGroupPage/>}/>
-                <Route path="/myprojects" element={<MyProjectsPage/>}/>
-                <Route path="/findfriends" element={<UsersPage/>}/>
-                <Route path="/profile-tags" element={<ProfileTagsPage/>}/>
-                <Route path="/friendslist" element={<FriendPage/>}/>
-                <Route path="/invitations" element={<InvitationsPage/>}/>
-                <Route path="/Saved" element={<SavedPage/>}/>
-                <Route path="/post/:postId" element={<PostPage/>}/>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/profile/:userId" element={<ProfilePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/settings/reset-pass" element={<ResetPasswordPage />} />
+                <Route path="/profile/edit" element={<ProfileEditPage />} />
+                <Route path="/project/:projectId" element={<ProjectProfilePage />} />
+                <Route path="/project/:projectId/edit" element={<ProjectEditFrontPage />} />
+                <Route path="/project/:projectId/new-post" element={<NewPostPage />} />
+                <Route path="/chat/:username" element={<PrivateChat />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/project/:id/workspace" element={<ProjectChatPage />} />
+                <Route path="/chats" element={<ChatPage />} />
+                <Route path="/creategroup" element={<CreateGroupPage />} />
+                <Route path="/myprojects" element={<MyProjectsPage />} />
+                <Route path="/findfriends" element={<UsersPage />} />
+                <Route path="/profile-tags" element={<ProfileTagsPage />} />
+                <Route path="/friendslist" element={<FriendPage />} />
+                <Route path="/invitations" element={<InvitationsPage />} />
+                <Route path="/Saved" element={<SavedPage />} />
+                <Route path="/post/:postId" element={<PostPage />} />
                 <Route
                     path="/"
                     element={
@@ -86,7 +85,15 @@ function AppContent({ setInvitationsCount }) {
                         </ProtectedRoute>
                     }
                 />
-                <Route path="*" element={<div style={{padding: '40px', textAlign: 'center'}}><h1>404 - Page Not Found</h1><p>Sorry, this page doesn't exist.</p></div>}/>
+                <Route
+                    path="*"
+                    element={
+                        <div style={{ padding: "40px", textAlign: "center" }}>
+                            <h1>404 - Page Not Found</h1>
+                            <p>Sorry, this page doesn't exist.</p>
+                        </div>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     );
@@ -98,7 +105,7 @@ export default function App() {
     );
 
     return (
-        <InvitationContext.Provider value={{invitationsCount, setInvitationsCount}}>
+        <InvitationContext.Provider value={{ invitationsCount, setInvitationsCount }}>
             <AuthProvider>
                 <AppContent setInvitationsCount={setInvitationsCount} />
             </AuthProvider>

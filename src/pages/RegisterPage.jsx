@@ -46,8 +46,8 @@ export default function RegisterPage() {
                     surname,
                     nickname,
                     email,
-                    password,
-                },
+                    password
+                }
             });
 
             const authData = data.auth.registerUser;
@@ -110,17 +110,10 @@ export default function RegisterPage() {
 
                 {error && <p className="login-error">{error}</p>}
 
-                <button
-                    className="pill-btn register"
-                    onClick={handleSubmit}
-                >
+                <button className="pill-btn register" onClick={handleSubmit}>
                     Register
                 </button>
-                <button
-                    className="pill-btn login"
-                    type="button"
-                    onClick={() => navigate("/login")}
-                >
+                <button className="pill-btn login" type="button" onClick={() => navigate("/login")}>
                     Back to Login
                 </button>
 

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -9,8 +9,7 @@ import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 
 import "../styles/MainComponents.css";
-import "../styles/Chat.css"
-
+import "../styles/Chat.css";
 
 export default function ChatPage() {
     const location = useLocation();
@@ -33,10 +32,7 @@ export default function ChatPage() {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const data = await executeQuery(
-                    GRAPHQL_QUERIES.GET_CURRENT_USER,
-                    {}
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
 
                 if (data) {
                     setCurrentUserId(data.users.me.id);
@@ -52,20 +48,19 @@ export default function ChatPage() {
     useEffect(() => {
         const fetchChats = async () => {
             try {
-                const data = await executeQuery(
-                    GRAPHQL_QUERIES.GET_MY_FRIENDS,
-                    {}
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
 
                 if (data) {
                     const friends = data.friendship.myfriends || [];
-                    setUsers(friends.map(friend => ({
-                        id: friend.id,
-                        name: `${friend.name} ${friend.surname}`,
-                        nickname: friend.nickname,
-                        profilePic: friend.profilePic,
-                        online: false // TODO: Implement online status
-                    })));
+                    setUsers(
+                        friends.map((friend) => ({
+                            id: friend.id,
+                            name: `${friend.name} ${friend.surname}`,
+                            nickname: friend.nickname,
+                            profilePic: friend.profilePic,
+                            online: false // TODO: Implement online status
+                        }))
+                    );
                 }
                 setLoading(false);
             } catch (err) {
@@ -78,8 +73,6 @@ export default function ChatPage() {
         fetchChats();
     }, []);
 
-
-
     return (
         <div className="maincomp-layout">
             <Navbar />
@@ -87,18 +80,21 @@ export default function ChatPage() {
                 <Sidebar />
                 <div className="maincomp-center-wrapper">
                     <div className="maincomp-feed-wrapper">
-
                         <div className="chat-layout">
                             {loading ? (
                                 <p>Loading chats...</p>
                             ) : (
-                                <ChatList users={users} onSelectUser={setSelectedUser} selectedUser={selectedUser}/>
+                                <ChatList
+                                    users={users}
+                                    onSelectUser={setSelectedUser}
+                                    selectedUser={selectedUser}
+                                />
                             )}
 
                             <div className="chat-window-wrapper">
                                 {selectedUser ? (
-                                    <ChatWindow 
-                                        user={selectedUser} 
+                                    <ChatWindow
+                                        user={selectedUser}
                                         currentUserId={currentUserId}
                                         onMinimize={() => {
                                             setPopupUser(selectedUser);
@@ -112,14 +108,12 @@ export default function ChatPage() {
                                 )}
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
             {popupUser && (
-                <PrivateChat 
-                    user={popupUser} 
+                <PrivateChat
+                    user={popupUser}
                     currentUserId={currentUserId}
                     onClose={() => setPopupUser(null)}
                     onExpand={() => {

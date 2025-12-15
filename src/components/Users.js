@@ -25,13 +25,13 @@ export default function Users() {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SUGGESTED_USERS, { limit: 20 });
             const results = data?.users?.suggestedusers || [];
             setSuggestedUsers(results);
-            
+
             // Update sentRequests and friends state from backend data
             const pendingUserIds = results
-                .filter(result => result.hasPendingRequest)
-                .map(result => result.user.id);
+                .filter((result) => result.hasPendingRequest)
+                .map((result) => result.user.id);
             setSentRequests(new Set(pendingUserIds));
-            
+
             // Note: suggestedUsers already filters out friends, but we'll set it anyway for consistency
             setFriends(new Set());
         } catch (err) {
@@ -51,25 +51,25 @@ export default function Users() {
             const input = {
                 searchTerm: searchTerm || null,
                 skills: selectedSkills.length > 0 ? selectedSkills : null,
-                interests: selectedInterests.length > 0 ? selectedInterests : null,
+                interests: selectedInterests.length > 0 ? selectedInterests : null
             };
 
             console.log("Executing search with query:", GRAPHQL_QUERIES.SEARCH_USERS);
             console.log("Variables:", { input });
-            
+
             const data = await executeQuery(GRAPHQL_QUERIES.SEARCH_USERS, { input });
             const results = data?.users?.searchusers || [];
             setSearchResults(results);
-            
+
             // Update sentRequests and friends state from backend data
             const pendingUserIds = results
-                .filter(result => result.hasPendingRequest)
-                .map(result => result.user.id);
+                .filter((result) => result.hasPendingRequest)
+                .map((result) => result.user.id);
             setSentRequests(new Set(pendingUserIds));
-            
+
             const friendUserIds = results
-                .filter(result => result.isFriend)
-                .map(result => result.user.id);
+                .filter((result) => result.isFriend)
+                .map((result) => result.user.id);
             setFriends(new Set(friendUserIds));
         } catch (err) {
             console.error("Search failed:", err);
@@ -86,7 +86,7 @@ export default function Users() {
     };
 
     const removeSkillFilter = (skill) => {
-        setSelectedSkills(selectedSkills.filter(s => s !== skill));
+        setSelectedSkills(selectedSkills.filter((s) => s !== skill));
     };
 
     const addInterestFilter = () => {
@@ -97,13 +97,13 @@ export default function Users() {
     };
 
     const removeInterestFilter = (interest) => {
-        setSelectedInterests(selectedInterests.filter(i => i !== interest));
+        setSelectedInterests(selectedInterests.filter((i) => i !== interest));
     };
 
     const sendFriendRequest = async (userId) => {
         try {
             await executeMutation(GRAPHQL_MUTATIONS.SEND_FRIEND_REQUEST, { requesteeId: userId });
-            setSentRequests(prev => new Set([...prev, userId]));
+            setSentRequests((prev) => new Set([...prev, userId]));
         } catch (err) {
             console.error("Failed to send friend request:", err);
         }
@@ -112,43 +112,45 @@ export default function Users() {
     const renderUserCard = (user, matchScore = null) => {
         const isFriend = friends.has(user.id);
         const hasPendingRequest = sentRequests.has(user.id);
-        
-        let buttonText = 'Send Friend Request';
-        let buttonClass = 'send-request-btn';
+
+        let buttonText = "Send Friend Request";
+        let buttonClass = "send-request-btn";
         let isDisabled = false;
-        
+
         if (isFriend) {
-            buttonText = 'Already Friends';
-            buttonClass = 'send-request-btn friends';
+            buttonText = "Already Friends";
+            buttonClass = "send-request-btn friends";
             isDisabled = true;
         } else if (hasPendingRequest) {
-            buttonText = 'Friend Request Sent';
-            buttonClass = 'send-request-btn request-sent';
+            buttonText = "Friend Request Sent";
+            buttonClass = "send-request-btn request-sent";
             isDisabled = true;
         }
-        
+
         return (
             <div key={user.id} className="user-card">
                 <div className="user-card-header">
-                    <img 
-                        src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`} 
-                        alt={user.nickname} 
+                    <img
+                        src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`}
+                        alt={user.nickname}
                         className="user-avatar"
                     />
                     <div className="user-info">
                         <h3>{user.nickname}</h3>
-                        <p className="user-name">{user.name} {user.surname}</p>
+                        <p className="user-name">
+                            {user.name} {user.surname}
+                        </p>
                         {matchScore !== null && (
                             <p className="match-score">Match: {matchScore.toFixed(0)}%</p>
                         )}
                     </div>
                 </div>
-                
+
                 {user.skills && user.skills.length > 0 && (
                     <div className="user-tags">
                         <h4>Skills:</h4>
                         <div className="tags-list">
-                            {user.skills.map(skill => (
+                            {user.skills.map((skill) => (
                                 <span key={skill.id} className="tag skill-tag">
                                     {skill.skillName}
                                 </span>
@@ -156,12 +158,12 @@ export default function Users() {
                         </div>
                     </div>
                 )}
-                
+
                 {user.interests && user.interests.length > 0 && (
                     <div className="user-tags">
                         <h4>Interests:</h4>
                         <div className="tags-list">
-                            {user.interests.map(interest => (
+                            {user.interests.map((interest) => (
                                 <span key={interest.id} className="tag interest-tag">
                                     {interest.interestName}
                                 </span>
@@ -169,8 +171,8 @@ export default function Users() {
                         </div>
                     </div>
                 )}
-                
-                <button 
+
+                <button
                     className={buttonClass}
                     onClick={() => sendFriendRequest(user.id)}
                     disabled={isDisabled}
@@ -186,13 +188,13 @@ export default function Users() {
             <h1>Find Friends</h1>
 
             <div className="tabs">
-                <button 
+                <button
                     className={`tab ${activeTab === "search" ? "active" : ""}`}
                     onClick={() => setActiveTab("search")}
                 >
                     Search
                 </button>
-                <button 
+                <button
                     className={`tab ${activeTab === "suggested" ? "active" : ""}`}
                     onClick={() => setActiveTab("suggested")}
                 >
@@ -227,10 +229,12 @@ export default function Users() {
                                     onChange={(e) => setSkillInput(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && addSkillFilter()}
                                 />
-                                <button onClick={addSkillFilter} className="add-filter-btn">+</button>
+                                <button onClick={addSkillFilter} className="add-filter-btn">
+                                    +
+                                </button>
                             </div>
                             <div className="selected-filters">
-                                {selectedSkills.map(skill => (
+                                {selectedSkills.map((skill) => (
                                     <span key={skill} className="filter-tag skill-tag">
                                         {skill}
                                         <button onClick={() => removeSkillFilter(skill)}>×</button>
@@ -249,13 +253,17 @@ export default function Users() {
                                     onChange={(e) => setInterestInput(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && addInterestFilter()}
                                 />
-                                <button onClick={addInterestFilter} className="add-filter-btn">+</button>
+                                <button onClick={addInterestFilter} className="add-filter-btn">
+                                    +
+                                </button>
                             </div>
                             <div className="selected-filters">
-                                {selectedInterests.map(interest => (
+                                {selectedInterests.map((interest) => (
                                     <span key={interest} className="filter-tag interest-tag">
                                         {interest}
-                                        <button onClick={() => removeInterestFilter(interest)}>×</button>
+                                        <button onClick={() => removeInterestFilter(interest)}>
+                                            ×
+                                        </button>
                                     </span>
                                 ))}
                             </div>
@@ -267,11 +275,13 @@ export default function Users() {
                             <LoadingSpinner />
                         ) : searchResults.length > 0 ? (
                             <div className="user-cards">
-                                {searchResults.map(result => renderUserCard(result.user))}
+                                {searchResults.map((result) => renderUserCard(result.user))}
                             </div>
                         ) : (
                             <p className="no-results">
-                                {searchTerm || selectedSkills.length > 0 || selectedInterests.length > 0
+                                {searchTerm ||
+                                selectedSkills.length > 0 ||
+                                selectedInterests.length > 0
                                     ? "No users found matching your criteria."
                                     : "Enter search criteria to find friends."}
                             </p>
@@ -283,30 +293,38 @@ export default function Users() {
             {activeTab === "suggested" && (
                 <div className="suggested-section">
                     <p className="suggested-description">
-                        Based on your skills and interests, here are some users you might connect with:
+                        Based on your skills and interests, here are some users you might connect
+                        with:
                     </p>
                     {loading ? (
                         <LoadingSpinner />
                     ) : suggestedUsers.length > 0 ? (
                         <div className="user-cards">
-                            {suggestedUsers.map(({ user, matchScore, commonSkills, commonInterests }) => (
-                                <div key={user.id}>
-                                    {renderUserCard(user, matchScore)}
-                                    {(commonSkills > 0 || commonInterests > 0) && (
-                                        <div className="match-details">
-                                            <small>
-                                                {commonSkills > 0 && `${commonSkills} common skill${commonSkills > 1 ? 's' : ''}`}
-                                                {commonSkills > 0 && commonInterests > 0 && ", "}
-                                                {commonInterests > 0 && `${commonInterests} common interest${commonInterests > 1 ? 's' : ''}`}
-                                            </small>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                            {suggestedUsers.map(
+                                ({ user, matchScore, commonSkills, commonInterests }) => (
+                                    <div key={user.id}>
+                                        {renderUserCard(user, matchScore)}
+                                        {(commonSkills > 0 || commonInterests > 0) && (
+                                            <div className="match-details">
+                                                <small>
+                                                    {commonSkills > 0 &&
+                                                        `${commonSkills} common skill${commonSkills > 1 ? "s" : ""}`}
+                                                    {commonSkills > 0 &&
+                                                        commonInterests > 0 &&
+                                                        ", "}
+                                                    {commonInterests > 0 &&
+                                                        `${commonInterests} common interest${commonInterests > 1 ? "s" : ""}`}
+                                                </small>
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            )}
                         </div>
                     ) : (
                         <p className="no-results">
-                            No suggestions available. Add skills and interests to your profile to get personalized recommendations!
+                            No suggestions available. Add skills and interests to your profile to
+                            get personalized recommendations!
                         </p>
                     )}
                 </div>

@@ -15,13 +15,13 @@ export default function NewPostPage() {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const shareData = params.get('share');
+        const shareData = params.get("share");
         if (shareData) {
             try {
                 const post = JSON.parse(decodeURIComponent(shareData));
                 setSharedPost(post);
             } catch (e) {
-                console.error('Failed to parse shared post:', e);
+                console.error("Failed to parse shared post:", e);
             }
         }
     }, [location]);
@@ -45,7 +45,7 @@ export default function NewPostPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (!content.trim()) {
             alert("Please write something for your post");
             return;
@@ -55,12 +55,12 @@ export default function NewPostPage() {
         const newPost = {
             content,
             image: imagePreview,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         };
 
         console.log("New post:", newPost);
         alert("Post created successfully!");
-        
+
         navigate("/");
     };
 
@@ -74,10 +74,7 @@ export default function NewPostPage() {
                         <div className="newpost-container">
                             <div className="newpost-header">
                                 <h2>Create New Post</h2>
-                                <button 
-                                    className="newpost-close-btn"
-                                    onClick={() => navigate("/")}
-                                >
+                                <button className="newpost-close-btn" onClick={() => navigate("/")}>
                                     <X size={24} />
                                 </button>
                             </div>
@@ -92,9 +89,7 @@ export default function NewPostPage() {
                                         rows={8}
                                         maxLength={1000}
                                     />
-                                    <div className="newpost-char-count">
-                                        {content.length}/1000
-                                    </div>
+                                    <div className="newpost-char-count">{content.length}/1000</div>
                                 </div>
 
                                 {imagePreview && (
@@ -127,11 +122,17 @@ export default function NewPostPage() {
                                                     <span> · {sharedPost.time}</span>
                                                 </div>
                                             </div>
-                                            <p className="newpost-shared-text">{sharedPost.content}</p>
+                                            <p className="newpost-shared-text">
+                                                {sharedPost.content}
+                                            </p>
                                             {sharedPost.image && (
-                                                <img src={sharedPost.image} alt="shared" className="newpost-shared-image" />
+                                                <img
+                                                    src={sharedPost.image}
+                                                    alt="shared"
+                                                    className="newpost-shared-image"
+                                                />
                                             )}
-                                            <a 
+                                            <a
                                                 href={`/post/${sharedPost.id}`}
                                                 className="newpost-shared-link"
                                                 onClick={(e) => {

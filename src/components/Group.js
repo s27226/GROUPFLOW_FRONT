@@ -1,8 +1,17 @@
 import "../styles/Groups.css";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { formatDate } from "../utils/dateFormatter";
 
-export default function Group({id, name, description, imageUrl, owner, viewCount, likeCount, created}) {
+export default function Group({
+    id,
+    name,
+    description,
+    imageUrl,
+    owner,
+    viewCount,
+    likeCount,
+    created
+}) {
     const navigate = useNavigate();
 
     return (
@@ -17,10 +26,18 @@ export default function Group({id, name, description, imageUrl, owner, viewCount
                     <h3 className="group-name">{name}</h3>
                     {owner && (
                         <p className="group-owner">
-                            by <span onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/profile/${owner.id}`);
-                            }} style={{cursor: 'pointer', color: 'var(--primary-color)', fontWeight: '500'}}>
+                            by{" "}
+                            <span
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/profile/${owner.id}`);
+                                }}
+                                style={{
+                                    cursor: "pointer",
+                                    color: "var(--primary-color)",
+                                    fontWeight: "500"
+                                }}
+                            >
                                 {owner.nickname || owner.name}
                             </span>
                         </p>

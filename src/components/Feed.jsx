@@ -19,7 +19,7 @@ export default function Feed() {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SAVED_POSTS);
 
             const savedPosts = data?.savedPost?.savedposts || [];
-            setSavedPostIds(new Set(savedPosts.map(post => post.id)));
+            setSavedPostIds(new Set(savedPosts.map((post) => post.id)));
         } catch (err) {
             console.error("Failed to fetch saved posts:", err);
         }
@@ -27,12 +27,12 @@ export default function Feed() {
 
     const handleHidePost = (postId) => {
         // TODO: Implement hide functionality with proper state management
-        console.log('Hide post:', postId);
+        console.log("Hide post:", postId);
     };
 
     const handleUndoHide = (postId) => {
         // TODO: Implement undo hide functionality with proper state management
-        console.log('Undo hide post:', postId);
+        console.log("Undo hide post:", postId);
     };
 
     const handleSavePost = async (postId) => {
@@ -40,11 +40,11 @@ export default function Feed() {
 
         try {
             const mutation = isSaved ? GRAPHQL_MUTATIONS.UNSAVE_POST : GRAPHQL_MUTATIONS.SAVE_POST;
-            
+
             await executeQuery(mutation, { postId });
 
             // Update local state
-            setSavedPostIds(prev => {
+            setSavedPostIds((prev) => {
                 const newSet = new Set(prev);
                 if (isSaved) {
                     newSet.delete(postId);
@@ -54,8 +54,8 @@ export default function Feed() {
                 return newSet;
             });
         } catch (err) {
-            console.error('Error toggling save status:', err);
-            alert('Failed to update save status. Please try again.');
+            console.error("Error toggling save status:", err);
+            alert("Failed to update save status. Please try again.");
         }
     };
 

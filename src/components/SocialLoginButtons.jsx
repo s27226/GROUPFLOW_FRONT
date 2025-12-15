@@ -7,11 +7,7 @@ import "../styles/auth.css";
 export default function SocialLoginButtons({ onGoogleClick, onFacebookClick }) {
     return (
         <div className="social-login-circles">
-            <button
-                className="circle-btn google"
-                onClick={onGoogleClick}
-                title="Login with Google"
-            >
+            <button className="circle-btn google" onClick={onGoogleClick} title="Login with Google">
                 <img
                     src={require("../images/google-logo.png")}
                     alt="Google"
@@ -32,4 +28,3 @@ export default function SocialLoginButtons({ onGoogleClick, onFacebookClick }) {
         </div>
     );
 }
-

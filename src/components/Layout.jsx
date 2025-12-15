@@ -12,18 +12,11 @@ import "../styles/MainComponents.css";
  * @param {boolean} props.showTrending - Whether to show the trending sidebar (default: true)
  * @param {string} props.variant - Layout variant: "main" or "compact" (default: "main")
  */
-export default function Layout({ 
-    children, 
-    showTrending = true, 
-    variant = "main" 
-}) {
+export default function Layout({ children, showTrending = true, variant = "main" }) {
     const layoutClass = variant === "main" ? "mainpage-layout" : "maincomp-layout";
-    const contentWrapperClass = variant === "main" 
-        ? "mainpage-feed-trending-wrapper" 
-        : "maincomp-center-wrapper";
-    const feedWrapperClass = variant === "main" 
-        ? "mainpage-feed-wrapper" 
-        : "maincomp-feed-wrapper";
+    const contentWrapperClass =
+        variant === "main" ? "mainpage-feed-trending-wrapper" : "maincomp-center-wrapper";
+    const feedWrapperClass = variant === "main" ? "mainpage-feed-wrapper" : "maincomp-feed-wrapper";
 
     return (
         <div className={layoutClass}>
@@ -32,15 +25,11 @@ export default function Layout({
                 <Sidebar />
                 {showTrending ? (
                     <div className={contentWrapperClass}>
-                        <div className={feedWrapperClass}>
-                            {children}
-                        </div>
+                        <div className={feedWrapperClass}>{children}</div>
                         <Trending />
                     </div>
                 ) : (
-                    <div className={feedWrapperClass}>
-                        {children}
-                    </div>
+                    <div className={feedWrapperClass}>{children}</div>
                 )}
             </div>
         </div>

@@ -22,8 +22,8 @@ export default function LoginPage() {
             const data = await executeQuery(GRAPHQL_MUTATIONS.LOGIN_USER, {
                 input: {
                     email,
-                    password,
-                },
+                    password
+                }
             });
 
             const authData = data.auth.loginUser;
@@ -60,11 +60,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {error && <p className="login-error">{error}</p>}
-                <button
-                    className="pill-btn login"
-                    type="submit"
-                    onClick={handleSubmit}
-                >
+                <button className="pill-btn login" type="submit" onClick={handleSubmit}>
                     Sign In
                 </button>
                 <button

@@ -1,7 +1,7 @@
 // GraphQL Queries
 export const GRAPHQL_QUERIES = {
-  // Posts
-  GET_POSTS: `
+    // Posts
+    GET_POSTS: `
     query GetPosts {
       post {
         allposts {
@@ -36,8 +36,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Project Posts (filtered by project's group)
-  GET_PROJECT_POSTS: `
+    // Project Posts (filtered by project's group)
+    GET_PROJECT_POSTS: `
     query GetProjectPosts($projectId: Int!) {
       project {
         projectposts(projectId: $projectId) {
@@ -73,8 +73,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Trending Projects
-  GET_TRENDING_PROJECTS: `
+    // Trending Projects
+    GET_TRENDING_PROJECTS: `
     query GetTrendingProjects($first: Int = 5, $after: String) {
       project {
         trendingprojects(first: $first, after: $after) {
@@ -104,8 +104,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // User's Projects
-  GET_MY_PROJECTS: `
+    // User's Projects
+    GET_MY_PROJECTS: `
     query GetMyProjects {
       project {
         myprojects {
@@ -136,8 +136,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // User's Friends
-  GET_MY_FRIENDS: `
+    // User's Friends
+    GET_MY_FRIENDS: `
     query GetMyFriends {
       friendship {
         myfriends {
@@ -151,9 +151,9 @@ export const GRAPHQL_QUERIES = {
       }
     }
   `,
-  
-  // Get or create direct chat with a friend (Chat with null ProjectId)
-  GET_OR_CREATE_DIRECT_CHAT: `
+
+    // Get or create direct chat with a friend (Chat with null ProjectId)
+    GET_OR_CREATE_DIRECT_CHAT: `
     query GetOrCreateDirectChat($friendId: Int!) {
       chat {
         getorcreatedirectchat(friendId: $friendId) {
@@ -173,9 +173,9 @@ export const GRAPHQL_QUERIES = {
       }
     }
   `,
-  
-  // Get all messages for a chat
-  GET_CHAT_MESSAGES: `
+
+    // Get all messages for a chat
+    GET_CHAT_MESSAGES: `
     query GetChatMessages($chatId: Int!) {
       entry {
         chatmessages(chatId: $chatId) {
@@ -197,9 +197,9 @@ export const GRAPHQL_QUERIES = {
       }
     }
   `,
-  
-  // Get my UserChat ID for a specific chat
-  GET_MY_USER_CHAT: `
+
+    // Get my UserChat ID for a specific chat
+    GET_MY_USER_CHAT: `
     query GetMyUserChat($chatId: Int!) {
       userChat {
         myuserchat(chatId: $chatId) {
@@ -211,8 +211,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // User Profile
-  GET_USER_BY_ID: `
+    // User Profile
+    GET_USER_BY_ID: `
     query GetUserById($id: Int!) {
       users {
         getuserbyid(id: $id) {
@@ -228,8 +228,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Current User (authenticated)
-  GET_CURRENT_USER: `
+    // Current User (authenticated)
+    GET_CURRENT_USER: `
     query GetCurrentUser {
       users {
         me {
@@ -245,8 +245,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // User's Public Projects
-  GET_USER_PROJECTS: `
+    // User's Public Projects
+    GET_USER_PROJECTS: `
     query GetUserProjects($userId: Int!) {
       project {
         userprojects(userId: $userId) {
@@ -267,8 +267,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // All Projects with Pagination
-  GET_ALL_PROJECTS: `
+    // All Projects with Pagination
+    GET_ALL_PROJECTS: `
     query GetAllProjects($first: Int, $after: String, $where: ProjectFilterInput, $order: [ProjectSortInput!]) {
       project {
         allprojects(first: $first, after: $after, where: $where, order: $order) {
@@ -299,8 +299,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Project by ID
-  GET_PROJECT_BY_ID: `
+    // Project by ID
+    GET_PROJECT_BY_ID: `
     query GetProjectById($id: Int!) {
       project {
         projectbyid(id: $id) {
@@ -335,8 +335,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // All Users
-  GET_ALL_USERS: `
+    // All Users
+    GET_ALL_USERS: `
     query GetAllUsers($where: UserFilterInput) {
       users {
         allusers(where: $where) {
@@ -350,8 +350,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // All Groups
-  GET_ALL_GROUPS: `
+    // All Groups
+    GET_ALL_GROUPS: `
     query GetAllGroups($first: Int, $after: String, $where: GroupFilterInput) {
       group {
         allgroups(first: $first, after: $after, where: $where) {
@@ -373,8 +373,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Group by ID
-  GET_GROUP_BY_ID: `
+    // Group by ID
+    GET_GROUP_BY_ID: `
     query GetGroupById($id: Int!) {
       group {
         groupbyid(id: $id) {
@@ -387,8 +387,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Friend Requests
-  GET_FRIEND_REQUESTS: `
+    // Friend Requests
+    GET_FRIEND_REQUESTS: `
     query GetFriendRequests($first: Int, $after: String) {
       friendRequest {
         allfriendrequests(first: $first, after: $after) {
@@ -419,8 +419,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Group Invitations
-  GET_GROUP_INVITATIONS: `
+    // Group Invitations
+    GET_GROUP_INVITATIONS: `
     query GetGroupInvitations($first: Int, $after: String) {
       projectInvitation {
         allprojectinvitations(first: $first, after: $after) {
@@ -456,8 +456,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // All Chats
-  GET_ALL_CHATS: `
+    // All Chats
+    GET_ALL_CHATS: `
     query GetAllChats($first: Int, $after: String) {
       chat {
         allchats(first: $first, after: $after) {
@@ -474,8 +474,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Chat by ID
-  GET_CHAT_BY_ID: `
+    // Chat by ID
+    GET_CHAT_BY_ID: `
     query GetChatById($id: Int!) {
       chat {
         chatbyid(id: $id) {
@@ -486,8 +486,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Get all entries (messages) for a specific chat
-  GET_CHAT_ENTRIES: `
+    // Get all entries (messages) for a specific chat
+    GET_CHAT_ENTRIES: `
     query GetChatEntries($chatId: Int!, $first: Int, $after: String) {
       entry {
         allentries(
@@ -520,8 +520,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Get UserChat ID for current user in a chat
-  GET_USER_CHAT: `
+    // Get UserChat ID for current user in a chat
+    GET_USER_CHAT: `
     query GetUserChat($chatId: Int!) {
       chat {
         chatbyid(id: $chatId) {
@@ -539,8 +539,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Create a new entry (send a message)
-  CREATE_ENTRY: `
+    // Create a new entry (send a message)
+    CREATE_ENTRY: `
     mutation CreateEntry($input: EntryInput!) {
       entry {
         createEntry(input: $input) {
@@ -559,8 +559,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Get events for a project
-  GET_PROJECT_EVENTS: `
+    // Get events for a project
+    GET_PROJECT_EVENTS: `
     query GetProjectEvents($projectId: Int!, $first: Int, $after: String) {
       projectEvent {
         eventsbyproject(
@@ -590,8 +590,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Create a new project event
-  CREATE_PROJECT_EVENT: `
+    // Create a new project event
+    CREATE_PROJECT_EVENT: `
     mutation CreateProjectEvent($input: ProjectEventInput!) {
       projectEvent {
         createProjectEvent(input: $input) {
@@ -609,8 +609,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Delete a project event
-  DELETE_PROJECT_EVENT: `
+    // Delete a project event
+    DELETE_PROJECT_EVENT: `
     mutation DeleteProjectEvent($id: Int!) {
       projectEvent {
         deleteProjectEvent(id: $id)
@@ -618,8 +618,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Saved Posts
-  GET_SAVED_POSTS: `
+    // Saved Posts
+    GET_SAVED_POSTS: `
     query GetSavedPosts {
       savedPost {
         savedposts {
@@ -655,7 +655,7 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  IS_POST_SAVED: `
+    IS_POST_SAVED: `
     query IsPostSaved($postId: Int!) {
       savedPost {
         isPostSaved(postId: $postId)
@@ -663,8 +663,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Search users with filters
-  SEARCH_USERS: `
+    // Search users with filters
+    SEARCH_USERS: `
     query SearchUsers($input: SearchUsersInput) {
       users {
         searchusers(input: $input) {
@@ -691,8 +691,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Get suggested users based on matching interests and skills
-  GET_SUGGESTED_USERS: `
+    // Get suggested users based on matching interests and skills
+    GET_SUGGESTED_USERS: `
     query GetSuggestedUsers($limit: Int = 10) {
       users {
         suggestedusers(limit: $limit) {
@@ -721,8 +721,8 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
-  // Get my skills and interests
-  GET_MY_TAGS: `
+    // Get my skills and interests
+    GET_MY_TAGS: `
     query GetMyTags {
       userTag {
         myskills {
@@ -740,7 +740,7 @@ export const GRAPHQL_QUERIES = {
 
 // GraphQL Mutations (for future use)
 export const GRAPHQL_MUTATIONS = {
-  REGISTER_USER: `
+    REGISTER_USER: `
     mutation RegisterUser($input: UserRegisterInput!) {
       auth {
         registerUser(input: $input) {
@@ -754,7 +754,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  LOGIN_USER: `
+    LOGIN_USER: `
     mutation LoginUser($input: UserLoginInput!) {
       auth {
         loginUser(input: $input) {
@@ -768,7 +768,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  REFRESH_TOKEN: `
+    REFRESH_TOKEN: `
     mutation RefreshToken($refreshToken: String!) {
       auth {
         refreshToken(refreshToken: $refreshToken) {
@@ -782,7 +782,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  CREATE_POST: `
+    CREATE_POST: `
     mutation CreatePost($input: PostInput!) {
       createPost(input: $input) {
         id
@@ -796,7 +796,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  SEND_FRIEND_REQUEST: `
+    SEND_FRIEND_REQUEST: `
     mutation SendFriendRequest($requesteeId: Int!) {
       friendRequest {
         sendFriendRequest(requesteeId: $requesteeId) {
@@ -815,7 +815,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  ACCEPT_FRIEND_REQUEST: `
+    ACCEPT_FRIEND_REQUEST: `
     mutation AcceptFriendRequest($friendRequestId: Int!) {
       friendRequest {
         acceptFriendRequest(friendRequestId: $friendRequestId)
@@ -823,7 +823,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  REJECT_FRIEND_REQUEST: `
+    REJECT_FRIEND_REQUEST: `
     mutation RejectFriendRequest($friendRequestId: Int!) {
       friendRequest {
         rejectFriendRequest(friendRequestId: $friendRequestId)
@@ -831,7 +831,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  REMOVE_FRIEND: `
+    REMOVE_FRIEND: `
     mutation RemoveFriend($friendId: Int!) {
       friendship {
         removeFriend(friendId: $friendId)
@@ -839,7 +839,7 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  SAVE_POST: `
+    SAVE_POST: `
     mutation SavePost($postId: Int!) {
       savedPost {
         savePost(postId: $postId) {
@@ -851,16 +851,16 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  UNSAVE_POST: `
+    UNSAVE_POST: `
     mutation UnsavePost($postId: Int!) {
       savedPost {
         unsavePost(postId: $postId)
       }
     }
   `,
-  
-  // Send a message in a chat
-  SEND_MESSAGE: `
+
+    // Send a message in a chat
+    SEND_MESSAGE: `
     mutation SendMessage($input: EntryInput!) {
       entry {
         createEntry(input: $input) {
@@ -883,8 +883,8 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  // Add a skill
-  ADD_SKILL: `
+    // Add a skill
+    ADD_SKILL: `
     mutation AddSkill($input: UserSkillInput!) {
       userTag {
         addskill(input: $input) {
@@ -896,8 +896,8 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  // Remove a skill
-  REMOVE_SKILL: `
+    // Remove a skill
+    REMOVE_SKILL: `
     mutation RemoveSkill($skillId: Int!) {
       userTag {
         removeskill(skillId: $skillId)
@@ -905,8 +905,8 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  // Add an interest
-  ADD_INTEREST: `
+    // Add an interest
+    ADD_INTEREST: `
     mutation AddInterest($input: UserInterestInput!) {
       userTag {
         addinterest(input: $input) {
@@ -918,8 +918,8 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-  // Remove an interest
-  REMOVE_INTEREST: `
+    // Remove an interest
+    REMOVE_INTEREST: `
     mutation RemoveInterest($interestId: Int!) {
       userTag {
         removeinterest(interestId: $interestId)

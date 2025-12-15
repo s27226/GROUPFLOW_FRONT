@@ -1,18 +1,18 @@
-import "../styles/MembersPanel.css"
+import "../styles/MembersPanel.css";
 import { useNavigate } from "react-router-dom";
-
 
 export default function MembersPanel({ project, projectId }) {
     const navigate = useNavigate();
 
-    const members = project?.collaborators?.map(collab => ({
-        id: collab.user.id,
-        name: `${collab.user.name} ${collab.user.surname}`,
-        nickname: collab.user.nickname,
-        role: collab.role,
-        avatar: collab.user.profilePic || `https://i.pravatar.cc/40?u=${collab.user.id}`,
-        status: "available"
-    })) || [];
+    const members =
+        project?.collaborators?.map((collab) => ({
+            id: collab.user.id,
+            name: `${collab.user.name} ${collab.user.surname}`,
+            nickname: collab.user.nickname,
+            role: collab.role,
+            avatar: collab.user.profilePic || `https://i.pravatar.cc/40?u=${collab.user.id}`,
+            status: "available"
+        })) || [];
 
     if (project?.owner) {
         members.unshift({
@@ -42,10 +42,16 @@ export default function MembersPanel({ project, projectId }) {
                             style={{ cursor: "pointer" }}
                         >
                             <div className="member-header">
-                                <img src={member.avatar} alt={member.name} className="member-avatar"/>
-                                <span className="status-dot"/>
+                                <img
+                                    src={member.avatar}
+                                    alt={member.name}
+                                    className="member-avatar"
+                                />
+                                <span className="status-dot" />
                                 <div className="member-info">
-                                    <span className="member-name">{member.nickname || member.name}</span>
+                                    <span className="member-name">
+                                        {member.nickname || member.name}
+                                    </span>
                                     <span className="member-role">{member.role}</span>
                                 </div>
                             </div>
@@ -53,8 +59,8 @@ export default function MembersPanel({ project, projectId }) {
                                 {member.status === "available"
                                     ? "Dostępny"
                                     : member.status === "away"
-                                        ? "Za chwilę wracam"
-                                        : "Niedostępny"}
+                                      ? "Za chwilę wracam"
+                                      : "Niedostępny"}
                             </span>
                         </div>
                     ))}
@@ -63,6 +69,3 @@ export default function MembersPanel({ project, projectId }) {
         </div>
     );
 }
-
-
-
