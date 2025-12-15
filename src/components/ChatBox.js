@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { API_CONFIG, getAuthHeaders } from "../config/api";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/ChatBox.css";
 
 

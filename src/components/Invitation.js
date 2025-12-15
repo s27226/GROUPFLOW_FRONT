@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/Invitation.css";

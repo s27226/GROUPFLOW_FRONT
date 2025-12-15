@@ -1,4 +1,6 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/SettingsPage.css";
 import {useNavigate} from "react-router-dom";
 

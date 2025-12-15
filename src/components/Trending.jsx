@@ -1,5 +1,7 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTrendingProjects } from "../hooks/useTrendingProjects";
+import SkeletonCard from "./ui/SkeletonCard";
 import "../styles/Trending.css";
 
 export default function Trending() {

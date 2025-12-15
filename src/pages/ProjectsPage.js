@@ -1,3 +1,6 @@
+import React from "react";
+import Layout from "../components/Layout";
+import Groups from "../components/Groups";
 
 export default function ProjectsPage() {
     return (

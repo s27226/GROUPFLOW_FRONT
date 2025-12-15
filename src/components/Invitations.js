@@ -1,8 +1,10 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Invitation.css";
+import Invitation from "./Invitation";
 import {InvitationContext} from "../context/InvitationContext";
 import { useGraphQL } from "../hooks/useGraphQL";
+import LoadingSpinner from "./ui/LoadingSpinner";
 
 
 export default function Invitations() {

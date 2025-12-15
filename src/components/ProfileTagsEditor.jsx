@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/ProfileTagsEditor.css";
 
 export default function ProfileTagsEditor() {
