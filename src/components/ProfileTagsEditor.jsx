@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/ProfileTagsEditor.css";
 
 export default function ProfileTagsEditor() {
@@ -53,7 +54,7 @@ export default function ProfileTagsEditor() {
             });
 
             if (success?.userTag?.removeskill) {
-                setSkills(skills.filter(s => s.id !== skillId));
+                setSkills(skills.filter((s) => s.id !== skillId));
             }
         } catch (err) {
             console.error("Failed to remove skill:", err);
@@ -86,7 +87,7 @@ export default function ProfileTagsEditor() {
             });
 
             if (success?.userTag?.removeinterest) {
-                setInterests(interests.filter(i => i.id !== interestId));
+                setInterests(interests.filter((i) => i.id !== interestId));
             }
         } catch (err) {
             console.error("Failed to remove interest:", err);
@@ -106,13 +107,16 @@ export default function ProfileTagsEditor() {
         <div className="profile-tags-editor">
             <h2>Your Profile Tags</h2>
             <p className="tags-description">
-                Add skills and interests to help others find you and get better friend recommendations!
+                Add skills and interests to help others find you and get better friend
+                recommendations!
             </p>
 
             <div className="tag-section">
                 <h3>Skills</h3>
-                <p className="section-hint">Technical abilities, programming languages, tools, etc.</p>
-                
+                <p className="section-hint">
+                    Technical abilities, programming languages, tools, etc.
+                </p>
+
                 <div className="tag-input-group">
                     <input
                         type="text"
@@ -128,10 +132,10 @@ export default function ProfileTagsEditor() {
 
                 <div className="tags-display">
                     {skills.length > 0 ? (
-                        skills.map(skill => (
+                        skills.map((skill) => (
                             <div key={skill.id} className="tag-item skill-tag">
                                 <span>{skill.skillName}</span>
-                                <button 
+                                <button
                                     onClick={() => removeSkill(skill.id)}
                                     className="remove-tag-btn"
                                     title="Remove skill"
@@ -148,8 +152,10 @@ export default function ProfileTagsEditor() {
 
             <div className="tag-section">
                 <h3>Interests</h3>
-                <p className="section-hint">Hobbies, topics you're passionate about, activities you enjoy...</p>
-                
+                <p className="section-hint">
+                    Hobbies, topics you're passionate about, activities you enjoy...
+                </p>
+
                 <div className="tag-input-group">
                     <input
                         type="text"
@@ -165,10 +171,10 @@ export default function ProfileTagsEditor() {
 
                 <div className="tags-display">
                     {interests.length > 0 ? (
-                        interests.map(interest => (
+                        interests.map((interest) => (
                             <div key={interest.id} className="tag-item interest-tag">
                                 <span>{interest.interestName}</span>
-                                <button 
+                                <button
                                     onClick={() => removeInterest(interest.id)}
                                     className="remove-tag-btn"
                                     title="Remove interest"
@@ -185,8 +191,9 @@ export default function ProfileTagsEditor() {
 
             <div className="tags-summary">
                 <p>
-                    <strong>{skills.length}</strong> skill{skills.length !== 1 ? 's' : ''} and{' '}
-                    <strong>{interests.length}</strong> interest{interests.length !== 1 ? 's' : ''} added
+                    <strong>{skills.length}</strong> skill{skills.length !== 1 ? "s" : ""} and{" "}
+                    <strong>{interests.length}</strong> interest{interests.length !== 1 ? "s" : ""}{" "}
+                    added
                 </p>
             </div>
         </div>

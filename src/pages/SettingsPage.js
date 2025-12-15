@@ -1,6 +1,8 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/SettingsPage.css";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
     const navigate = useNavigate();
@@ -34,9 +36,9 @@ export default function SettingsPage() {
 
     return (
         <div className="settings-layout">
-            <Navbar/>
+            <Navbar />
             <div className="settings-content">
-                <Sidebar/>
+                <Sidebar />
 
                 <div className="settings-main">
                     <h3>Settings</h3>
@@ -45,7 +47,9 @@ export default function SettingsPage() {
                         <div className="option-row">
                             <div className="option-label">
                                 <span>Theme</span>
-                                <p className="option-description">Choose between dark and light mode</p>
+                                <p className="option-description">
+                                    Choose between dark and light mode
+                                </p>
                             </div>
                             <div>
                                 <button
@@ -68,9 +72,7 @@ export default function SettingsPage() {
                         <div className="option-row">
                             <div className="option-label">
                                 <span>Language</span>
-                                <p className="option-description">
-                                    Select your preferred language
-                                </p>
+                                <p className="option-description">Select your preferred language</p>
                             </div>
                             <select
                                 value={language}
@@ -90,7 +92,9 @@ export default function SettingsPage() {
                         <div className="option-row">
                             <div className="option-label">
                                 <span>Font Size</span>
-                                <p className="option-description">Adjust the base font size for better readability</p>
+                                <p className="option-description">
+                                    Adjust the base font size for better readability
+                                </p>
                             </div>
                             <div>
                                 <button
@@ -118,13 +122,9 @@ export default function SettingsPage() {
                         <div className="option-row">
                             <div className="option-label">
                                 <span>Reset Password</span>
-                                <p className="option-description">
-                                    Change your account password
-                                </p>
+                                <p className="option-description">Change your account password</p>
                             </div>
-                            <button onClick={() => navigate("/settings/reset-pass")}>
-                                Reset
-                            </button>
+                            <button onClick={() => navigate("/settings/reset-pass")}>Reset</button>
                         </div>
                     </div>
                 </div>

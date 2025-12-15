@@ -21,7 +21,7 @@ export const useSearchQuery = () => {
 
         // Listen for storage events (cross-tab)
         window.addEventListener("storage", handleStorageChange);
-        
+
         // Poll for changes since storage event doesn't fire in same tab
         const interval = setInterval(handleStorageChange, 500);
 

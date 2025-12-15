@@ -22,8 +22,11 @@ export function useInvitationPolling(setInvitationsCount) {
                     executeQuery(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, { first: 50 })
                 ]);
 
-                const friendRequestsCount = friendRequestsData?.friendRequest?.allfriendrequests?.nodes?.length || 0;
-                const groupInvitationsCount = groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes?.length || 0;
+                const friendRequestsCount =
+                    friendRequestsData?.friendRequest?.allfriendrequests?.nodes?.length || 0;
+                const groupInvitationsCount =
+                    groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes?.length ||
+                    0;
                 const totalCount = friendRequestsCount + groupInvitationsCount;
 
                 setInvitationsCount(totalCount);

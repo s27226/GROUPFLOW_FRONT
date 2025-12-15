@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { GRAPHQL_QUERIES } from '../queries/graphql';
-import { formatTime } from '../utils/dateFormatter';
-import { useGraphQL } from './useGraphQL';
+import { useState, useEffect } from "react";
+import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { formatTime } from "../utils/dateFormatter";
+import { useGraphQL } from "./useGraphQL";
 
 /**
  * Helper function to format post data with sharedPost
@@ -10,22 +10,24 @@ import { useGraphQL } from './useGraphQL';
  */
 export const formatPostData = (post) => {
     if (!post) return null;
-    
+
     return {
         ...post,
-        author: post.user?.nickname || 'Unknown',
+        author: post.user?.nickname || "Unknown",
         authorId: post.user?.id,
         time: formatTime(post.created),
         content: post.content || post.description,
         image: post.imageUrl,
-        sharedPost: post.sharedPost ? {
-            id: post.sharedPost.id,
-            author: post.sharedPost.user?.nickname || 'Unknown',
-            authorId: post.sharedPost.user?.id,
-            time: formatTime(post.sharedPost.created),
-            content: post.sharedPost.content || post.sharedPost.description,
-            image: post.sharedPost.imageUrl
-        } : null
+        sharedPost: post.sharedPost
+            ? {
+                  id: post.sharedPost.id,
+                  author: post.sharedPost.user?.nickname || "Unknown",
+                  authorId: post.sharedPost.user?.id,
+                  time: formatTime(post.sharedPost.created),
+                  content: post.sharedPost.content || post.sharedPost.description,
+                  image: post.sharedPost.imageUrl
+              }
+            : null
     };
 };
 
@@ -49,8 +51,8 @@ export const usePosts = () => {
             setPosts(formattedPosts);
             setError(null);
         } catch (err) {
-            console.error('Failed to fetch posts:', err);
-            setError(err.message || 'Failed to load posts');
+            console.error("Failed to fetch posts:", err);
+            setError(err.message || "Failed to load posts");
         } finally {
             setLoading(false);
         }
@@ -76,7 +78,7 @@ export const usePost = (postId) => {
 
     const fetchPost = async () => {
         if (!postId) {
-            setError('No post ID provided');
+            setError("No post ID provided");
             setLoading(false);
             return;
         }
@@ -86,10 +88,10 @@ export const usePost = (postId) => {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_POSTS, {});
 
             const allPosts = data.post.allposts || [];
-            const foundPost = allPosts.find(p => p.id === parseInt(postId));
+            const foundPost = allPosts.find((p) => p.id === parseInt(postId));
 
             if (!foundPost) {
-                setError('Post not found');
+                setError("Post not found");
                 setPost(null);
             } else {
                 const formattedPost = formatPostData(foundPost);
@@ -100,8 +102,8 @@ export const usePost = (postId) => {
                 setError(null);
             }
         } catch (err) {
-            console.error('Failed to fetch post:', err);
-            setError(err.message || 'Failed to load post');
+            console.error("Failed to fetch post:", err);
+            setError(err.message || "Failed to load post");
             setPost(null);
         } finally {
             setLoading(false);
@@ -143,8 +145,8 @@ export const useProjectPosts = (projectId) => {
             setPosts(formattedPosts);
             setError(null);
         } catch (err) {
-            console.error('Failed to fetch project posts:', err);
-            setError(err.message || 'Failed to load project posts');
+            console.error("Failed to fetch project posts:", err);
+            setError(err.message || "Failed to load project posts");
         } finally {
             setLoading(false);
         }
@@ -173,7 +175,7 @@ export const useSavedPosts = () => {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SAVED_POSTS);
 
             const savedPosts = data?.savedPost?.savedposts || [];
-            const formattedPosts = savedPosts.map(post => ({
+            const formattedPosts = savedPosts.map((post) => ({
                 ...formatPostData(post),
                 saved: true,
                 hidden: false,
@@ -182,8 +184,8 @@ export const useSavedPosts = () => {
             setPosts(formattedPosts);
             setError(null);
         } catch (err) {
-            console.error('Error fetching saved posts:', err);
-            setError(err.message || 'Failed to load saved posts');
+            console.error("Error fetching saved posts:", err);
+            setError(err.message || "Failed to load saved posts");
         } finally {
             setLoading(false);
         }

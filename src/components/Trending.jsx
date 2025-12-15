@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTrendingProjects } from "../hooks/useTrendingProjects";
+import SkeletonCard from "./ui/SkeletonCard";
 import "../styles/Trending.css";
 
 export default function Trending() {
@@ -29,10 +30,14 @@ export default function Trending() {
             <h3>Trending Projects</h3>
             <ul>
                 {projects.map((project) => (
-                    <li key={project.id} className="trending-card" onClick={() => navigate(`/project/${project.id}`)}>
-                        <img 
-                            src={project.image} 
-                            alt={project.name} 
+                    <li
+                        key={project.id}
+                        className="trending-card"
+                        onClick={() => navigate(`/project/${project.id}`)}
+                    >
+                        <img
+                            src={project.image}
+                            alt={project.name}
                             className="trending-img"
                             onError={(e) => {
                                 e.target.src = `https://picsum.photos/60?random=${project.id}`;
@@ -42,18 +47,12 @@ export default function Trending() {
                             <h4 className="trending-name">{project.name}</h4>
                             <p className="trending-desc">{project.description}</p>
                             {project.owner && (
-                                <span className="trending-owner">
-                                    by {project.owner.nickname}
-                                </span>
+                                <span className="trending-owner">by {project.owner.nickname}</span>
                             )}
                             {(project.viewCount || project.likeCount) && (
                                 <div className="trending-stats">
-                                    {project.viewCount > 0 && (
-                                        <span>👀 {project.viewCount}</span>
-                                    )}
-                                    {project.likeCount > 0 && (
-                                        <span>❤️ {project.likeCount}</span>
-                                    )}
+                                    {project.viewCount > 0 && <span>👀 {project.viewCount}</span>}
+                                    {project.likeCount > 0 && <span>❤️ {project.likeCount}</span>}
                                 </div>
                             )}
                         </div>

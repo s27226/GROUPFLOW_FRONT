@@ -38,7 +38,6 @@ export default function ResetPasswordPage() {
 
     return (
         <div className="auth-container">
-
             <div className="auth-right">
                 <div className="form-card wide">
                     <h1>Reset Password</h1>
@@ -68,10 +67,7 @@ export default function ResetPasswordPage() {
                     <button className="pill-btn login" onClick={handleReset}>
                         Reset Password
                     </button>
-                    <button
-                        className="pill-btn register"
-                        onClick={() => navigate("/settings")}
-                    >
+                    <button className="pill-btn register" onClick={() => navigate("/settings")}>
                         Cancel
                     </button>
                 </div>

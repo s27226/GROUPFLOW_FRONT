@@ -1,5 +1,4 @@
-
-export default function ChatList({users, onSelectUser, selectedUser}) {
+export default function ChatList({ users, onSelectUser, selectedUser }) {
     return (
         <div className="chat-list">
             <h3 className="text-center"> Friends </h3>

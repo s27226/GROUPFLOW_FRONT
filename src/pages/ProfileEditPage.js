@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -9,7 +12,7 @@ export default function ProfileEditPage() {
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
     const { executeQuery } = useGraphQL();
-    
+
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState("");
@@ -21,10 +24,7 @@ export default function ProfileEditPage() {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const data = await executeQuery(
-                    GRAPHQL_QUERIES.GET_CURRENT_USER,
-                    {}
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
 
                 if (!data) {
                     console.error("Failed to fetch user");
@@ -37,7 +37,10 @@ export default function ProfileEditPage() {
                 setName(userData.name || "");
                 setBio(userData.bio || "");
                 setBanner(userData.banner || "https://picsum.photos/900/200?random=10");
-                setPfp(userData.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userData.nickname}`);
+                setPfp(
+                    userData.profilePic ||
+                        `https://api.dicebear.com/9.x/identicon/svg?seed=${userData.nickname}`
+                );
                 setAbt(userData.about || "");
                 setLoading(false);
             } catch (err) {
@@ -122,7 +125,11 @@ export default function ProfileEditPage() {
 
                     <div className="option-section">
                         <label>Name</label>
-                        <input className="name-input" value={name} onChange={(e) => setName(e.target.value)}/>
+                        <input
+                            className="name-input"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </div>
 
                     <div className="option-section">

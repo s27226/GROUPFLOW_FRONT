@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import shrimp from "../images/shrimp.png";
@@ -8,7 +10,7 @@ export default function ProjectEditPage() {
         name: "Shrimp Tracker",
         description: "A small app",
         banner: "https://picsum.photos/900/200?random=10",
-        logo: shrimp,
+        logo: shrimp
     };
 
     const [name, setName] = useState(project.name);

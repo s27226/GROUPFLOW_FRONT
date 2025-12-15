@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Groups.css";
+import Group from "./Group";
 import { useSearchQuery } from "../hooks/useSearchQuery";
 import { useGraphQL } from "../hooks/useGraphQL";
 
-export default function Groups({projects }) {
+export default function Groups({ projects }) {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const searchQuery = useSearchQuery();
@@ -19,7 +21,7 @@ export default function Groups({projects }) {
                 });
 
                 const projectsData = data.project.allprojects.nodes || [];
-                const formattedProjects = projectsData.map(project => ({
+                const formattedProjects = projectsData.map((project) => ({
                     id: project.id,
                     name: project.name,
                     description: project.description,
@@ -27,20 +29,21 @@ export default function Groups({projects }) {
                     viewCount: project.viewCount,
                     likeCount: project.likeCount,
                     created: project.created,
-                    owner: project.owner,
+                    owner: project.owner
                 }));
-                
+
                 // Filter based on search query
                 if (searchQuery) {
-                    const filtered = formattedProjects.filter(group =>
-                        group?.name?.toLowerCase().includes(searchQuery) ||
-                        group?.description?.toLowerCase().includes(searchQuery)
+                    const filtered = formattedProjects.filter(
+                        (group) =>
+                            group?.name?.toLowerCase().includes(searchQuery) ||
+                            group?.description?.toLowerCase().includes(searchQuery)
                     );
                     setGroups(filtered);
                 } else {
                     setGroups(formattedProjects);
                 }
-                
+
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch projects:", err);
@@ -65,9 +68,7 @@ export default function Groups({projects }) {
             {groups.length === 0 ? (
                 <p>No projects found.</p>
             ) : (
-                groups.map((post, index) => (
-                    <Group key={post.id || index} {...post} />
-                ))
+                groups.map((post, index) => <Group key={post.id || index} {...post} />)
             )}
         </div>
     );

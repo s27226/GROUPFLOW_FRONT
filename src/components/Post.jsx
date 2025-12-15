@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LazyImage from "./ui/LazyImage";
 import "../styles/feed.css";
+import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
 
-export default function Post({ 
+export default function Post({
     id,
     author,
     authorId,
-    time, 
-    content, 
-    image, 
+    time,
+    content,
+    image,
     comments: initialComments,
     saved: initialSaved = false,
     hidden: initialHidden = false,
@@ -30,15 +32,12 @@ export default function Post({
     const [showHideToast, setShowHideToast] = useState(false);
 
     const [showComments, setShowComments] = useState(isFullView);
-    
+
     const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;
-        return comments.reduce(
-            (acc, c) => acc + 1 + countComments(c.replies),
-            0
-        );
+        return comments.reduce((acc, c) => acc + 1 + countComments(c.replies), 0);
     };
 
     const submitComment = () => {
@@ -53,7 +52,7 @@ export default function Post({
                 likes: 0,
                 liked: false,
                 menuOpen: false
-            },
+            }
         ]);
 
         setCommentInput("");
@@ -78,13 +77,15 @@ export default function Post({
     };
 
     const handleShare = () => {
-        const postData = encodeURIComponent(JSON.stringify({
-            id,
-            author,
-            time,
-            content,
-            image
-        }));
+        const postData = encodeURIComponent(
+            JSON.stringify({
+                id,
+                author,
+                time,
+                content,
+                image
+            })
+        );
         navigate(`/project/new-post?share=${postData}`);
     };
 
@@ -103,20 +104,22 @@ export default function Post({
                 />
 
                 <div className="author-time">
-                    <span 
+                    <span
                         className="post-author"
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
                             if (authorId) navigate(`/profile/${authorId}`);
                         }}
-                    >{author}</span>
+                    >
+                        {author}
+                    </span>
                     <span className="post-time">· {time}</span>
                 </div>
 
                 <div className="post-dots" ref={menuRef}>
                     <button onClick={() => setMenuOpen(!menuOpen)}>
-                        <MoreVertical size={20}/>
+                        <MoreVertical size={20} />
                     </button>
 
                     {menuOpen && (
@@ -132,21 +135,16 @@ export default function Post({
                 </div>
             </div>
 
-            <div 
+            <div
                 className="post-content"
                 style={{ cursor: isFullView ? "default" : "pointer" }}
                 onClick={() => !isFullView && navigate(`/post/${id}`)}
             >
                 <p>{content}</p>
                 {image && (
-                    <LazyImage 
-                        src={image} 
-                        alt="post" 
-                        className="post-image"
-                        aspectRatio={16/9}
-                    />
+                    <LazyImage src={image} alt="post" className="post-image" aspectRatio={16 / 9} />
                 )}
-                
+
                 {sharedPost && (
                     <div className="post-shared-preview">
                         <div className="post-shared-header">
@@ -166,14 +164,14 @@ export default function Post({
                             </div>
                             <p className="post-shared-text">{sharedPost.content}</p>
                             {sharedPost.image && (
-                                <LazyImage 
-                                    src={sharedPost.image} 
-                                    alt="shared" 
+                                <LazyImage
+                                    src={sharedPost.image}
+                                    alt="shared"
                                     className="post-shared-image"
-                                    aspectRatio={16/9}
+                                    aspectRatio={16 / 9}
                                 />
                             )}
-                            <a 
+                            <a
                                 href={`/post/${sharedPost.id}`}
                                 className="post-shared-link"
                                 onClick={(e) => {
@@ -210,19 +208,17 @@ export default function Post({
                     onClick={() => !isFullView && setShowComments(!showComments)}
                     style={{ cursor: isFullView ? "default" : "pointer" }}
                 >
-                    <MessageCircle size={20}/>
+                    <MessageCircle size={20} />
                     <span>{countComments(comments)}</span>
                 </button>
 
                 <button className="icon-btn" onClick={handleShare}>
-                    <Share2 size={20}/>
+                    <Share2 size={20} />
                 </button>
             </div>
 
-
             {showComments && (
                 <div className="comment-section">
-
                     <div className="comment-input-row">
                         <img
                             src={`https://api.dicebear.com/9.x/identicon/svg?seed=You`}
@@ -236,7 +232,9 @@ export default function Post({
                             onChange={(e) => setCommentInput(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && submitComment()}
                         />
-                        <button className="send-comment" onClick={submitComment}>Post</button>
+                        <button className="send-comment" onClick={submitComment}>
+                            Post
+                        </button>
                     </div>
 
                     {comments.map((c, i) => (
@@ -265,7 +263,7 @@ export default function Post({
     );
 }
 
-function Comment({comment, update, depth = 0}) {
+function Comment({ comment, update, depth = 0 }) {
     const maxDepth = 4;
     const safeDepth = Math.min(depth, maxDepth);
     const leftMargin = safeDepth * 20;
@@ -273,9 +271,7 @@ function Comment({comment, update, depth = 0}) {
     const [replyOpen, setReplyOpen] = useState(false);
     const [replyText, setReplyText] = useState("");
 
-    const [collapsed, setCollapsed] = useState(
-        (comment.replies?.length || 0) >= 2
-    );
+    const [collapsed, setCollapsed] = useState((comment.replies?.length || 0) >= 2);
 
     const toggleLike = () =>
         update({
@@ -284,8 +280,7 @@ function Comment({comment, update, depth = 0}) {
             liked: !comment.liked
         });
 
-    const toggleMenu = () =>
-        update({...comment, menuOpen: !comment.menuOpen});
+    const toggleMenu = () => update({ ...comment, menuOpen: !comment.menuOpen });
 
     const submitReply = () => {
         if (!replyText.trim()) return;
@@ -318,7 +313,6 @@ function Comment({comment, update, depth = 0}) {
 
     return (
         <div className="comment" style={{ marginLeft: `${leftMargin}px` }}>
-
             {/* HEADER */}
             <div className="comment-header">
                 <img
@@ -364,9 +358,7 @@ function Comment({comment, update, depth = 0}) {
 
                 {(comment.replies?.length || 0) > 0 && (
                     <button className="reply-btn" onClick={() => setCollapsed(!collapsed)}>
-                        {collapsed
-                            ? `View replies (${comment.replies.length})`
-                            : "Hide replies"}
+                        {collapsed ? `View replies (${comment.replies.length})` : "Hide replies"}
                     </button>
                 )}
             </div>
@@ -385,7 +377,9 @@ function Comment({comment, update, depth = 0}) {
                         onChange={(e) => setReplyText(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && submitReply()}
                     />
-                    <button className="send-comment" onClick={submitReply}>Reply</button>
+                    <button className="send-comment" onClick={submitReply}>
+                        Reply
+                    </button>
                 </div>
             )}
 

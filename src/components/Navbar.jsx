@@ -1,10 +1,15 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
+import { Bell, MessageCircle } from "lucide-react";
 import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
 import logo from "../images/logo.png";
-import {useAuth} from "../context/AuthContext";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
+import NotificationItem from "./NotificationItem";
+import MessagePreview from "./MessagePreview";
+import PrivateChat from "./PrivateChat";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { useGraphQL } from "../hooks/useGraphQL";
 
@@ -26,7 +31,7 @@ function Navbar() {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             if (user || !token) return; // Already loaded or not authenticated
-            
+
             setLoadingUser(true);
             try {
                 const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
@@ -44,12 +49,12 @@ function Navbar() {
 
         fetchCurrentUser();
     }, [user, updateUser, executeQuery, token]);
-    
+
     // Fetch friends list
     useEffect(() => {
         const fetchFriends = async () => {
             if (!token || !user) return; // Not authenticated or user not loaded
-            
+
             setLoadingFriends(true);
             try {
                 const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
@@ -65,29 +70,32 @@ function Navbar() {
 
         fetchFriends();
     }, [user, executeQuery, token]);
-    
+
     const [activeChat, setActiveChat] = useState(null);
     const location = useLocation();
-    
+
     // Close all dropdowns when clicking outside
-    const menuRef = useClickOutside(() => {
-        setMenuOpen(false);
-        setNotifOpen(false);
-        setMsgOpen(false);
-    }, menuOpen || notifOpen || msgOpen);
+    const menuRef = useClickOutside(
+        () => {
+            setMenuOpen(false);
+            setNotifOpen(false);
+            setMsgOpen(false);
+        },
+        menuOpen || notifOpen || msgOpen
+    );
 
     const notifications = [
         {
             id: 1,
-            icon: <Bell size={18}/>,
+            icon: <Bell size={18} />,
             text: "Alice reacted to your post",
             time: "2h ago",
-            unread: true,
-        },
+            unread: true
+        }
     ];
 
     // Convert friends to message format
-    const messages = friends.slice(0, 5).map(friend => ({
+    const messages = friends.slice(0, 5).map((friend) => ({
         id: friend.id,
         image: friend.profilePic || defaultPfp,
         name: `${friend.name} ${friend.surname}`,
@@ -101,38 +109,36 @@ function Navbar() {
                 image: friend.profilePic || defaultPfp
             });
             setMsgOpen(false);
-        },
+        }
     }));
 
     return (
         <nav className="navbar">
-
-            <div className="navbar-logo" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
-                <img src={logo} alt="Logo" className="logo-img"/>
+            <div
+                className="navbar-logo"
+                onClick={() => navigate("/")}
+                style={{ cursor: "pointer" }}
+            >
+                <img src={logo} alt="Logo" className="logo-img" />
                 <span className="logo-text">GroupFlow</span>
             </div>
 
             <div className="search-bar-container">
                 <form
                     onSubmit={(e) => {
-
                         console.log("Search submitted:", searchQuery);
                         localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
                         // TODO: add real search logic
 
-                        if ((location.pathname === "/") || (location.pathname === "/projects?")) {
-
+                        if (location.pathname === "/" || location.pathname === "/projects?") {
                             navigate("/projects");
                         } else if (location.pathname === "/myprojects") {
-
                             navigate("/myprojects");
                         }
-
-
                     }}
                 >
                     <div className="search-bar">
-                        <FaSearch className="search-icon"/>
+                        <FaSearch className="search-icon" />
                         <input
                             type="text"
                             placeholder="Search..."
@@ -144,7 +150,6 @@ function Navbar() {
             </div>
 
             <div className="navbar-right" ref={menuRef}>
-
                 <div
                     className="icon-wrapper spaced"
                     onClick={() => {
@@ -153,13 +158,12 @@ function Navbar() {
                         setMenuOpen(false);
                     }}
                 >
-                    <Bell size={24}/>
+                    <Bell size={24} />
 
                     {notifOpen && (
                         <div className="dropdown-menu large">
                             <h4>Notifications</h4>
                             <div className="dropdown-scroll">
-
                                 {notifications.length === 0 ? (
                                     <p>No notifications.</p>
                                 ) : (
@@ -173,7 +177,6 @@ function Navbar() {
                                         />
                                     ))
                                 )}
-
                             </div>
                         </div>
                     )}
@@ -187,13 +190,14 @@ function Navbar() {
                         setMenuOpen(false);
                     }}
                 >
-                    <MessageCircle size={24}/>
+                    <MessageCircle size={24} />
 
                     {msgOpen && (
                         <div className="dropdown-menu large">
-                            <h4 onClick={() => navigate("/chats")} style={{cursor: "pointer"}}>Messages</h4>
+                            <h4 onClick={() => navigate("/chats")} style={{ cursor: "pointer" }}>
+                                Messages
+                            </h4>
                             <div className="dropdown-scroll">
-
                                 {messages.length === 0 ? (
                                     <p>No messages.</p>
                                 ) : (
@@ -208,13 +212,12 @@ function Navbar() {
                                         />
                                     ))
                                 )}
-
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div 
+                <div
                     className="user-info-wrapper"
                     onClick={() => {
                         setMenuOpen(!menuOpen);
@@ -222,16 +225,8 @@ function Navbar() {
                         setMsgOpen(false);
                     }}
                 >
-                    <img
-                        src={defaultPfp}
-                        alt="User"
-                        className="user-pfp"
-                    />
-                    {user && !loadingUser && (
-                        <span className="user-nickname">
-                            {user.nickname}
-                        </span>
-                    )}
+                    <img src={defaultPfp} alt="User" className="user-pfp" />
+                    {user && !loadingUser && <span className="user-nickname">{user.nickname}</span>}
                 </div>
 
                 {menuOpen && (
@@ -239,14 +234,18 @@ function Navbar() {
                         {user && (
                             <>
                                 <div className="dropdown-user-info">
-                                    <strong>{user.name} {user.surname}</strong>
+                                    <strong>
+                                        {user.name} {user.surname}
+                                    </strong>
                                     <small>{user.email}</small>
                                 </div>
-                                <hr/>
+                                <hr />
                             </>
                         )}
                         <button onClick={() => navigate(`/profile/${user?.id}`)}>Profile</button>
-                        <button onClick={() => navigate("/profile-tags")}>My Skills & Interests</button>
+                        <button onClick={() => navigate("/profile-tags")}>
+                            My Skills & Interests
+                        </button>
                         <button onClick={() => navigate("/settings")}>Settings</button>
                         <button>Help</button>
                         <button
@@ -255,10 +254,11 @@ function Navbar() {
                                 localStorage.removeItem("searchQuery");
                                 navigate("/creategroup");
                                 setMenuOpen(false);
-                            }}>
+                            }}
+                        >
                             Create new Group
                         </button>
-                        <hr/>
+                        <hr />
                         <button
                             className="logout"
                             onClick={() => {
@@ -272,12 +272,12 @@ function Navbar() {
                     </div>
                 )}
                 {activeChat && (
-                    <PrivateChat 
-                        user={activeChat} 
+                    <PrivateChat
+                        user={activeChat}
                         currentUserId={user?.id}
                         onClose={() => setActiveChat(null)}
                         onExpand={() => {
-                            navigate('/chats', { state: { selectedUser: activeChat } });
+                            navigate("/chats", { state: { selectedUser: activeChat } });
                             setActiveChat(null);
                         }}
                     />

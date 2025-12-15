@@ -1,4 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import Post from "../components/Post";
+import SkeletonPost from "../components/ui/SkeletonPost";
+import { ArrowLeft } from "lucide-react";
 import { usePost } from "../hooks/usePosts";
 import "../styles/PostPage.css";
 
@@ -25,10 +30,7 @@ export default function PostPage() {
                             ) : error ? (
                                 <p className="error-message">{error}</p>
                             ) : (
-                                <Post 
-                                    {...post}
-                                    isFullView={true}
-                                />
+                                <Post {...post} isFullView={true} />
                             )}
                         </div>
                     </div>

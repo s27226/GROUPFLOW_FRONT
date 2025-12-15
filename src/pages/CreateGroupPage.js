@@ -1,8 +1,10 @@
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
+import CreateGroup from "../components/CreateGroup";
 import "../styles/MainComponents.css";
 
 export default function CreateGroupPage() {
-
     return (
         <div className="maincomp-layout">
             <Navbar />
@@ -10,9 +12,8 @@ export default function CreateGroupPage() {
                 <Sidebar />
                 <div className="maincomp-center-wrapper">
                     <div className="maincomp-feed-wrapper">
-                       <CreateGroup />
+                        <CreateGroup />
                     </div>
-
                 </div>
             </div>
         </div>

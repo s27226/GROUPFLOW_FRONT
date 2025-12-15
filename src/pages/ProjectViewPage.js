@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import ChatBox from "../components/ChatBox";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/ProjectViewPage.css";
 import { useNavigate, useParams } from "react-router-dom";
-
+import FilesView from "../components/FilesView";
+import TerminsView from "../components/TerminsView";
+import MembersPanel from "../components/MembersPanel";
+import ProjectInfoPanel from "../components/ProjectInfoPanel";
 
 export default function ProjectsViewPage() {
-
     const { id } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
@@ -17,10 +22,9 @@ export default function ProjectsViewPage() {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const data = await executeQuery(
-                    GRAPHQL_QUERIES.GET_PROJECT_BY_ID,
-                    { id: parseInt(id) }
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_PROJECT_BY_ID, {
+                    id: parseInt(id)
+                });
 
                 if (!data) {
                     console.error("No data received");
@@ -98,8 +102,7 @@ export default function ProjectsViewPage() {
             <div className="view-page-main-content">
                 <Sidebar />
                 <div className="feed-projects-wrapper">
-                    <div className="main-feed-wrapper">
-
+                    <div className="main-feed-wrapper project-view-page">
                         <button className="back-btn" onClick={() => navigate("/myprojects")}>
                             ← Back to projects
                         </button>
@@ -128,8 +131,6 @@ export default function ProjectsViewPage() {
                             >
                                 🕒 Termins
                             </button>
-
-
                         </div>
                         <div className="tab-content">{renderContent()}</div>
                     </div>

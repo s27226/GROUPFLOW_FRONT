@@ -4,33 +4,30 @@ import "../styles/PrivateChat.css";
 
 export default function PrivateChat({ user, currentUserId, onClose, onExpand }) {
     const navigate = useNavigate();
-    const { 
-        messages, 
-        input, 
-        setInput, 
-        loading, 
-        sendMessage, 
-        handleKeyPress, 
-        bottomRef 
-    } = useChat(user, currentUserId);
+    const { messages, input, setInput, loading, sendMessage, handleKeyPress, bottomRef } = useChat(
+        user,
+        currentUserId
+    );
 
     return (
         <div className="priv-chat-window">
             <div className="priv-chat-header">
-                <span onClick={() => navigate(`/profile/${user.id}`)} style={{cursor: "pointer"}}>
+                <span onClick={() => navigate(`/profile/${user.id}`)} style={{ cursor: "pointer" }}>
                     {user.name}
                 </span>
                 <div className="priv-chat-header-actions">
                     {onExpand && (
-                        <button 
-                            onClick={onExpand} 
+                        <button
+                            onClick={onExpand}
                             title="Open in full screen"
                             className="priv-chat-expand-btn"
                         >
                             ⛶
                         </button>
                     )}
-                    <button onClick={onClose} title="Close">×</button>
+                    <button onClick={onClose} title="Close">
+                        ×
+                    </button>
                 </div>
             </div>
 
@@ -38,7 +35,9 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }) 
                 {loading ? (
                     <p className="priv-chat-loading">Loading messages...</p>
                 ) : messages.length === 0 ? (
-                    <p className="priv-chat-no-messages">No messages yet. Start the conversation!</p>
+                    <p className="priv-chat-no-messages">
+                        No messages yet. Start the conversation!
+                    </p>
                 ) : (
                     messages.map((msg) => (
                         <div

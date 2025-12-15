@@ -1,5 +1,6 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Friends.css";
 import { useSearchQuery } from "../hooks/useSearchQuery";
 import { useGraphQL } from "../hooks/useGraphQL";
@@ -21,17 +22,19 @@ export default function Friends() {
 
                 const friendsData = data.friendship.myfriends || [];
                 setFriends(friendsData);
-                
+
                 // Apply search filter
                 if (searchQuery) {
-                    const filtered = friendsData.filter(friend =>
-                        `${friend.name} ${friend.surname}`.toLowerCase().includes(searchQuery.toLowerCase())
+                    const filtered = friendsData.filter((friend) =>
+                        `${friend.name} ${friend.surname}`
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase())
                     );
                     setFilteredFriends(filtered);
                 } else {
                     setFilteredFriends(friendsData);
                 }
-                
+
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch friends:", err);
@@ -47,9 +50,9 @@ export default function Friends() {
     const removeFriend = async (id) => {
         try {
             await executeMutation(GRAPHQL_MUTATIONS.REMOVE_FRIEND, { friendId: id });
-            const updated = filteredFriends.filter(friend => friend.id !== id);
+            const updated = filteredFriends.filter((friend) => friend.id !== id);
             setFilteredFriends(updated);
-            setFriends(friends.filter(friend => friend.id !== id));
+            setFriends(friends.filter((friend) => friend.id !== id));
         } catch (err) {
             console.error("Failed to remove friend:", err);
         }
@@ -68,7 +71,7 @@ export default function Friends() {
             <div className="friends-header">
                 <h1>My Friends</h1>
                 <div className="friends-count">
-                    {filteredFriends.length} {filteredFriends.length === 1 ? 'Friend' : 'Friends'}
+                    {filteredFriends.length} {filteredFriends.length === 1 ? "Friend" : "Friends"}
                 </div>
             </div>
 
@@ -77,8 +80,8 @@ export default function Friends() {
                     <div className="empty-icon">👥</div>
                     <h2>No friends found</h2>
                     <p>
-                        {searchQuery 
-                            ? "Try adjusting your search" 
+                        {searchQuery
+                            ? "Try adjusting your search"
                             : "Start by finding and adding friends!"}
                     </p>
                 </div>
@@ -87,34 +90,43 @@ export default function Friends() {
                     {filteredFriends.map((friend) => (
                         <div className="friend-card" key={friend.id}>
                             <div className="friend-card-header">
-                                <img 
-                                    src={friend.profilePic || `https://i.pravatar.cc/150?u=${friend.id}`} 
-                                    alt={friend.nickname} 
+                                <img
+                                    src={
+                                        friend.profilePic ||
+                                        `https://i.pravatar.cc/150?u=${friend.id}`
+                                    }
+                                    alt={friend.nickname}
                                     className="friend-avatar"
                                 />
                                 <div className="friend-info">
                                     <h3>{friend.nickname}</h3>
-                                    <p className="friend-name">{friend.name} {friend.surname}</p>
+                                    <p className="friend-name">
+                                        {friend.name} {friend.surname}
+                                    </p>
                                 </div>
                             </div>
-                            
+
                             <div className="friend-actions">
-                                <button 
+                                <button
                                     className="message-btn"
-                                    onClick={() => navigate('/chats', { 
-                                        state: { 
-                                            selectedUser: {
-                                                id: friend.id,
-                                                name: `${friend.name} ${friend.surname}`,
-                                                nickname: friend.nickname,
-                                                image: friend.profilePic || `https://i.pravatar.cc/150?u=${friend.id}`
+                                    onClick={() =>
+                                        navigate("/chats", {
+                                            state: {
+                                                selectedUser: {
+                                                    id: friend.id,
+                                                    name: `${friend.name} ${friend.surname}`,
+                                                    nickname: friend.nickname,
+                                                    image:
+                                                        friend.profilePic ||
+                                                        `https://i.pravatar.cc/150?u=${friend.id}`
+                                                }
                                             }
-                                        } 
-                                    })}
+                                        })
+                                    }
                                 >
                                     Message
                                 </button>
-                                <button 
+                                <button
                                     className="remove-btn"
                                     onClick={() => removeFriend(friend.id)}
                                 >

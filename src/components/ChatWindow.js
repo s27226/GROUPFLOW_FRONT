@@ -1,15 +1,10 @@
 import { useChat } from "../hooks/useChat";
 
 export default function ChatWindow({ user, currentUserId, onMinimize }) {
-    const { 
-        messages, 
-        input, 
-        setInput, 
-        loading, 
-        sendMessage, 
-        handleKeyPress, 
-        bottomRef 
-    } = useChat(user, currentUserId);
+    const { messages, input, setInput, loading, sendMessage, handleKeyPress, bottomRef } = useChat(
+        user,
+        currentUserId
+    );
 
     if (loading) {
         return (
@@ -34,7 +29,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
                     <div className={`chat-status-dot ${user.online ? "online" : "offline"}`}></div>
                 </div>
                 {onMinimize && (
-                    <button 
+                    <button
                         onClick={onMinimize}
                         className="chat-minimize-btn"
                         title="Open in popup"

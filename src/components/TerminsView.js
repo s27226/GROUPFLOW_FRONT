@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
+import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Termins.css";
 import { useGraphQL } from "../hooks/useGraphQL";
@@ -40,13 +41,15 @@ const TerminsView = ({ projectId }) => {
                 });
 
                 const eventsData = data.projectEvent.eventsbyproject.nodes || [];
-                setEvents(eventsData.map(event => ({
-                    id: event.id,
-                    title: event.title,
-                    description: event.description || "",
-                    time: event.time || "",
-                    eventDate: new Date(event.eventDate),
-                })));
+                setEvents(
+                    eventsData.map((event) => ({
+                        id: event.id,
+                        title: event.title,
+                        description: event.description || "",
+                        time: event.time || "",
+                        eventDate: new Date(event.eventDate)
+                    }))
+                );
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch events:", err);
@@ -68,8 +71,8 @@ const TerminsView = ({ projectId }) => {
                     title: newEvent.title,
                     description: newEvent.description || null,
                     eventDate: selectedDate.toISOString(),
-                    time: newEvent.time || null,
-                },
+                    time: newEvent.time || null
+                }
             });
 
             const createdEvent = data.projectEvent.createProjectEvent;
@@ -78,7 +81,7 @@ const TerminsView = ({ projectId }) => {
                 title: createdEvent.title,
                 description: createdEvent.description || "",
                 time: createdEvent.time || "",
-                eventDate: new Date(createdEvent.eventDate),
+                eventDate: new Date(createdEvent.eventDate)
             };
 
             setEvents([...events, newEventObj]);
@@ -147,24 +150,18 @@ const TerminsView = ({ projectId }) => {
                         type="text"
                         placeholder="Nazwa wydarzenia"
                         value={newEvent.title}
-                        onChange={(e) =>
-                            setNewEvent({ ...newEvent, title: e.target.value })
-                        }
+                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                     />
                     <input
                         type="text"
                         placeholder="Opis (opcjonalnie)"
                         value={newEvent.description}
-                        onChange={(e) =>
-                            setNewEvent({ ...newEvent, description: e.target.value })
-                        }
+                        onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                     />
                     <input
                         type="time"
                         value={newEvent.time}
-                        onChange={(e) =>
-                            setNewEvent({ ...newEvent, time: e.target.value })
-                        }
+                        onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
                     />
                     <button onClick={handleAddEvent} disabled={!currentUserId}>
                         Dodaj

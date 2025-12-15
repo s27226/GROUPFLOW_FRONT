@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import AuthLayout from "../components/AuthLayout";
+import SocialLoginButtons from "../components/SocialLoginButtons";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -20,8 +22,8 @@ export default function LoginPage() {
             const data = await executeQuery(GRAPHQL_MUTATIONS.LOGIN_USER, {
                 input: {
                     email,
-                    password,
-                },
+                    password
+                }
             });
 
             const authData = data.auth.loginUser;
@@ -58,11 +60,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {error && <p className="login-error">{error}</p>}
-                <button
-                    className="pill-btn login"
-                    type="submit"
-                    onClick={handleSubmit}
-                >
+                <button className="pill-btn login" type="submit" onClick={handleSubmit}>
                     Sign In
                 </button>
                 <button

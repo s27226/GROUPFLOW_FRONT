@@ -11,7 +11,9 @@ export default function Invitation({ data, onRemove }) {
         setLoading(true);
         try {
             if (data.type === "friend") {
-                await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST, { friendRequestId: data.id });
+                await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST, {
+                    friendRequestId: data.id
+                });
                 onRemove(data.id);
             } else {
                 onRemove(data.id);
@@ -27,7 +29,9 @@ export default function Invitation({ data, onRemove }) {
         setLoading(true);
         try {
             if (data.type === "friend") {
-                await executeMutation(GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST, { friendRequestId: data.id });
+                await executeMutation(GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST, {
+                    friendRequestId: data.id
+                });
                 onRemove(data.id);
             } else {
                 onRemove(data.id);
@@ -49,18 +53,10 @@ export default function Invitation({ data, onRemove }) {
             </div>
 
             <div className="actions">
-                <button 
-                    className="accept-btn" 
-                    onClick={handleAccept}
-                    disabled={loading}
-                >
+                <button className="accept-btn" onClick={handleAccept} disabled={loading}>
                     {loading ? "..." : "Accept"}
                 </button>
-                <button 
-                    className="reject-btn" 
-                    onClick={handleReject}
-                    disabled={loading}
-                >
+                <button className="reject-btn" onClick={handleReject} disabled={loading}>
                     {loading ? "..." : "Reject"}
                 </button>
             </div>

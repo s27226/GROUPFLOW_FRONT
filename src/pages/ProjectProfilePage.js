@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import Post from "../components/Post";
+import ProfileBanner from "../components/ProfileBanner";
+import SkeletonPost from "../components/ui/SkeletonPost";
+import SkeletonCard from "../components/ui/SkeletonCard";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts } from "../hooks/usePosts";
@@ -13,7 +20,7 @@ export default function ProjectProfilePage() {
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
     const { posts, loading: postsLoading } = useProjectPosts(projectId);
 
     useEffect(() => {
@@ -25,10 +32,9 @@ export default function ProjectProfilePage() {
 
             try {
                 // Fetch project details
-                const data = await executeQuery(
-                    GRAPHQL_QUERIES.GET_PROJECT_BY_ID,
-                    { id: parseInt(projectId) }
-                );
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_PROJECT_BY_ID, {
+                    id: parseInt(projectId)
+                });
 
                 console.log("Project response:", data);
 
@@ -55,24 +61,30 @@ export default function ProjectProfilePage() {
                     name: projectData.name,
                     description: projectData.description,
                     banner: `https://picsum.photos/900/200?random=${projectData.id}`,
-                    image: projectData.imageUrl || `https://picsum.photos/200?random=${projectData.id}`,
+                    image:
+                        projectData.imageUrl ||
+                        `https://picsum.photos/200?random=${projectData.id}`,
                     members: [
                         // Add owner as first member
                         {
                             userId: projectData.owner.id,
                             name: projectData.owner.nickname || projectData.owner.name,
-                            role: 'Owner',
-                            image: projectData.owner.profilePic || `https://i.pravatar.cc/60?u=${projectData.owner.id}`,
+                            role: "Owner",
+                            image:
+                                projectData.owner.profilePic ||
+                                `https://i.pravatar.cc/60?u=${projectData.owner.id}`
                         },
                         // Add collaborators
-                        ...(projectData.collaborators?.map(collab => ({
+                        ...(projectData.collaborators?.map((collab) => ({
                             userId: collab.user.id,
                             name: collab.user.nickname || collab.user.name,
                             role: collab.role,
-                            image: collab.user.profilePic || `https://i.pravatar.cc/60?u=${collab.user.id}`,
+                            image:
+                                collab.user.profilePic ||
+                                `https://i.pravatar.cc/60?u=${collab.user.id}`
                         })) || [])
                     ],
-                    owner: projectData.owner,
+                    owner: projectData.owner
                 });
 
                 setLoading(false);
@@ -92,12 +104,24 @@ export default function ProjectProfilePage() {
                 <div className="profile-content">
                     <Sidebar />
                     <div className="profile-main">
-                        <div className="profile-banner skeleton" style={{ width: '900px', height: '200px' }}></div>
+                        <div
+                            className="profile-banner skeleton"
+                            style={{ width: "900px", height: "200px" }}
+                        ></div>
                         <div className="profile-header">
-                            <div className="profile-pfp skeleton" style={{ width: '120px', height: '120px', borderRadius: '50%' }}></div>
+                            <div
+                                className="profile-pfp skeleton"
+                                style={{ width: "120px", height: "120px", borderRadius: "50%" }}
+                            ></div>
                             <div style={{ flex: 1 }}>
-                                <div className="skeleton" style={{ height: '30px', width: '200px', marginBottom: '10px' }}></div>
-                                <div className="skeleton" style={{ height: '40px', width: '150px' }}></div>
+                                <div
+                                    className="skeleton"
+                                    style={{ height: "30px", width: "200px", marginBottom: "10px" }}
+                                ></div>
+                                <div
+                                    className="skeleton"
+                                    style={{ height: "40px", width: "150px" }}
+                                ></div>
                             </div>
                         </div>
                         <div className="profile-body">
@@ -141,10 +165,7 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className="profile-pfp" />
                         <div className="profile-info">
                             <h2>{project.name}</h2>
-                            <button
-                                className="edit-btn"
-                                onClick={() => navigate("/project/edit")}
-                            >
+                            <button className="edit-btn" onClick={() => navigate("/project/edit")}>
                                 Edit Frontpage
                             </button>
                         </div>
@@ -164,9 +185,7 @@ export default function ProjectProfilePage() {
                                         <div
                                             key={index}
                                             className="profile-member-card clickable"
-                                            onClick={() =>
-                                                navigate(`/profile/${member.userId}`)
-                                            }
+                                            onClick={() => navigate(`/profile/${member.userId}`)}
                                         >
                                             <img
                                                 src={member.image}

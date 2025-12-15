@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import AuthLayout from "../components/AuthLayout";
+import SocialLoginButtons from "../components/SocialLoginButtons";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -44,8 +46,8 @@ export default function RegisterPage() {
                     surname,
                     nickname,
                     email,
-                    password,
-                },
+                    password
+                }
             });
 
             const authData = data.auth.registerUser;
@@ -108,17 +110,10 @@ export default function RegisterPage() {
 
                 {error && <p className="login-error">{error}</p>}
 
-                <button
-                    className="pill-btn register"
-                    onClick={handleSubmit}
-                >
+                <button className="pill-btn register" onClick={handleSubmit}>
                     Register
                 </button>
-                <button
-                    className="pill-btn login"
-                    type="button"
-                    onClick={() => navigate("/login")}
-                >
+                <button className="pill-btn login" type="button" onClick={() => navigate("/login")}>
                     Back to Login
                 </button>
 

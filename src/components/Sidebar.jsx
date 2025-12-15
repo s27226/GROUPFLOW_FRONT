@@ -1,10 +1,18 @@
-import {useContext, useState} from "react";
-
-
+import { useContext, useState } from "react";
+import {
+    FaProjectDiagram,
+    FaUserFriends,
+    FaComments,
+    FaBookmark,
+    FaBars,
+    FaChevronDown,
+    FaChevronUp
+} from "react-icons/fa";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Sidebar.css";
-import {useNavigate} from "react-router-dom";
-import {InvitationContext} from "../context/InvitationContext";
+import { useNavigate, Link } from "react-router-dom";
+import { InvitationContext } from "../context/InvitationContext";
+import { FcInvite } from "react-icons/fc";
 import { useGraphQL } from "../hooks/useGraphQL";
 
 export default function Sidebar() {
@@ -17,7 +25,7 @@ export default function Sidebar() {
     const [friends, setFriends] = useState([]);
     const [loadingProjects, setLoadingProjects] = useState(false);
     const [loadingFriends, setLoadingFriends] = useState(false);
-    const {invitationsCount} = useContext(InvitationContext);
+    const { invitationsCount } = useContext(InvitationContext);
     const { executeQuery } = useGraphQL();
 
     const toggleSidebar = () => {
@@ -26,7 +34,7 @@ export default function Sidebar() {
 
     const fetchProjects = async () => {
         if (projects.length > 0) return; // Don't fetch if already loaded
-        
+
         setLoadingProjects(true);
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
@@ -40,7 +48,7 @@ export default function Sidebar() {
 
     const fetchFriends = async () => {
         if (friends.length > 0) return; // Don't fetch if already loaded
-        
+
         setLoadingFriends(true);
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
@@ -69,21 +77,25 @@ export default function Sidebar() {
     return (
         <>
             <div className="sidebar-toggle" onClick={toggleSidebar}>
-                <FaBars/>
+                <FaBars />
             </div>
 
             <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
                 <ul>
                     <li onClick={() => navigate("/myprojects")}>
-                        <FaProjectDiagram className="icon"/>
+                        <FaProjectDiagram className="icon" />
                         {isOpen && <span>My Projects</span>}
                     </li>
 
                     <li onClick={handleFriendsToggle}>
-                        <FaUserFriends className="icon"/>
+                        <FaUserFriends className="icon" />
                         {isOpen && <span>Friends</span>}
-                        {isOpen && (friendsOpen ? <FaChevronUp className="chevron"/> :
-                            <FaChevronDown className="chevron"/>)}
+                        {isOpen &&
+                            (friendsOpen ? (
+                                <FaChevronUp className="chevron" />
+                            ) : (
+                                <FaChevronDown className="chevron" />
+                            ))}
                     </li>
                     {friendsOpen && isOpen && (
                         <ul className="sublist">
@@ -93,7 +105,8 @@ export default function Sidebar() {
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/findfriends");
-                                    }}>
+                                    }}
+                                >
                                     Find Friends
                                 </button>
                             </li>
@@ -103,7 +116,8 @@ export default function Sidebar() {
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/friendslist");
-                                    }}>
+                                    }}
+                                >
                                     Friend List
                                 </button>
                             </li>
@@ -111,25 +125,21 @@ export default function Sidebar() {
                     )}
 
                     <li onClick={() => navigate("/chats")}>
-                        <FaComments className="icon"/>
+                        <FaComments className="icon" />
                         {isOpen && <span>Chats</span>}
                     </li>
                     <li onClick={() => navigate("/Saved")}>
-                        <FaBookmark className="icon"/>
+                        <FaBookmark className="icon" />
                         {isOpen && <span>Saved</span>}
                     </li>
                     <li>
-
-                        <FcInvite className="icon"/>
+                        <FcInvite className="icon" />
                         {isOpen && (
                             <Link to="/invitations" className="menu-item">
                                 Invitations
-                                {invitationsCount > 0 && (
-                                    <span className="notification-dot">
-
-                                    </span>
-                                )}
-                            </Link>)}
+                                {invitationsCount > 0 && <span className="notification-dot"></span>}
+                            </Link>
+                        )}
                     </li>
                 </ul>
             </div>

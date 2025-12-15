@@ -1,4 +1,4 @@
-import { useImageLoaded } from '../hooks/useImageLoaded';
+import { useImageLoaded } from "../hooks/useImageLoaded";
 
 const ProfileBanner = ({ src, alt = "Banner" }) => {
     const { loaded, handleLoad } = useImageLoaded();
@@ -6,23 +6,23 @@ const ProfileBanner = ({ src, alt = "Banner" }) => {
     return (
         <div className="profile-banner">
             {!loaded && (
-                <div 
-                    className="skeleton" 
-                    style={{ 
-                        position: 'absolute', 
-                        top: 0, 
-                        left: 0, 
-                        width: '900px', 
-                        height: '200px', 
-                        borderRadius: '12px' 
+                <div
+                    className="skeleton"
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "900px",
+                        height: "200px",
+                        borderRadius: "12px"
                     }}
                 />
             )}
-            <img 
-                src={src} 
-                alt={alt} 
+            <img
+                src={src}
+                alt={alt}
                 loading="lazy"
-                className={loaded ? 'loaded' : ''}
+                className={loaded ? "loaded" : ""}
                 onLoad={handleLoad}
             />
         </div>
