@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Post from "./Post";
+import SkeletonPost from "./ui/SkeletonPost";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { usePosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";

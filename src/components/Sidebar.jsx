@@ -1,10 +1,18 @@
-import {useContext, useState} from "react";
-
-
+import React, {useContext, useState} from "react";
+import {
+    FaProjectDiagram,
+    FaUserFriends,
+    FaComments,
+    FaBookmark,
+    FaBars,
+    FaChevronDown,
+    FaChevronUp
+} from "react-icons/fa";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Sidebar.css";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import {InvitationContext} from "../context/InvitationContext";
+import {FcInvite} from "react-icons/fc";
 import { useGraphQL } from "../hooks/useGraphQL";
 
 export default function Sidebar() {

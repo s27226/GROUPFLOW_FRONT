@@ -1,4 +1,7 @@
 import React from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import Trending from "./Trending";
 import "../styles/MainPage.css";
 import "../styles/MainComponents.css";
 

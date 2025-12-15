@@ -1,8 +1,15 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import ChatBox from "../components/ChatBox";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import "../styles/ProjectViewPage.css";
 import { useNavigate, useParams } from "react-router-dom";
+import FilesView from "../components/FilesView";
+import TerminsView from "../components/TerminsView";
+import MembersPanel from "../components/MembersPanel";
+import ProjectInfoPanel from "../components/ProjectInfoPanel";
 
 
 export default function ProjectsViewPage() {

@@ -1,4 +1,5 @@
 import "../styles/ProjectInfoPanel.css";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ProjectInfoPanel({ project, projectId }) {

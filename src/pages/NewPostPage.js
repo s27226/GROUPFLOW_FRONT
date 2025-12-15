@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import { Image, X } from "lucide-react";
 import "../styles/NewPostPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 

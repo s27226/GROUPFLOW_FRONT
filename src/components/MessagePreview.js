@@ -1,3 +1,4 @@
+import React from "react";
 import "../styles/MessagePreview.css";
 
 export default function MessagePreview({ image, name, lastMessage, time, onClick }) {
