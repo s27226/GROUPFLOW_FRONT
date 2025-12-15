@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Layout from "../components/Layout";
 import Post from "../components/Post";
 import SkeletonPost from "../components/ui/SkeletonPost";

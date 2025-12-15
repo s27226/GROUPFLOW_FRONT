@@ -3,6 +3,7 @@ import unusedImports from "eslint-plugin-unused-imports";
 import babelEslint from "@babel/eslint-parser";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
+import globals from "globals";
 
 export default [
   js.configs.recommended,
@@ -13,7 +14,7 @@ export default [
       parserOptions: {
         requireConfigFile: false,
         babelOptions: {
-          presets: ["@babel/preset-react"], // enable JSX
+          presets: ["@babel/preset-react"],
         },
         ecmaVersion: "latest",
         sourceType: "module",
@@ -22,19 +23,10 @@ export default [
         },
       },
       globals: {
-        window: "readonly",
-        document: "readonly",
-        console: "readonly",
-        localStorage: "readonly",
-        setTimeout: "readonly",
-        clearTimeout: "readonly",
-        setInterval: "readonly",
-        clearInterval: "readonly",
-        fetch: "readonly",
-        FormData: "readonly",
-        navigator: "readonly",
-        process: "readonly",
-      },
+        ...globals.browser,
+				...globals.node,
+				myCustomGlobal: "readonly",
+      }
     },
     plugins: {
       "unused-imports": unusedImports,
@@ -47,22 +39,19 @@ export default [
       },
     },
     rules: {
-      // React rules - CRITICAL: Must come BEFORE unused-imports check
-      "react/jsx-uses-react": "off", // Not needed with new JSX transform
-      "react/react-in-jsx-scope": "off", // Not needed with new JSX transform
-      "react/jsx-uses-vars": "error", // MUST be error - marks JSX components as used
+
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/jsx-uses-vars": "error",
       "react/prop-types": "off",
       
-      // React Hooks rules
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       
-      // General rules - Must be set before unused-imports
-      "no-undef": "error", // Catch undefined variables
-      "no-unused-vars": "off", // MUST be off - conflicts with unused-imports
+      "no-undef": "error",
+      "no-unused-vars": "off",
       
-      // Import rules - Now safe because react plugin marks JSX vars as used
-      "unused-imports/no-unused-imports": "error", // Removes unused imports
+      "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
         "warn",
         { 

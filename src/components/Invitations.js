@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Invitation.css";
 import Invitation from "./Invitation";

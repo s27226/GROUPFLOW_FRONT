@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";
@@ -105,7 +105,7 @@ export default function ProjectsViewPage() {
             <div className="view-page-main-content">
                 <Sidebar />
                 <div className="feed-projects-wrapper">
-                    <div className="main-feed-wrapper">
+                    <div className="main-feed-wrapper project-view-page">
 
                         <button className="back-btn" onClick={() => navigate("/myprojects")}>
                             ← Back to projects

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";

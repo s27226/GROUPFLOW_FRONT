@@ -1,4 +1,3 @@
-import React from "react";
 import { useChat } from "../hooks/useChat";
 
 export default function ChatWindow({ user, currentUserId, onMinimize }) {

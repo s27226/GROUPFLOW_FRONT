@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/Groups.css";
 import {useNavigate} from "react-router-dom";
 import { formatDate } from "../utils/dateFormatter";

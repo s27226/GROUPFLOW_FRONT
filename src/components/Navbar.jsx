@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import {Bell, MessageCircle} from "lucide-react";
 import "../styles/NavBar.css";
 import defaultPfp from "../images/default-pfp.png";
