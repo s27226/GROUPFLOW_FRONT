@@ -925,5 +925,59 @@ export const GRAPHQL_MUTATIONS = {
         removeinterest(interestId: $interestId)
       }
     }
+  `,
+
+    // Create a new project
+    CREATE_PROJECT: `
+    mutation CreateProject($input: ProjectInput!) {
+      project {
+        createProject(input: $input) {
+          id
+          name
+          description
+          imageUrl
+          isPublic
+          created
+          lastUpdated
+          owner {
+            id
+            nickname
+            name
+            surname
+          }
+        }
+      }
+    }
+  `,
+
+    // Update a project
+    UPDATE_PROJECT: `
+    mutation UpdateProject($input: UpdateProjectInput!) {
+      project {
+        updateProject(input: $input) {
+          id
+          name
+          description
+          imageUrl
+          isPublic
+          lastUpdated
+          owner {
+            id
+            nickname
+            name
+            surname
+          }
+        }
+      }
+    }
+  `,
+
+    // Delete a project
+    DELETE_PROJECT: `
+    mutation DeleteProject($id: Int!) {
+      project {
+        deleteProject(id: $id)
+      }
+    }
   `
 };

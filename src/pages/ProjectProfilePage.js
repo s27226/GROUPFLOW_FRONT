@@ -10,6 +10,7 @@ import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
 
@@ -17,9 +18,11 @@ export default function ProjectProfilePage() {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
+    const { user: authUser } = useAuth();
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isOwner, setIsOwner] = useState(false);
 
     const { posts, loading: postsLoading } = useProjectPosts(projectId);
 
@@ -87,6 +90,11 @@ export default function ProjectProfilePage() {
                     owner: projectData.owner
                 });
 
+                // Check if current user is the owner
+                if (authUser && projectData.owner.id === authUser.id) {
+                    setIsOwner(true);
+                }
+
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch project profile:", err);
@@ -95,6 +103,7 @@ export default function ProjectProfilePage() {
         };
 
         fetchProjectProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId]);
 
     if (loading || postsLoading) {
@@ -165,9 +174,14 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className="profile-pfp" />
                         <div className="profile-info">
                             <h2>{project.name}</h2>
-                            <button className="edit-btn" onClick={() => navigate("/project/edit")}>
-                                Edit Frontpage
-                            </button>
+                            {isOwner && (
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => navigate(`/project/${projectId}/edit`)}
+                                >
+                                    Edit Frontpage
+                                </button>
+                            )}
                         </div>
                     </div>
 
