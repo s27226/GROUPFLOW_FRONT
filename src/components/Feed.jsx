@@ -80,6 +80,8 @@ export default function Feed() {
                         image={post.imageUrl || null}
                         saved={savedPostIds.has(post.id)}
                         sharedPost={post.sharedPost}
+                        likes={post.likes || []}
+                        comments={post.comments || []}
                         onHide={handleHidePost}
                         onUndoHide={handleUndoHide}
                         onSave={handleSavePost}

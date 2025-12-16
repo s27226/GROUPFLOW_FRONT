@@ -17,6 +17,42 @@ export const GRAPHQL_QUERIES = {
           description
           created
           imageUrl
+          likes {
+            id
+            userId
+          }
+          comments {
+            id
+            userId
+            content
+            createdAt
+            user {
+              id
+              nickname
+              name
+              surname
+            }
+            likes {
+              id
+              userId
+            }
+            replies {
+              id
+              userId
+              content
+              createdAt
+              user {
+                id
+                nickname
+                name
+                surname
+              }
+              likes {
+                id
+                userId
+              }
+            }
+          }
           sharedPost {
             id
             user {
@@ -54,6 +90,42 @@ export const GRAPHQL_QUERIES = {
           description
           created
           imageUrl
+          likes {
+            id
+            userId
+          }
+          comments {
+            id
+            userId
+            content
+            createdAt
+            user {
+              id
+              nickname
+              name
+              surname
+            }
+            likes {
+              id
+              userId
+            }
+            replies {
+              id
+              userId
+              content
+              createdAt
+              user {
+                id
+                nickname
+                name
+                surname
+              }
+              likes {
+                id
+                userId
+              }
+            }
+          }
           sharedPost {
             id
             user {
@@ -855,6 +927,98 @@ export const GRAPHQL_MUTATIONS = {
     mutation UnsavePost($postId: Int!) {
       savedPost {
         unsavePost(postId: $postId)
+      }
+    }
+  `,
+
+    // Like a post
+    LIKE_POST: `
+    mutation LikePost($postId: Int!) {
+      post {
+        likePost(postId: $postId) {
+          id
+          userId
+          postId
+          createdAt
+        }
+      }
+    }
+  `,
+
+    // Unlike a post
+    UNLIKE_POST: `
+    mutation UnlikePost($postId: Int!) {
+      post {
+        unlikePost(postId: $postId)
+      }
+    }
+  `,
+
+    // Add a comment to a post
+    ADD_COMMENT: `
+    mutation AddComment($postId: Int!, $content: String!, $parentCommentId: Int) {
+      post {
+        addComment(postId: $postId, content: $content, parentCommentId: $parentCommentId) {
+          id
+          userId
+          postId
+          content
+          createdAt
+          parentCommentId
+          user {
+            id
+            nickname
+            name
+            surname
+          }
+        }
+      }
+    }
+  `,
+
+    // Delete a comment
+    DELETE_COMMENT: `
+    mutation DeleteComment($commentId: Int!) {
+      post {
+        deleteComment(commentId: $commentId)
+      }
+    }
+  `,
+
+    // Like a comment
+    LIKE_COMMENT: `
+    mutation LikeComment($commentId: Int!) {
+      post {
+        likeComment(commentId: $commentId) {
+          id
+          userId
+          postCommentId
+          createdAt
+        }
+      }
+    }
+  `,
+
+    // Unlike a comment
+    UNLIKE_COMMENT: `
+    mutation UnlikeComment($commentId: Int!) {
+      post {
+        unlikeComment(commentId: $commentId)
+      }
+    }
+  `,
+
+    // Share a post
+    SHARE_POST: `
+    mutation SharePost($postId: Int!, $content: String, $projectId: Int) {
+      post {
+        sharePost(postId: $postId, content: $content, projectId: $projectId) {
+          id
+          userId
+          content
+          created
+          sharedPostId
+        }
       }
     }
   `,

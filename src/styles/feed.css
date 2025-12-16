@@ -483,3 +483,57 @@ html,
     text-decoration: underline;
     color: color-mix(in srgb, var(--accent) 85%, #000);
 }
+
+.comment-delete-confirm {
+    margin-top: 10px;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-delete-confirm p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.comment-delete-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.comment-delete-actions .btn-cancel,
+.comment-delete-actions .btn-delete {
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+.comment-delete-actions .btn-cancel {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.comment-delete-actions .btn-cancel:hover {
+    background-color: var(--bg-accent);
+}
+
+.comment-delete-actions .btn-delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.comment-delete-actions .btn-delete:hover {
+    background-color: #dc2626;
+    transform: scale(1.02);
+}

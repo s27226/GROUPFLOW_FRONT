@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "./ui/LazyImage";
 import "../styles/feed.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
+import { useAuthenticatedRequest } from "../hooks/useAuthenticatedRequest";
+import { GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { useAuth } from "../context/AuthContext";
+import { formatTime } from "../utils/dateFormatter";
 
 export default function Post({
     id,
@@ -17,45 +21,97 @@ export default function Post({
     hidden: initialHidden = false,
     sharedPost = null,
     isFullView = false,
-    likes: initialLikes = 0,
+    likes: initialLikes = [],
     onHide,
     onUndoHide,
-    onSave
+    onSave,
+    onUpdate
 }) {
     const navigate = useNavigate();
-    const [likes, setLikes] = useState(initialLikes);
+    const { makeRequest } = useAuthenticatedRequest();
+    const { user } = useAuth();
+    
+    const [likes, setLikes] = useState(initialLikes || []);
     const [liked, setLiked] = useState(false);
     const [comments, setComments] = useState(initialComments || []);
     const [commentInput, setCommentInput] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
     const [saved, setSaved] = useState(initialSaved);
     const [showHideToast, setShowHideToast] = useState(false);
-
     const [showComments, setShowComments] = useState(isFullView);
 
     const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
+    // Check if current user has liked the post
+    useEffect(() => {
+        if (user && likes) {
+            const hasLiked = likes.some(like => like.userId === user.id);
+            setLiked(hasLiked);
+        }
+    }, [likes, user]);
+
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;
-        return comments.reduce((acc, c) => acc + 1 + countComments(c.replies), 0);
+        return comments.reduce((acc, c) => acc + 1 + countComments(c.replies || []), 0);
     };
 
-    const submitComment = () => {
+    const handleLikeToggle = async () => {
+        try {
+            if (liked) {
+                // Unlike the post
+                const response = await makeRequest(GRAPHQL_MUTATIONS.UNLIKE_POST, { postId: id });
+                if (!response.errors) {
+                    setLikes(likes.filter(like => like.userId !== user.id));
+                    setLiked(false);
+                }
+            } else {
+                // Like the post
+                const response = await makeRequest(GRAPHQL_MUTATIONS.LIKE_POST, { postId: id });
+                if (!response.errors && response.data.post.likePost) {
+                    setLikes([...likes, response.data.post.likePost]);
+                    setLiked(true);
+                }
+            }
+        } catch (error) {
+            console.error("Error toggling like:", error);
+        }
+    };
+
+    const submitComment = async () => {
         if (!commentInput.trim()) return;
 
-        setComments([
-            ...comments,
-            {
-                user: "You",
-                time: "just now",
-                text: commentInput,
-                likes: 0,
-                liked: false,
-                menuOpen: false
-            }
-        ]);
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.ADD_COMMENT, {
+                postId: id,
+                content: commentInput,
+                parentCommentId: null
+            });
 
-        setCommentInput("");
+            if (!response.errors && response.data?.post?.addComment) {
+                const newComment = response.data.post.addComment;
+                const commentData = {
+                    id: newComment.id,
+                    user: newComment.user.nickname || `${newComment.user.name} ${newComment.user.surname}`,
+                    userId: newComment.userId,
+                    time: formatTime(newComment.createdAt),
+                    text: newComment.content,
+                    likes: [],
+                    liked: false,
+                    menuOpen: false,
+                    replies: []
+                };
+                
+                setComments(prevComments => [...prevComments, commentData]);
+                setCommentInput("");
+                
+                // Ensure comments section is visible after adding a comment
+                if (!showComments) {
+                    setShowComments(true);
+                }
+            }
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
     };
 
     const handleSavePost = () => {
@@ -76,17 +132,32 @@ export default function Post({
         setShowHideToast(false);
     };
 
-    const handleShare = () => {
-        const postData = encodeURIComponent(
-            JSON.stringify({
-                id,
-                author,
-                time,
-                content,
-                image
-            })
-        );
-        navigate(`/project/new-post?share=${postData}`);
+    const handleShare = async () => {
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.SHARE_POST, {
+                postId: id,
+                content: null,
+                projectId: null
+            });
+
+            if (!response.errors && response.data.post.sharePost) {
+                // Navigate to feed or show success message
+                navigate('/');
+            }
+        } catch (error) {
+            console.error("Error sharing post:", error);
+            // Fallback to old behavior
+            const postData = encodeURIComponent(
+                JSON.stringify({
+                    id,
+                    author,
+                    time,
+                    content,
+                    image
+                })
+            );
+            navigate(`/project/new-post?share=${postData}`);
+        }
     };
 
     return (
@@ -190,17 +261,14 @@ export default function Post({
             <div className="post-actions">
                 <button
                     className="icon-btn"
-                    onClick={() => {
-                        setLiked(!liked);
-                        setLikes(liked ? initialLikes : initialLikes + 1);
-                    }}
+                    onClick={handleLikeToggle}
                 >
                     <Heart
                         size={20}
                         fill={liked ? "var(--accent)" : "none"}
                         stroke={liked ? "var(--accent)" : "var(--text-secondary)"}
                     />
-                    <span>{likes}</span>
+                    <span>{likes.length}</span>
                 </button>
 
                 <button
@@ -239,12 +307,18 @@ export default function Post({
 
                     {comments.map((c, i) => (
                         <Comment
-                            key={i}
+                            key={c.id || i}
                             comment={c}
+                            postId={id}
                             update={(newData) => {
-                                const updated = [...comments];
-                                updated[i] = newData;
-                                setComments(updated);
+                                setComments(prevComments => {
+                                    const updated = [...prevComments];
+                                    updated[i] = newData;
+                                    return updated;
+                                });
+                            }}
+                            onDelete={(commentId) => {
+                                setComments(prevComments => prevComments.filter(c => c.id !== commentId));
                             }}
                         />
                     ))}
@@ -263,51 +337,141 @@ export default function Post({
     );
 }
 
-function Comment({ comment, update, depth = 0 }) {
+function Comment({ comment, update, depth = 0, postId, onDelete }) {
     const maxDepth = 4;
     const safeDepth = Math.min(depth, maxDepth);
     const leftMargin = safeDepth * 20;
+    const { makeRequest } = useAuthenticatedRequest();
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
     const [replyOpen, setReplyOpen] = useState(false);
     const [replyText, setReplyText] = useState("");
-
     const [collapsed, setCollapsed] = useState((comment.replies?.length || 0) >= 2);
+    const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState(comment.likes || []);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-    const toggleLike = () =>
-        update({
-            ...comment,
-            likes: comment.liked ? comment.likes - 1 : comment.likes + 1,
-            liked: !comment.liked
-        });
+    const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
-    const toggleMenu = () => update({ ...comment, menuOpen: !comment.menuOpen });
+    // Check if current user has liked the comment
+    useEffect(() => {
+        if (user && likes) {
+            const hasLiked = Array.isArray(likes) ? likes.some(like => like.userId === user.id) : false;
+            setLiked(hasLiked);
+        }
+    }, [likes, user]);
 
-    const submitReply = () => {
+    const toggleLike = async () => {
+        if (!comment.id) return; // Can't like comments without ID (newly created)
+        
+        try {
+            if (liked) {
+                // Unlike the comment
+                const response = await makeRequest(GRAPHQL_MUTATIONS.UNLIKE_COMMENT, { commentId: comment.id });
+                if (!response.errors) {
+                    const newLikes = Array.isArray(likes) ? likes.filter(like => like.userId !== user.id) : [];
+                    setLikes(newLikes);
+                    setLiked(false);
+                    update({
+                        ...comment,
+                        likes: newLikes
+                    });
+                }
+            } else {
+                // Like the comment
+                const response = await makeRequest(GRAPHQL_MUTATIONS.LIKE_COMMENT, { commentId: comment.id });
+                if (!response.errors && response.data.post.likeComment) {
+                    const newLikes = Array.isArray(likes) ? [...likes, response.data.post.likeComment] : [response.data.post.likeComment];
+                    setLikes(newLikes);
+                    setLiked(true);
+                    update({
+                        ...comment,
+                        likes: newLikes
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error toggling comment like:", error);
+        }
+    };
+
+    const toggleMenu = () => setMenuOpen(!menuOpen);
+
+    const handleDeleteComment = async () => {
+        if (!comment.id) return;
+
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.DELETE_COMMENT, {
+                commentId: comment.id
+            });
+
+            if (!response.errors) {
+                // Call onDelete to remove from parent state
+                if (onDelete) {
+                    onDelete(comment.id);
+                }
+                setShowDeleteConfirm(false);
+            } else {
+                console.error("Error deleting comment:", response.errors);
+            }
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    };
+
+    const confirmDelete = () => {
+        setShowDeleteConfirm(true);
+        setMenuOpen(false);
+    };
+
+    const submitReply = async () => {
         if (!replyText.trim()) return;
 
-        const newReply = {
-            user: "You",
-            time: "just now",
-            text: replyText,
-            likes: 0,
-            liked: false,
-            menuOpen: false,
-            replies: []
-        };
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.ADD_COMMENT, {
+                postId: postId,
+                content: replyText,
+                parentCommentId: comment.id
+            });
 
-        update({
-            ...comment,
-            replies: [...(comment.replies || []), newReply]
-        });
+            if (!response.errors && response.data?.post?.addComment) {
+                const newReply = response.data.post.addComment;
+                const replyData = {
+                    id: newReply.id,
+                    user: newReply.user.nickname || `${newReply.user.name} ${newReply.user.surname}`,
+                    userId: newReply.userId,
+                    time: formatTime(newReply.createdAt),
+                    text: newReply.content,
+                    likes: [],
+                    liked: false,
+                    menuOpen: false,
+                    replies: []
+                };
 
-        setReplyText("");
-        setReplyOpen(false);
-        setCollapsed(false);
+                update({
+                    ...comment,
+                    replies: [...(comment.replies || []), replyData]
+                });
+
+                setReplyText("");
+                setReplyOpen(false);
+                setCollapsed(false);
+            }
+        } catch (error) {
+            console.error("Error adding reply:", error);
+        }
     };
 
     const updateReply = (index, newData) => {
-        const updated = [...comment.replies];
+        const updated = [...(comment.replies || [])];
         updated[index] = newData;
+        update({ ...comment, replies: updated });
+    };
+
+    const deleteReply = (replyId) => {
+        const updated = (comment.replies || []).filter(reply => reply.id !== replyId);
         update({ ...comment, replies: updated });
     };
 
@@ -322,19 +486,25 @@ function Comment({ comment, update, depth = 0 }) {
                 />
 
                 <div className="comment-info">
-                    <span className="comment-user">{comment.user}</span>
+                    <span 
+                        className="comment-user"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => comment.userId && navigate(`/profile/${comment.userId}`)}
+                    >
+                        {comment.user}
+                    </span>
                     <span className="comment-time">· {comment.time}</span>
                 </div>
 
-                <div className="comment-dots">
+                <div className="comment-dots" ref={menuRef}>
                     <button onClick={toggleMenu}>
                         <MoreVertical size={16} />
                     </button>
 
-                    {comment.menuOpen && (
+                    {menuOpen && (
                         <div className="comment-dropdown-menu">
-                            <button>Delete</button>
-                            <button>Report</button>
+                            <button onClick={confirmDelete}>Delete</button>
+                            <button onClick={() => setMenuOpen(false)}>Report</button>
                         </div>
                     )}
                 </div>
@@ -342,14 +512,28 @@ function Comment({ comment, update, depth = 0 }) {
 
             <p className="comment-text">{comment.text}</p>
 
+            {showDeleteConfirm && (
+                <div className="comment-delete-confirm">
+                    <p>Delete this comment? All replies will be deleted too.</p>
+                    <div className="comment-delete-actions">
+                        <button className="btn-cancel" onClick={() => setShowDeleteConfirm(false)}>
+                            Cancel
+                        </button>
+                        <button className="btn-delete" onClick={handleDeleteComment}>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="comment-actions">
                 <button className="icon-btn" onClick={toggleLike}>
                     <Heart
                         size={16}
-                        fill={comment.liked ? "var(--accent)" : "none"}
-                        stroke={comment.liked ? "var(--accent)" : "var(--text-secondary)"}
+                        fill={liked ? "var(--accent)" : "none"}
+                        stroke={liked ? "var(--accent)" : "var(--text-secondary)"}
                     />
-                    <span>{comment.likes}</span>
+                    <span>{Array.isArray(likes) ? likes.length : 0}</span>
                 </button>
 
                 <button className="reply-btn" onClick={() => setReplyOpen(!replyOpen)}>
@@ -387,9 +571,11 @@ function Comment({ comment, update, depth = 0 }) {
                 <div className="reply-list">
                     {comment.replies.map((reply, i) => (
                         <Comment
-                            key={i}
+                            key={reply.id || i}
                             comment={reply}
+                            postId={postId}
                             update={(newData) => updateReply(i, newData)}
+                            onDelete={deleteReply}
                             depth={safeDepth + 1}
                         />
                     ))}
