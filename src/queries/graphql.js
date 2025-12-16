@@ -903,6 +903,22 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
+    ACCEPT_PROJECT_INVITATION: `
+    mutation AcceptProjectInvitation($invitationId: Int!) {
+      projectInvitation {
+        acceptProjectInvitation(invitationId: $invitationId)
+      }
+    }
+  `,
+
+    REJECT_PROJECT_INVITATION: `
+    mutation RejectProjectInvitation($invitationId: Int!) {
+      projectInvitation {
+        rejectProjectInvitation(invitationId: $invitationId)
+      }
+    }
+  `,
+
     REMOVE_FRIEND: `
     mutation RemoveFriend($friendId: Int!) {
       friendship {
@@ -1141,6 +1157,42 @@ export const GRAPHQL_MUTATIONS = {
     mutation DeleteProject($id: Int!) {
       project {
         deleteProject(id: $id)
+      }
+    }
+  `,
+
+    // Create a project with initial members
+    CREATE_PROJECT_WITH_MEMBERS: `
+    mutation CreateProjectWithMembers($input: CreateProjectWithMembersInput!) {
+      project {
+        createProjectWithMembers(input: $input) {
+          id
+          name
+          description
+          imageUrl
+          isPublic
+          created
+          owner {
+            id
+            nickname
+            name
+            surname
+            profilePic
+          }
+          collaborators {
+            userId
+            projectId
+            role
+            joinedAt
+            user {
+              id
+              nickname
+              name
+              surname
+              profilePic
+            }
+          }
+        }
       }
     }
   `

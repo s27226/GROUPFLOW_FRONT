@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
@@ -15,8 +16,10 @@ export default function ProjectEditPage() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [error, setError] = useState(null);
     const [isOwner, setIsOwner] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -122,6 +125,32 @@ export default function ProjectEditPage() {
             }
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            setDeleting(true);
+            setError(null);
+            setShowDeleteConfirm(false);
+
+            await executeMutation(GRAPHQL_MUTATIONS.DELETE_PROJECT, { 
+                id: parseInt(projectId) 
+            });
+
+            // Navigate to myprojects after deletion
+            navigate("/myprojects");
+        } catch (err) {
+            console.error("Failed to delete project:", err);
+            if (err.message?.includes("permission") || err.message?.includes("not authenticated")) {
+                setError(
+                    "You don't have permission to delete this project. Only the project owner can delete it."
+                );
+            } else {
+                setError(err.message || "Failed to delete project. Please try again.");
+            }
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -270,11 +299,11 @@ export default function ProjectEditPage() {
                         <button
                             className="edit-btn"
                             onClick={handleSave}
-                            disabled={saving || !name.trim() || !description.trim()}
+                            disabled={saving || deleting || !name.trim() || !description.trim()}
                             style={{
-                                opacity: saving || !name.trim() || !description.trim() ? 0.6 : 1,
+                                opacity: saving || deleting || !name.trim() || !description.trim() ? 0.6 : 1,
                                 cursor:
-                                    saving || !name.trim() || !description.trim()
+                                    saving || deleting || !name.trim() || !description.trim()
                                         ? "not-allowed"
                                         : "pointer"
                             }}
@@ -285,7 +314,7 @@ export default function ProjectEditPage() {
                         <button
                             className="edit-btn"
                             onClick={() => navigate(`/project/${projectId}`)}
-                            disabled={saving}
+                            disabled={saving || deleting}
                             style={{
                                 backgroundColor: "var(--bg-secondary)",
                                 color: "var(--text-primary)"
@@ -293,7 +322,33 @@ export default function ProjectEditPage() {
                         >
                             Cancel
                         </button>
+
+                        <button
+                            className="edit-btn"
+                            onClick={() => setShowDeleteConfirm(true)}
+                            disabled={saving || deleting}
+                            style={{
+                                backgroundColor: "var(--error)",
+                                color: "white",
+                                marginLeft: "auto",
+                                opacity: saving || deleting ? 0.6 : 1,
+                                cursor: saving || deleting ? "not-allowed" : "pointer"
+                            }}
+                        >
+                            {deleting ? "Deleting..." : "Delete Project"}
+                        </button>
                     </div>
+
+                    <ConfirmDialog
+                        isOpen={showDeleteConfirm}
+                        onConfirm={handleDelete}
+                        onCancel={() => setShowDeleteConfirm(false)}
+                        title="Delete Project"
+                        message={`Are you sure you want to delete "${name}"? This action cannot be undone and will delete all project data, including chat history.`}
+                        confirmText="Delete"
+                        cancelText="Cancel"
+                        danger={true}
+                    />
                 </div>
             </div>
         </div>

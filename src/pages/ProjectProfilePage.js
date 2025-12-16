@@ -79,13 +79,13 @@ export default function ProjectProfilePage() {
                         },
                         // Add collaborators
                         ...(projectData.collaborators?.map((collab) => ({
-                            userId: collab.user.id,
-                            name: collab.user.nickname || collab.user.name,
-                            role: collab.role,
-                            image:
-                                collab.user.profilePic ||
-                                `https://i.pravatar.cc/60?u=${collab.user.id}`
-                        })) || [])
+                                userId: collab.user.id,
+                                name: collab.user.nickname || collab.user.name,
+                                role: collab.role,
+                                image:
+                                    collab.user.profilePic ||
+                                    `https://i.pravatar.cc/60?u=${collab.user.id}`
+                            })) || [])
                     ],
                     owner: projectData.owner
                 });

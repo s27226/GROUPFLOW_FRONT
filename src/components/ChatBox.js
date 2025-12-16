@@ -311,7 +311,6 @@ const ChatBox = ({ projectId }) => {
         return (
             <div className="chatbox-all">
                 <div className="chatbox-container">
-                    <h2 className="chatbox-title">{projectName}</h2>
                     <p>No chat available for this project yet.</p>
                 </div>
             </div>

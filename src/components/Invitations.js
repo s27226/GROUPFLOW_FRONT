@@ -38,7 +38,8 @@ export default function Invitations() {
                     id: inv.id,
                     name: inv.project.name,
                     description: inv.project.description,
-                    type: "group"
+                    invitedBy: `${inv.inviting.name} ${inv.inviting.surname}`,
+                    type: "project"
                 }));
 
                 setFriendRequests(formattedFriendRequests);
