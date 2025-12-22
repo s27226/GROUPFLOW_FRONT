@@ -114,6 +114,7 @@ export default function SavedPage() {
                             content={post.content}
                             image={post.image}
                             comments={post.comments}
+                            likes={post.likes}
                             saved={post.saved}
                             hidden={post.hidden}
                             sharedPost={post.sharedPost}

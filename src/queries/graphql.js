@@ -708,6 +708,42 @@ export const GRAPHQL_QUERIES = {
           description
           created
           imageUrl
+          likes {
+            id
+            userId
+          }
+          comments {
+            id
+            userId
+            content
+            createdAt
+            user {
+              id
+              nickname
+              name
+              surname
+            }
+            likes {
+              id
+              userId
+            }
+            replies {
+              id
+              userId
+              content
+              createdAt
+              user {
+                id
+                nickname
+                name
+                surname
+              }
+              likes {
+                id
+                userId
+              }
+            }
+          }
           sharedPost {
             id
             user {
