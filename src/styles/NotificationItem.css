@@ -5,6 +5,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.15s;
+    margin-bottom: 10px;
 }
 
 .notif-item:hover {

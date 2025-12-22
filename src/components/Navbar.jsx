@@ -25,6 +25,8 @@ function Navbar() {
     const [loadingUser, setLoadingUser] = useState(false);
     const [friends, setFriends] = useState([]);
     const [loadingFriends, setLoadingFriends] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [loadingNotifications, setLoadingNotifications] = useState(false);
     const { executeQuery } = useGraphQL();
 
     // Fetch current user data on mount
@@ -84,15 +86,28 @@ function Navbar() {
         menuOpen || notifOpen || msgOpen
     );
 
-    const notifications = [
-        {
-            id: 1,
-            icon: <Bell size={18} />,
-            text: "Alice reacted to your post",
-            time: "2h ago",
-            unread: true
-        }
-    ];
+    // Fetch notifications
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            if (!token || !user) return;
+
+            setLoadingNotifications(true);
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_NOTIFICATIONS, {
+                    limit: 5
+                });
+
+                const notificationsList = data.notification.myNotifications || [];
+                setNotifications(notificationsList);
+            } catch (err) {
+                console.error("Failed to fetch notifications:", err);
+            } finally {
+                setLoadingNotifications(false);
+            }
+        };
+
+        fetchNotifications();
+    }, [user, executeQuery, token, notifOpen]); // Re-fetch when notification dropdown is opened
 
     // Convert friends to message format
     const messages = friends.slice(0, 5).map((friend) => ({
@@ -164,16 +179,15 @@ function Navbar() {
                         <div className="dropdown-menu large">
                             <h4>Notifications</h4>
                             <div className="dropdown-scroll">
-                                {notifications.length === 0 ? (
+                                {loadingNotifications ? (
+                                    <p>Loading notifications...</p>
+                                ) : notifications.length === 0 ? (
                                     <p>No notifications.</p>
                                 ) : (
                                     notifications.map((n) => (
                                         <NotificationItem
                                             key={n.id}
-                                            icon={n.icon}
-                                            text={n.text}
-                                            time={n.time}
-                                            unread={n.unread}
+                                            notification={n}
                                         />
                                     ))
                                 )}

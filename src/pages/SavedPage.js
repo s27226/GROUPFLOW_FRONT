@@ -28,14 +28,6 @@ export default function SavedPage() {
         }
     };
 
-    const handleHidePost = (postId) => {
-        setPosts(posts.map((post) => (post.id === postId ? { ...post, hidden: true } : post)));
-    };
-
-    const handleUndoHide = (postId) => {
-        setPosts(posts.map((post) => (post.id === postId ? { ...post, hidden: false } : post)));
-    };
-
     const visiblePosts = posts.filter((post) => !post.hidden);
 
     if (loading) {
@@ -118,8 +110,6 @@ export default function SavedPage() {
                             saved={post.saved}
                             hidden={post.hidden}
                             sharedPost={post.sharedPost}
-                            onHide={handleHidePost}
-                            onUndoHide={handleUndoHide}
                             onSave={handleSavePost}
                         />
                     ))

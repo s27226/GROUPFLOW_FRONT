@@ -25,16 +25,6 @@ export default function Feed() {
         }
     };
 
-    const handleHidePost = (postId) => {
-        // TODO: Implement hide functionality with proper state management
-        console.log("Hide post:", postId);
-    };
-
-    const handleUndoHide = (postId) => {
-        // TODO: Implement undo hide functionality with proper state management
-        console.log("Undo hide post:", postId);
-    };
-
     const handleSavePost = async (postId) => {
         const isSaved = savedPostIds.has(postId);
 
@@ -82,8 +72,6 @@ export default function Feed() {
                         sharedPost={post.sharedPost}
                         likes={post.likes || []}
                         comments={post.comments || []}
-                        onHide={handleHidePost}
-                        onUndoHide={handleUndoHide}
                         onSave={handleSavePost}
                     />
                 ))

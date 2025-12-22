@@ -120,18 +120,6 @@ export default function Post({
         setMenuOpen(false);
     };
 
-    const handleHidePost = () => {
-        if (onHide) onHide(id);
-        setShowHideToast(true);
-        setMenuOpen(false);
-        setTimeout(() => setShowHideToast(false), 5000);
-    };
-
-    const handleUndoHide = () => {
-        if (onUndoHide) onUndoHide(id);
-        setShowHideToast(false);
-    };
-
     const handleShare = async () => {
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.SHARE_POST, {
@@ -198,7 +186,6 @@ export default function Post({
                             <button onClick={handleSavePost}>
                                 {saved ? "Unsave Post" : "Save Post"}
                             </button>
-                            <button onClick={handleHidePost}>Hide Post</button>
                             <button>Block User</button>
                             <button>Report</button>
                         </div>
@@ -325,14 +312,6 @@ export default function Post({
                 </div>
             )}
 
-            {showHideToast && (
-                <div className="hide-toast">
-                    <span>Post hidden</span>
-                    <button onClick={handleUndoHide} className="undo-btn">
-                        Undo
-                    </button>
-                </div>
-            )}
         </div>
     );
 }

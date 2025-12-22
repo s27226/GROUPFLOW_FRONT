@@ -843,6 +843,40 @@ export const GRAPHQL_QUERIES = {
         }
       }
     }
+  `,
+
+    // Notifications
+    GET_MY_NOTIFICATIONS: `
+    query GetMyNotifications($limit: Int = 5) {
+      notification {
+        myNotifications(limit: $limit) {
+          id
+          type
+          message
+          isRead
+          createdAt
+          actorUser {
+            id
+            nickname
+            name
+            surname
+            profilePic
+          }
+          post {
+            id
+            title
+          }
+        }
+      }
+    }
+  `,
+
+    GET_UNREAD_NOTIFICATIONS_COUNT: `
+    query GetUnreadNotificationsCount {
+      notification {
+        unreadNotificationsCount
+      }
+    }
   `
 };
 
@@ -1229,6 +1263,23 @@ export const GRAPHQL_MUTATIONS = {
             }
           }
         }
+      }
+    }
+  `,
+
+    // Notification mutations
+    MARK_NOTIFICATION_AS_READ: `
+    mutation MarkNotificationAsRead($notificationId: Int!) {
+      notification {
+        markNotificationAsRead(notificationId: $notificationId)
+      }
+    }
+  `,
+
+    MARK_ALL_NOTIFICATIONS_AS_READ: `
+    mutation MarkAllNotificationsAsRead {
+      notification {
+        markAllNotificationsAsRead
       }
     }
   `
