@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "./useGraphQL";
 
@@ -12,7 +12,6 @@ export function useChat(user, currentUserId) {
     const [loading, setLoading] = useState(true);
     const [chatId, setChatId] = useState(null);
     const [userChatId, setUserChatId] = useState(null);
-    const bottomRef = useRef();
     const { executeQuery } = useGraphQL();
 
     // Load messages for a chat
@@ -78,10 +77,7 @@ export function useChat(user, currentUserId) {
         }
     }, [user, currentUserId]);
 
-    // Scroll to bottom when messages change
-    useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    // Removed auto-scroll on messages change - users can scroll manually
 
     // Poll for new messages every 3 seconds
     useEffect(() => {
@@ -124,7 +120,8 @@ export function useChat(user, currentUserId) {
             setInput("");
         } catch (err) {
             console.error("Failed to send message:", err);
-            alert("Nie udało się wysłać wiadomości");
+            // Don't show toast here as it's handled in the component
+            console.warn("Message send failed - user will be notified");
         }
     };
 
@@ -142,7 +139,6 @@ export function useChat(user, currentUserId) {
         setInput,
         loading,
         sendMessage,
-        handleKeyPress,
-        bottomRef
+        handleKeyPress
     };
 }

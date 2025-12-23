@@ -5,11 +5,12 @@ import Post from "../components/Post";
 import ProfileBanner from "../components/ProfileBanner";
 import SkeletonPost from "../components/ui/SkeletonPost";
 import SkeletonCard from "../components/ui/SkeletonCard";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePosts } from "../hooks/usePosts";
 import { useAuth } from "../context/AuthContext";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
 
@@ -17,12 +18,18 @@ export default function ProfilePage() {
     const { userId } = useParams();
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
-    const { executeQuery } = useGraphQL();
+    const { executeQuery, executeMutation } = useGraphQL();
+    const { showToast } = useToast();
 
     const [user, setUser] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showInviteModal, setShowInviteModal] = useState(false);
+    const [ownedProjects, setOwnedProjects] = useState([]);
+    const [userProjectIds, setUserProjectIds] = useState(new Set());
+    const [inviting, setInviting] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
 
     const { posts: allPosts, loading: postsLoading } = usePosts();
 
@@ -68,8 +75,8 @@ export default function ProfilePage() {
                     surname: userInfo.surname,
                     handle: `@${userInfo.nickname}`,
                     bio: "Professional developer", // TODO: Add bio field to backend
-                    banner: `https://picsum.photos/900/200?random=${userInfo.id}`,
-                    pfp: `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
+                    banner: userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
+                    pfp: userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
                     abt: `Member since ${new Date(userInfo.joined).toLocaleDateString()}`
                 });
 
@@ -100,6 +107,88 @@ export default function ProfilePage() {
 
         fetchUserProfile();
     }, [userId, executeQuery]);
+
+    // Fetch owned projects when viewing someone else's profile
+    useEffect(() => {
+        if (!currentUser || !user || currentUser.id === user.id) return;
+
+        const fetchOwnedProjects = async () => {
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
+                const myProjects = data.project.myprojects || [];
+                
+                // Filter to only projects where current user is owner
+                const owned = myProjects.filter(p => p.owner.id === currentUser.id);
+                console.log(`[ProfilePage] Current user owns ${owned.length} projects:`, owned.map(p => ({ id: p.id, name: p.name })));
+                setOwnedProjects(owned);
+            } catch (err) {
+                console.error("Failed to fetch owned projects:", err);
+            }
+        };
+
+        const fetchUserProjects = async () => {
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_USER_PROJECTS, {
+                    userId: user.id
+                });
+                const projects = data.project.userprojects || [];
+                
+                // Store project IDs the user is already a member of
+                const projectIds = new Set(projects.map(p => p.id));
+                console.log(`[ProfilePage] User ${user.id} (${user.name}) belongs to ${projectIds.size} projects:`, Array.from(projectIds));
+                console.log('[ProfilePage] Full project details:', projects.map(p => ({ id: p.id, name: p.name })));
+                setUserProjectIds(projectIds);
+            } catch (err) {
+                console.error("Failed to fetch user projects:", err);
+            }
+        };
+
+        const checkIfFriend = async () => {
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
+                const friends = data.friendship.myfriends || [];
+                
+                // Check if the viewed user is in the friends list
+                const friendExists = friends.some(friend => friend.id === user.id);
+                setIsFriend(friendExists);
+            } catch (err) {
+                console.error("Failed to fetch friends:", err);
+                setIsFriend(false);
+            }
+        };
+
+        fetchOwnedProjects();
+        fetchUserProjects();
+        checkIfFriend();
+    }, [currentUser, user, executeQuery]);
+
+    const handleInviteToProject = async (projectId) => {
+        if (!currentUser || !user) return;
+
+        setInviting(true);
+        try {
+            const response = await executeMutation(GRAPHQL_MUTATIONS.CREATE_PROJECT_INVITATION, {
+                input: {
+                    projectId: parseInt(projectId),
+                    invitingId: currentUser.id,
+                    invitedId: user.id
+                }
+            });
+
+            if (response.errors) {
+                throw new Error(response.errors[0].message);
+            }
+
+            showToast(`Invitation sent to ${user.name} ${user.surname}!`, 'success');
+            setShowInviteModal(false);
+        } catch (err) {
+            console.error("Failed to send invitation:", err);
+            const errorMessage = err.message || "Failed to send invitation. They may already be invited or a member.";
+            showToast(errorMessage, 'error');
+        } finally {
+            setInviting(false);
+        }
+    };
 
     if (loading || postsLoading) {
         return (
@@ -185,6 +274,14 @@ export default function ProfilePage() {
                                     Edit Profile
                                 </button>
                             )}
+                            {currentUser && user.id !== currentUser.id && isFriend && ownedProjects.length > 0 && (
+                                <button
+                                    className="invite-btn"
+                                    onClick={() => setShowInviteModal(true)}
+                                >
+                                    Invite to Project
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -229,6 +326,7 @@ export default function ProfilePage() {
                                                 id={post.id}
                                                 author={post.user.nickname}
                                                 authorId={post.user.id}
+                                                authorProfilePic={post.user.profilePic}
                                                 time={post.time}
                                                 content={post.content}
                                                 image={post.imageUrl}
@@ -244,6 +342,61 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Invite to Project Modal */}
+                {showInviteModal && (
+                    <div className="modal-overlay" onClick={() => setShowInviteModal(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h3>Invite {user.name} to a Project</h3>
+                            <div className="project-list">
+                                {ownedProjects.length === 0 ? (
+                                    <p>You don't own any projects yet.</p>
+                                ) : (
+                                    ownedProjects.map((project) => {
+                                        const isAlreadyMember = userProjectIds.has(project.id);
+                                        console.log(`[ProfilePage Modal] Project ${project.id} "${project.name}": isAlreadyMember = ${isAlreadyMember}, userProjectIds =`, Array.from(userProjectIds));
+                                        return (
+                                            <div key={project.id} className="project-invite-item">
+                                                <div>
+                                                    <strong>{project.name}</strong>
+                                                    <p>{project.description}</p>
+                                                    {isAlreadyMember && (
+                                                        <small style={{ 
+                                                            color: '#888', 
+                                                            fontStyle: 'italic',
+                                                            fontSize: '0.85em',
+                                                            opacity: 0.8,
+                                                            fontWeight: 300
+                                                        }}>
+                                                            ℹ Already a member
+                                                        </small>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    onClick={() => handleInviteToProject(project.id)}
+                                                    disabled={inviting || isAlreadyMember}
+                                                    style={{
+                                                        opacity: isAlreadyMember ? 0.5 : 1,
+                                                        cursor: isAlreadyMember ? 'not-allowed' : 'pointer',
+                                                        backgroundColor: isAlreadyMember ? '#ccc' : ''
+                                                    }}
+                                                >
+                                                    {isAlreadyMember ? "Member" : inviting ? "Inviting..." : "Invite"}
+                                                </button>
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+                            <button
+                                className="close-modal-btn"
+                                onClick={() => setShowInviteModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

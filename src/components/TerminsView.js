@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../styles/Termins.css";
 import { useGraphQL } from "../hooks/useGraphQL";
+import ConfirmDialog from "./ui/ConfirmDialog";
 
-const TerminsView = ({ projectId }) => {
+const TerminsView = ({ projectId, project }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [events, setEvents] = useState([]);
     const [newEvent, setNewEvent] = useState({ title: "", time: "", description: "" });
     const [loading, setLoading] = useState(true);
     const [currentUserId, setCurrentUserId] = useState(null);
-    const { executeQuery } = useGraphQL();
+    const [deleteConfirm, setDeleteConfirm] = useState({ show: false, eventId: null });
+    const { executeQuery, executeMutation } = useGraphQL();
 
     // Fetch current user
     useEffect(() => {
@@ -47,7 +49,8 @@ const TerminsView = ({ projectId }) => {
                         title: event.title,
                         description: event.description || "",
                         time: event.time || "",
-                        eventDate: new Date(event.eventDate)
+                        eventDate: new Date(event.eventDate),
+                        createdById: event.createdById
                     }))
                 );
                 setLoading(false);
@@ -64,7 +67,7 @@ const TerminsView = ({ projectId }) => {
         if (!newEvent.title.trim() || !currentUserId || !projectId) return;
 
         try {
-            const data = await executeQuery(GRAPHQL_QUERIES.CREATE_PROJECT_EVENT, {
+            const data = await executeMutation(GRAPHQL_MUTATIONS.CREATE_PROJECT_EVENT, {
                 input: {
                     projectId: parseInt(projectId),
                     createdById: currentUserId,
@@ -81,7 +84,8 @@ const TerminsView = ({ projectId }) => {
                 title: createdEvent.title,
                 description: createdEvent.description || "",
                 time: createdEvent.time || "",
-                eventDate: new Date(createdEvent.eventDate)
+                eventDate: new Date(createdEvent.eventDate),
+                createdById: createdEvent.createdById
             };
 
             setEvents([...events, newEventObj]);
@@ -89,6 +93,31 @@ const TerminsView = ({ projectId }) => {
         } catch (err) {
             console.error("Failed to create event:", err);
         }
+    };
+
+    const handleDeleteEvent = async (eventId) => {
+        setDeleteConfirm({ show: true, eventId });
+    };
+
+    const confirmDeleteEvent = async () => {
+        const eventId = deleteConfirm.eventId;
+        setDeleteConfirm({ show: false, eventId: null });
+
+        try {
+            await executeMutation(GRAPHQL_MUTATIONS.DELETE_PROJECT_EVENT, {
+                id: eventId
+            });
+
+            setEvents(events.filter(e => e.id !== eventId));
+        } catch (err) {
+            console.error("Failed to delete event:", err);
+            // Could add a toast notification here instead of alert
+        }
+    };
+
+    const canDeleteEvent = (event) => {
+        if (!currentUserId || !project) return false;
+        return event.createdById === currentUserId || project.owner?.id === currentUserId;
     };
 
     const handleDayClick = (date) => setSelectedDate(date);
@@ -137,8 +166,19 @@ const TerminsView = ({ projectId }) => {
                     ) : (
                         selectedDateEvents.map((ev) => (
                             <div key={ev.id} className="event-item">
-                                <strong>{ev.time || "All day"}</strong> — {ev.title}
-                                {ev.description && <p>{ev.description}</p>}
+                                <div className="event-content">
+                                    <strong>{ev.time || "All day"}</strong> — {ev.title}
+                                    {ev.description && <p>{ev.description}</p>}
+                                </div>
+                                {canDeleteEvent(ev) && (
+                                    <button
+                                        className="delete-event-btn"
+                                        onClick={() => handleDeleteEvent(ev.id)}
+                                        title="Delete event"
+                                    >
+                                        ✕
+                                    </button>
+                                )}
                             </div>
                         ))
                     )}
@@ -168,6 +208,17 @@ const TerminsView = ({ projectId }) => {
                     </button>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={deleteConfirm.show}
+                title="Delete Event"
+                message="Are you sure you want to delete this event? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                danger={true}
+                onConfirm={confirmDeleteEvent}
+                onCancel={() => setDeleteConfirm({ show: false, eventId: null })}
+            />
         </div>
     );
 };

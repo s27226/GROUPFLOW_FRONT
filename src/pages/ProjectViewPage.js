@@ -55,7 +55,7 @@ export default function ProjectsViewPage() {
             case "files":
                 return <FilesView projectId={id} />;
             case "termins":
-                return <TerminsView projectId={id} />;
+                return <TerminsView projectId={id} project={project} />;
             default:
                 return <ChatBox projectId={id} />;
         }

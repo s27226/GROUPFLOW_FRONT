@@ -13,6 +13,7 @@ export default function Post({
     id,
     author,
     authorId,
+    authorProfilePic,
     time,
     content,
     image,
@@ -152,7 +153,7 @@ export default function Post({
         <div className="post-card">
             <div className="post-header">
                 <img
-                    src={`https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
+                    src={authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
                     alt={author}
                     className="post-avatar"
                     style={{ cursor: "pointer" }}
@@ -211,12 +212,21 @@ export default function Post({
                         <div className="post-shared-content">
                             <div className="post-shared-info">
                                 <img
-                                    src={`https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                    src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
                                     alt={sharedPost.author}
                                     className="post-shared-avatar"
                                 />
                                 <div>
-                                    <strong>{sharedPost.author}</strong>
+                                    <strong
+                                        style={{ cursor: "pointer" }}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (sharedPost.userId) navigate(`/profile/${sharedPost.userId}`);
+                                        }}
+                                    >
+                                        {sharedPost.author}
+                                    </strong>
                                     <span> · {sharedPost.time}</span>
                                 </div>
                             </div>
@@ -276,7 +286,7 @@ export default function Post({
                 <div className="comment-section">
                     <div className="comment-input-row">
                         <img
-                            src={`https://api.dicebear.com/9.x/identicon/svg?seed=You`}
+                            src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                             alt="You"
                             className="comment-avatar"
                         />
@@ -459,7 +469,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
             {/* HEADER */}
             <div className="comment-header">
                 <img
-                    src={`https://api.dicebear.com/9.x/identicon/svg?seed=${comment.user}`}
+                    src={comment.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${comment.user}`}
                     alt={comment.user}
                     className="comment-avatar"
                 />
@@ -529,7 +539,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
             {replyOpen && (
                 <div className="reply-input-row">
                     <img
-                        src={`https://api.dicebear.com/9.x/identicon/svg?seed=You`}
+                        src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                         alt="You"
                         className="comment-avatar"
                     />

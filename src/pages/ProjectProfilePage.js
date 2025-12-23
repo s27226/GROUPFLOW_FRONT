@@ -227,6 +227,7 @@ export default function ProjectProfilePage() {
                                                 id={post.id}
                                                 author={post.user.nickname}
                                                 authorId={post.user.id}
+                                                authorProfilePic={post.user.profilePic}
                                                 time={post.time}
                                                 content={post.content}
                                                 image={post.imageUrl}

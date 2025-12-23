@@ -239,7 +239,11 @@ function Navbar() {
                         setMsgOpen(false);
                     }}
                 >
-                    <img src={defaultPfp} alt="User" className="user-pfp" />
+                    <img 
+                        src={user?.profilePic || defaultPfp} 
+                        alt="User" 
+                        className="user-pfp" 
+                    />
                     {user && !loadingUser && <span className="user-nickname">{user.nickname}</span>}
                 </div>
 

@@ -16,7 +16,22 @@ export default function ProjectInfoPanel({ project, projectId }) {
                 />
                 <div className="project-info-details">
                     <h3>{project.name}</h3>
-                    <p className="project-info-owner">by {project.owner?.nickname || "Unknown"}</p>
+                    <p className="project-info-owner">
+                        by{" "}
+                        <span
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (project.owner?.id) navigate(`/profile/${project.owner.id}`);
+                            }}
+                            style={{
+                                cursor: "pointer",
+                                color: "var(--primary-color)",
+                                fontWeight: "500"
+                            }}
+                        >
+                            {project.owner?.nickname || "Unknown"}
+                        </span>
+                    </p>
                 </div>
             </div>
 

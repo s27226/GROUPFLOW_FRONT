@@ -15,6 +15,7 @@ const formatCommentData = (comment) => {
         id: comment.id,
         user: comment.user?.nickname || `${comment.user?.name || ''} ${comment.user?.surname || ''}`.trim() || "Unknown",
         userId: comment.userId,
+        profilePic: comment.user?.profilePic,
         time: formatTime(comment.createdAt),
         text: comment.content,
         likes: comment.likes || [],
@@ -36,6 +37,7 @@ export const formatPostData = (post) => {
         ...post,
         author: post.user?.nickname || "Unknown",
         authorId: post.user?.id,
+        authorProfilePic: post.user?.profilePic,
         time: formatTime(post.created),
         content: post.content || post.description,
         image: post.imageUrl,
@@ -46,6 +48,7 @@ export const formatPostData = (post) => {
                   id: post.sharedPost.id,
                   author: post.sharedPost.user?.nickname || "Unknown",
                   authorId: post.sharedPost.user?.id,
+                  authorProfilePic: post.sharedPost.user?.profilePic,
                   time: formatTime(post.sharedPost.created),
                   content: post.sharedPost.content || post.sharedPost.description,
                   image: post.sharedPost.imageUrl

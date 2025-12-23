@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import ConfirmDialog from "./ui/ConfirmDialog";
 import "../styles/Friends.css";
 import { useSearchQuery } from "../hooks/useSearchQuery";
 import { useGraphQL } from "../hooks/useGraphQL";
@@ -10,6 +11,7 @@ export default function Friends() {
     const [friends, setFriends] = useState([]);
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [removeConfirm, setRemoveConfirm] = useState({ show: false, friendId: null, friendName: "" });
     const searchQuery = useSearchQuery();
     const { executeQuery, executeMutation } = useGraphQL();
     const navigate = useNavigate();
@@ -47,12 +49,19 @@ export default function Friends() {
         fetchFriends();
     }, [searchQuery, executeQuery]);
 
-    const removeFriend = async (id) => {
+    const removeFriend = async (id, name) => {
+        setRemoveConfirm({ show: true, friendId: id, friendName: name });
+    };
+
+    const confirmRemoveFriend = async () => {
+        const { friendId } = removeConfirm;
+        setRemoveConfirm({ show: false, friendId: null, friendName: "" });
+
         try {
-            await executeMutation(GRAPHQL_MUTATIONS.REMOVE_FRIEND, { friendId: id });
-            const updated = filteredFriends.filter((friend) => friend.id !== id);
+            await executeMutation(GRAPHQL_MUTATIONS.REMOVE_FRIEND, { friendId });
+            const updated = filteredFriends.filter((friend) => friend.id !== friendId);
             setFilteredFriends(updated);
-            setFriends(friends.filter((friend) => friend.id !== id));
+            setFriends(friends.filter((friend) => friend.id !== friendId));
         } catch (err) {
             console.error("Failed to remove friend:", err);
         }
@@ -89,7 +98,11 @@ export default function Friends() {
                 <div className="friends-grid">
                     {filteredFriends.map((friend) => (
                         <div className="friend-card" key={friend.id}>
-                            <div className="friend-card-header">
+                            <div 
+                                className="friend-card-header"
+                                onClick={() => navigate(`/profile/${friend.id}`)}
+                                style={{ cursor: "pointer" }}
+                            >
                                 <img
                                     src={
                                         friend.profilePic ||
@@ -128,7 +141,7 @@ export default function Friends() {
                                 </button>
                                 <button
                                     className="remove-btn"
-                                    onClick={() => removeFriend(friend.id)}
+                                    onClick={() => removeFriend(friend.id, friend.nickname || `${friend.name} ${friend.surname}`)}
                                 >
                                     Remove
                                 </button>
@@ -137,6 +150,17 @@ export default function Friends() {
                     ))}
                 </div>
             )}
+
+            <ConfirmDialog
+                isOpen={removeConfirm.show}
+                title="Remove Friend"
+                message={`Are you sure you want to remove ${removeConfirm.friendName} from your friends?`}
+                confirmText="Remove"
+                cancelText="Cancel"
+                danger={true}
+                onConfirm={confirmRemoveFriend}
+                onCancel={() => setRemoveConfirm({ show: false, friendId: null, friendName: "" })}
+            />
         </div>
     );
 }

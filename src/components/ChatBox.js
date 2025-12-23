@@ -203,7 +203,7 @@ const ChatBox = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
+                    avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
                     self: currentUserId === entry.userChat.user.id
                 }));
 
@@ -278,7 +278,7 @@ const ChatBox = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
+                    avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
                     self: currentUserId === entry.userChat.user.id
                 }));
                 setMessages(formattedMessages);

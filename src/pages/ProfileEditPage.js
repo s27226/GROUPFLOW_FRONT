@@ -36,7 +36,7 @@ export default function ProfileEditPage() {
                 setUser(userData);
                 setName(userData.name || "");
                 setBio(userData.bio || "");
-                setBanner(userData.banner || "https://picsum.photos/900/200?random=10");
+                setBanner(userData.bannerPic || "https://picsum.photos/900/200?random=10");
                 setPfp(
                     userData.profilePic ||
                         `https://api.dicebear.com/9.x/identicon/svg?seed=${userData.nickname}`

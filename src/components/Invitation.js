@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 import "../styles/Invitation.css";
 
 export default function Invitation({ data, onRemove }) {
     const [loading, setLoading] = useState(false);
     const { executeMutation } = useGraphQL();
+    const { showToast } = useToast();
 
     const handleAccept = async () => {
         setLoading(true);
@@ -25,7 +27,7 @@ export default function Invitation({ data, onRemove }) {
             }
         } catch (err) {
             console.error("Failed to accept invitation:", err);
-            alert(err.message || "Failed to accept invitation. Please try again.");
+            showToast(err.message || "Failed to accept invitation. Please try again.", "error");
         } finally {
             setLoading(false);
         }
@@ -49,7 +51,7 @@ export default function Invitation({ data, onRemove }) {
             }
         } catch (err) {
             console.error("Failed to reject invitation:", err);
-            alert(err.message || "Failed to reject invitation. Please try again.");
+            showToast(err.message || "Failed to reject invitation. Please try again.", "error");
         } finally {
             setLoading(false);
         }

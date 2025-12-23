@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Users.css";
 
@@ -15,6 +16,7 @@ export default function Users() {
     const [sentRequests, setSentRequests] = useState(new Set());
     const [friends, setFriends] = useState(new Set());
     const { executeQuery, executeMutation } = useGraphQL();
+    const navigate = useNavigate();
 
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
@@ -129,7 +131,11 @@ export default function Users() {
 
         return (
             <div key={user.id} className="user-card">
-                <div className="user-card-header">
+                <div 
+                    className="user-card-header"
+                    onClick={() => navigate(`/profile/${user.id}`)}
+                    style={{ cursor: "pointer" }}
+                >
                     <img
                         src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`}
                         alt={user.nickname}

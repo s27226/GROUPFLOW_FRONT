@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Image, X } from "lucide-react";
+import { useToast } from "../context/ToastContext";
 import "../styles/NewPostPage.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function NewPostPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { showToast } = useToast();
     const [content, setContent] = useState("");
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -47,7 +49,7 @@ export default function NewPostPage() {
         e.preventDefault();
 
         if (!content.trim()) {
-            alert("Please write something for your post");
+            showToast("Please write something for your post", "warning");
             return;
         }
 
@@ -59,7 +61,7 @@ export default function NewPostPage() {
         };
 
         console.log("New post:", newPost);
-        alert("Post created successfully!");
+        showToast("Post created successfully!", "success");
 
         navigate("/");
     };

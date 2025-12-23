@@ -148,3 +148,43 @@
     vertical-align: middle;
     margin-right: 6px;
 }
+
+.member-item {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative; /* Ensures that the remove button is positioned relative to this element */
+}
+
+.remove-member-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.remove-member-btn:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.remove-member-btn:active {
+    transform: scale(0.95);
+}

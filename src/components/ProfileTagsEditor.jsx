@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/ProfileTagsEditor.css";
 
@@ -11,6 +12,7 @@ export default function ProfileTagsEditor() {
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
     const { executeQuery, executeMutation } = useGraphQL();
+    const { showToast } = useToast();
 
     useEffect(() => {
         loadTags();
@@ -43,7 +45,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to add skill:", err);
-            alert("Failed to add skill");
+            showToast("Failed to add skill", "error");
         }
     };
 
@@ -58,7 +60,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to remove skill:", err);
-            alert("Failed to remove skill");
+            showToast("Failed to remove skill", "error");
         }
     };
 
@@ -76,7 +78,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to add interest:", err);
-            alert("Failed to add interest");
+            showToast("Failed to add interest", "error");
         }
     };
 
@@ -91,7 +93,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to remove interest:", err);
-            alert("Failed to remove interest");
+            showToast("Failed to remove interest", "error");
         }
     };
 

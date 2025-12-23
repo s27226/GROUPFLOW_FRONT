@@ -11,6 +11,7 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
+            profilePic
           }
           content
           title
@@ -31,6 +32,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
             likes {
               id
@@ -46,6 +48,7 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
+                profilePic
               }
               likes {
                 id
@@ -60,6 +63,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
             content
             title
@@ -239,6 +243,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
           }
         }
@@ -263,6 +268,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
           }
         }
@@ -295,6 +301,8 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
+          profilePic
+          bannerPic
         }
       }
     }
@@ -312,6 +320,8 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
+          profilePic
+          bannerPic
         }
       }
     }
@@ -580,6 +590,7 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
+                profilePic
               }
             }
           }
@@ -648,6 +659,7 @@ export const GRAPHQL_QUERIES = {
             eventDate
             time
             createdAt
+            createdById
             createdBy {
               id
               nickname
@@ -658,34 +670,6 @@ export const GRAPHQL_QUERIES = {
             endCursor
           }
         }
-      }
-    }
-  `,
-
-    // Create a new project event
-    CREATE_PROJECT_EVENT: `
-    mutation CreateProjectEvent($input: ProjectEventInput!) {
-      projectEvent {
-        createProjectEvent(input: $input) {
-          id
-          title
-          description
-          eventDate
-          time
-          createdBy {
-            id
-            nickname
-          }
-        }
-      }
-    }
-  `,
-
-    // Delete a project event
-    DELETE_PROJECT_EVENT: `
-    mutation DeleteProjectEvent($id: Int!) {
-      projectEvent {
-        deleteProjectEvent(id: $id)
       }
     }
   `,
@@ -989,6 +973,21 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
+    CREATE_PROJECT_INVITATION: `
+    mutation CreateProjectInvitation($input: ProjectInvitationInput!) {
+      projectInvitation {
+        createProjectInvitation(input: $input) {
+          id
+          projectId
+          invitingId
+          invitedId
+          sent
+          expiring
+        }
+      }
+    }
+  `,
+
     REMOVE_FRIEND: `
     mutation RemoveFriend($friendId: Int!) {
       friendship {
@@ -1227,6 +1226,44 @@ export const GRAPHQL_MUTATIONS = {
     mutation DeleteProject($id: Int!) {
       project {
         deleteProject(id: $id)
+      }
+    }
+  `,
+
+    // Remove a member from a project
+    REMOVE_PROJECT_MEMBER: `
+    mutation RemoveProjectMember($projectId: Int!, $userId: Int!) {
+      project {
+        removeProjectMember(projectId: $projectId, userId: $userId)
+      }
+    }
+  `,
+
+    // Create a project event
+    CREATE_PROJECT_EVENT: `
+    mutation CreateProjectEvent($input: ProjectEventInput!) {
+      projectEvent {
+        createProjectEvent(input: $input) {
+          id
+          title
+          description
+          eventDate
+          time
+          createdById
+          createdBy {
+            id
+            nickname
+          }
+        }
+      }
+    }
+  `,
+
+    // Delete a project event
+    DELETE_PROJECT_EVENT: `
+    mutation DeleteProjectEvent($id: Int!) {
+      projectEvent {
+        deleteProjectEvent(id: $id)
       }
     }
   `,

@@ -26,6 +26,7 @@ import NewPostPage from "./pages/NewPostPage";
 import SavedPage from "./pages/SavedPage";
 import PostPage from "./pages/PostPage";
 import ProfileTagsPage from "./pages/ProfileTagsPage";
+import { ToastProvider } from "./context/ToastContext";
 
 function ProtectedRoute({ children }) {
     const { token } = useAuth();
@@ -105,10 +106,12 @@ export default function App() {
     );
 
     return (
-        <InvitationContext.Provider value={{ invitationsCount, setInvitationsCount }}>
-            <AuthProvider>
-                <AppContent setInvitationsCount={setInvitationsCount} />
-            </AuthProvider>
-        </InvitationContext.Provider>
+        <ToastProvider>
+            <InvitationContext.Provider value={{ invitationsCount, setInvitationsCount }}>
+                <AuthProvider>
+                    <AppContent setInvitationsCount={setInvitationsCount} />
+                </AuthProvider>
+            </InvitationContext.Provider>
+        </ToastProvider>
     );
 }
