@@ -159,13 +159,17 @@ export const GRAPHQL_QUERIES = {
             name
             description
             imageUrl
-            viewCount
-            likeCount
             created
             owner {
               id
               nickname
               name
+            }
+            likes {
+              id
+            }
+            views {
+              id
             }
           }
           pageInfo {
@@ -337,12 +341,16 @@ export const GRAPHQL_QUERIES = {
           description
           imageUrl
           created
-          viewCount
-          likeCount
           owner {
             id
             nickname
             name
+          }
+          likes {
+            id
+          }
+          views {
+            id
           }
         }
       }
@@ -359,14 +367,18 @@ export const GRAPHQL_QUERIES = {
             name
             description
             imageUrl
-            viewCount
-            likeCount
             created
             lastUpdated
             owner {
               id
               nickname
               name
+            }
+            likes {
+              id
+            }
+            views {
+              id
             }
           }
           pageInfo {
@@ -390,8 +402,6 @@ export const GRAPHQL_QUERIES = {
           name
           description
           imageUrl
-          viewCount
-          likeCount
           created
           lastUpdated
           isPublic
@@ -401,6 +411,12 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             profilePic
+          }
+          likes {
+            id
+          }
+          views {
+            id
           }
           collaborators {
             user {
@@ -1104,6 +1120,42 @@ export const GRAPHQL_MUTATIONS = {
           created
           sharedPostId
         }
+      }
+    }
+  `,
+
+    // Like a project
+    LIKE_PROJECT: `
+    mutation LikeProject($projectId: Int!) {
+      project {
+        likeproject(projectId: $projectId)
+      }
+    }
+  `,
+
+    // Unlike a project
+    UNLIKE_PROJECT: `
+    mutation UnlikeProject($projectId: Int!) {
+      project {
+        unlikeproject(projectId: $projectId)
+      }
+    }
+  `,
+
+    // Record a project view
+    RECORD_PROJECT_VIEW: `
+    mutation RecordProjectView($projectId: Int!) {
+      project {
+        recordprojectview(projectId: $projectId)
+      }
+    }
+  `,
+
+    // Check if user has liked a project
+    HAS_LIKED_PROJECT: `
+    query HasLikedProject($projectId: Int!) {
+      project {
+        haslikedproject(projectId: $projectId)
       }
     }
   `,

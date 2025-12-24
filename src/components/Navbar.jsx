@@ -10,6 +10,7 @@ import { GRAPHQL_QUERIES } from "../queries/graphql";
 import NotificationItem from "./NotificationItem";
 import MessagePreview from "./MessagePreview";
 import PrivateChat from "./PrivateChat";
+import SearchDropdown from "./SearchDropdown";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { useGraphQL } from "../hooks/useGraphQL";
 
@@ -17,11 +18,13 @@ function Navbar() {
     const { logout, user, updateUser, token } = useAuth();
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [msgOpen, setMsgOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
     const [loadingUser, setLoadingUser] = useState(false);
     const [friends, setFriends] = useState([]);
     const [loadingFriends, setLoadingFriends] = useState(false);
@@ -74,7 +77,15 @@ function Navbar() {
     }, [user, executeQuery, token]);
 
     const [activeChat, setActiveChat] = useState(null);
-    const location = useLocation();
+
+    // Sync search query with URL when on search page
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const urlQuery = params.get("q");
+        if (location.pathname === "/search" && urlQuery) {
+            setSearchQuery(urlQuery);
+        }
+    }, [location]);
 
     // Close all dropdowns when clicking outside
     const menuRef = useClickOutside(
@@ -83,7 +94,15 @@ function Navbar() {
             setNotifOpen(false);
             setMsgOpen(false);
         },
-        menuOpen || notifOpen || msgOpen
+        [menuOpen, notifOpen, msgOpen]
+    );
+
+    // Separate ref for search dropdown
+    const searchRef = useClickOutside(
+        () => {
+            setSearchDropdownOpen(false);
+        },
+        searchDropdownOpen
     );
 
     // Fetch notifications
@@ -140,27 +159,44 @@ function Navbar() {
 
             <div className="search-bar-container">
                 <form
+                    ref={searchRef}
                     onSubmit={(e) => {
-                        console.log("Search submitted:", searchQuery);
-                        localStorage.setItem("searchQuery", JSON.stringify(searchQuery));
-                        // TODO: add real search logic
-
-                        if (location.pathname === "/" || location.pathname === "/projects?") {
-                            navigate("/projects");
-                        } else if (location.pathname === "/myprojects") {
-                            navigate("/myprojects");
-                        }
+                        e.preventDefault();
+                        // Just keep the dropdown open, user can click on results or links
                     }}
                 >
                     <div className="search-bar">
                         <FaSearch className="search-icon" />
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder="Search projects and people..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setSearchDropdownOpen(e.target.value.trim().length > 0);
+                                if (e.target.value.trim().length > 0) {
+                                    setMenuOpen(false);
+                                    setNotifOpen(false);
+                                    setMsgOpen(false);
+                                }
+                            }}
+                            onFocus={() => {
+                                if (searchQuery.trim()) {
+                                    setSearchDropdownOpen(true);
+                                    setMenuOpen(false);
+                                    setNotifOpen(false);
+                                    setMsgOpen(false);
+                                }
+                            }}
                         />
                     </div>
+                    <SearchDropdown
+                        query={searchQuery}
+                        isOpen={searchDropdownOpen}
+                        onClose={() => {
+                            setSearchDropdownOpen(false);
+                        }}
+                    />
                 </form>
             </div>
 

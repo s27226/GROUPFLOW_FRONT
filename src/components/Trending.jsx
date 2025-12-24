@@ -64,12 +64,10 @@ export default function Trending() {
                                     </span>
                                 </span>
                             )}
-                            {(project.viewCount || project.likeCount) && (
-                                <div className="trending-stats">
-                                    {project.viewCount > 0 && <span>👀 {project.viewCount}</span>}
-                                    {project.likeCount > 0 && <span>❤️ {project.likeCount}</span>}
-                                </div>
-                            )}
+                            <div className="trending-stats">
+                                <span>👀 {project.viewCount ?? 0}</span>
+                                <span>❤️ {project.likeCount ?? 0}</span>
+                            </div>
                         </div>
                     </li>
                 ))}

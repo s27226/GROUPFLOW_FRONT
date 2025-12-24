@@ -45,19 +45,29 @@ export default function Users() {
 
     useEffect(() => {
         loadSuggestedUsers();
+        
+        // Check if there's a search query from the navbar
+        const storedQuery = localStorage.getItem('userSearchQuery');
+        if (storedQuery) {
+            setSearchTerm(storedQuery);
+            setActiveTab("search");
+            localStorage.removeItem('userSearchQuery'); // Clear it after using
+            
+            // Trigger search with the stored query
+            setTimeout(() => {
+                handleSearchWithQuery(storedQuery);
+            }, 100);
+        }
     }, []);
 
-    const handleSearch = async () => {
+    const handleSearchWithQuery = async (query) => {
         setLoading(true);
         try {
             const input = {
-                searchTerm: searchTerm || null,
+                searchTerm: query || null,
                 skills: selectedSkills.length > 0 ? selectedSkills : null,
                 interests: selectedInterests.length > 0 ? selectedInterests : null
             };
-
-            console.log("Executing search with query:", GRAPHQL_QUERIES.SEARCH_USERS);
-            console.log("Variables:", { input });
 
             const data = await executeQuery(GRAPHQL_QUERIES.SEARCH_USERS, { input });
             const results = data?.users?.searchusers || [];
@@ -78,6 +88,10 @@ export default function Users() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = async () => {
+        await handleSearchWithQuery(searchTerm);
     };
 
     const addSkillFilter = () => {
