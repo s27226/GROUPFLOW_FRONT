@@ -235,6 +235,7 @@ export default function ProjectProfilePage() {
                                                 saved={false}
                                                 sharedPost={post.sharedPost}
                                                 likes={0}
+                                                projectId={projectId}
                                             />
                                         ))
                                     )}

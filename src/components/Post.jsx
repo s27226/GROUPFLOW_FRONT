@@ -23,6 +23,7 @@ export default function Post({
     sharedPost = null,
     isFullView = false,
     likes: initialLikes = [],
+    projectId = null,
     onHide,
     onUndoHide,
     onSave,
@@ -121,32 +122,24 @@ export default function Post({
         setMenuOpen(false);
     };
 
-    const handleShare = async () => {
-        try {
-            const response = await makeRequest(GRAPHQL_MUTATIONS.SHARE_POST, {
-                postId: id,
-                content: null,
-                projectId: null
-            });
-
-            if (!response.errors && response.data.post.sharePost) {
-                // Navigate to feed or show success message
-                navigate('/');
-            }
-        } catch (error) {
-            console.error("Error sharing post:", error);
-            // Fallback to old behavior
-            const postData = encodeURIComponent(
-                JSON.stringify({
-                    id,
-                    author,
-                    time,
-                    content,
-                    image
-                })
-            );
-            navigate(`/project/new-post?share=${postData}`);
-        }
+    const handleShare = () => {
+        // Navigate to new post page with share parameter
+        const postData = encodeURIComponent(
+            JSON.stringify({
+                id,
+                author,
+                authorId,
+                authorProfilePic,
+                time,
+                content,
+                image
+            })
+        );
+        // If we have a projectId, use the project-specific route with preselected project
+        const shareUrl = projectId 
+            ? `/project/${projectId}/new-post?share=${postData}`
+            : `/new-post?share=${postData}`;
+        navigate(shareUrl);
     };
 
     return (

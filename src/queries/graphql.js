@@ -108,6 +108,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
             likes {
               id
@@ -123,6 +124,7 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
+                profilePic
               }
               likes {
                 id
@@ -137,6 +139,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
             }
             content
             title
@@ -926,13 +929,24 @@ export const GRAPHQL_MUTATIONS = {
 
     CREATE_POST: `
     mutation CreatePost($input: PostInput!) {
-      createPost(input: $input) {
-        id
-        content
-        title
-        created
-        user {
-          nickname
+      post {
+        createPost(input: $input) {
+          id
+          content
+          title
+          description
+          imageUrl
+          created
+          projectId
+          sharedPostId
+          public
+          user {
+            id
+            nickname
+            name
+            surname
+            profilePic
+          }
         }
       }
     }

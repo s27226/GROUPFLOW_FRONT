@@ -66,6 +66,7 @@ function AppContent({ setInvitationsCount }) {
                 <Route path="/project/:projectId" element={<ProjectProfilePage />} />
                 <Route path="/project/:projectId/edit" element={<ProjectEditFrontPage />} />
                 <Route path="/project/:projectId/new-post" element={<NewPostPage />} />
+                <Route path="/new-post" element={<NewPostPage />} />
                 <Route path="/chat/:username" element={<PrivateChat />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/project/:id/workspace" element={<ProjectChatPage />} />
