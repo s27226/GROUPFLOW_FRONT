@@ -1,12 +1,13 @@
 .newpost-container {
     background-color: var(--bg-secondary);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 12px;
+    padding: 28px;
     max-width: 700px;
     width: 100%;
     margin: 0 auto;
+    margin-top: 64px;
     box-shadow: var(--shadow-soft);
-    border: 1px solid var(--border-color);
+    font-family: var(--font-family), serif;
 }
 
 .newpost-header {
@@ -19,9 +20,9 @@
 }
 
 .newpost-header h2 {
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--accent);
     margin: 0;
 }
 
@@ -56,9 +57,9 @@
 }
 
 .newpost-project-selector label {
-    font-size: 0.95rem;
+    font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 
 .newpost-project-select {
@@ -67,16 +68,17 @@
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 1rem;
+    padding: 12px 14px;
+    font-size: 14px;
     font-family: var(--font-family), serif;
     outline: none;
     cursor: pointer;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s, background-color 0.2s;
 }
 
 .newpost-project-select:focus {
     border-color: var(--accent);
+    background-color: var(--bg-main);
 }
 
 .newpost-title-wrapper {
@@ -89,17 +91,17 @@
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 1.1rem;
+    padding: 12px 14px;
+    font-size: 14px;
     font-family: var(--font-family), serif;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s, background-color 0.2s;
     box-sizing: border-box;
-    font-weight: 500;
 }
 
 .newpost-title-input:focus {
     border-color: var(--accent);
+    background-color: var(--bg-main);
 }
 
 .newpost-title-input::placeholder {
@@ -127,7 +129,7 @@
 }
 
 .newpost-toggle-text {
-    font-size: 0.95rem;
+    font-size: 14px;
     color: var(--text-primary);
     font-weight: 500;
 }
@@ -188,19 +190,20 @@
     background-color: var(--bg-accent);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px;
-    font-size: 1rem;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
     font-family: var(--font-family), serif;
     resize: vertical;
-    min-height: 150px;
+    min-height: 100px;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s, background-color 0.2s;
     box-sizing: border-box;
 }
 
 .newpost-textarea:focus {
     border-color: var(--accent);
+    background-color: var(--bg-main);
 }
 
 .newpost-textarea::placeholder {
@@ -210,14 +213,14 @@
 .newpost-char-count {
     position: absolute;
     bottom: 12px;
-    right: 16px;
-    font-size: 0.85rem;
+    right: 14px;
+    font-size: 12px;
     color: var(--text-secondary);
 }
 
 .newpost-image-preview {
     position: relative;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border-color);
 }
@@ -267,17 +270,20 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 12px 16px;
     background-color: var(--bg-hover);
     color: var(--text-primary);
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.2s, transform 0.1s;
     border: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .newpost-image-btn:hover {
     background-color: var(--bg-hover-strong);
+    transform: translateY(-1px);
 }
 
 .newpost-image-btn svg {
@@ -291,12 +297,12 @@
 
 .newpost-cancel-btn,
 .newpost-submit-btn {
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s, transform 0.1s;
     border: none;
 }
 
@@ -313,10 +319,18 @@
 .newpost-submit-btn {
     background-color: var(--accent);
     color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
 }
 
 .newpost-submit-btn:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--accent) 85%, #000);
+    transform: translateY(-1px);
 }
 
 .newpost-submit-btn:disabled {
@@ -326,7 +340,7 @@
 
 .newpost-shared-preview {
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     background-color: var(--bg-accent);
 }
@@ -335,7 +349,7 @@
     padding: 10px 16px;
     background-color: var(--bg-hover);
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.9rem;
+    font-size: 13px;
     color: var(--text-secondary);
 }
 
@@ -364,13 +378,13 @@
 
 .newpost-shared-info span {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 13px;
 }
 
 .newpost-shared-text {
     margin: 0;
     color: var(--text-primary);
-    font-size: 0.95rem;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -384,9 +398,9 @@
 .newpost-shared-link {
     color: var(--accent);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 13px;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: color 0.2s;
 }
 
 .newpost-shared-link:hover {
