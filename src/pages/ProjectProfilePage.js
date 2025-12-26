@@ -67,6 +67,8 @@ export default function ProjectProfilePage() {
                     image:
                         projectData.imageUrl ||
                         `https://picsum.photos/200?random=${projectData.id}`,
+                    skills: projectData.skills || [],
+                    interests: projectData.interests || [],
                     members: [
                         // Add owner as first member
                         {
@@ -191,6 +193,32 @@ export default function ProjectProfilePage() {
                                 <h3>Description</h3>
                                 <p>{project.description}</p>
                             </section>
+
+                            {project.skills && project.skills.length > 0 && (
+                                <section className="about-me">
+                                    <h3>Skills</h3>
+                                    <div className="tags-display">
+                                        {project.skills.map((skill) => (
+                                            <span key={skill.id} className="tag skill-tag">
+                                                {skill.skillName}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {project.interests && project.interests.length > 0 && (
+                                <section className="about-me">
+                                    <h3>Interests</h3>
+                                    <div className="tags-display">
+                                        {project.interests.map((interest) => (
+                                            <span key={interest.id} className="tag interest-tag">
+                                                {interest.interestName}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
 
                             <section className="owned-projects">
                                 <h3>Members</h3>

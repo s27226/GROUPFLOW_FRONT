@@ -415,6 +415,14 @@ export const GRAPHQL_QUERIES = {
             surname
             profilePic
           }
+          skills {
+            id
+            skillName
+          }
+          interests {
+            id
+            interestName
+          }
           likes {
             id
           }
@@ -827,6 +835,43 @@ export const GRAPHQL_QUERIES = {
           commonSkills
           commonInterests
           hasPendingRequest
+        }
+      }
+    }
+  `,
+
+    // Search projects with filters
+    SEARCH_PROJECTS: `
+    query SearchProjects($input: SearchProjectsInput) {
+      project {
+        searchprojects(input: $input) {
+          id
+          name
+          description
+          imageUrl
+          created
+          lastUpdated
+          owner {
+            id
+            nickname
+            name
+            surname
+            profilePic
+          }
+          skills {
+            id
+            skillName
+          }
+          interests {
+            id
+            interestName
+          }
+          likes {
+            id
+          }
+          views {
+            id
+          }
         }
       }
     }
@@ -1260,6 +1305,14 @@ export const GRAPHQL_MUTATIONS = {
             name
             surname
           }
+          skills {
+            id
+            skillName
+          }
+          interests {
+            id
+            interestName
+          }
         }
       }
     }
@@ -1351,6 +1404,14 @@ export const GRAPHQL_MUTATIONS = {
             name
             surname
             profilePic
+          }
+          skills {
+            id
+            skillName
+          }
+          interests {
+            id
+            interestName
           }
           collaborators {
             userId

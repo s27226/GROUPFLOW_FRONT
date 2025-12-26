@@ -17,6 +17,12 @@ export default function CreateGroup() {
     const [creating, setCreating] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState("");
+    
+    // Skills and interests
+    const [selectedSkills, setSelectedSkills] = useState([]);
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [skillInput, setSkillInput] = useState("");
+    const [interestInput, setInterestInput] = useState("");
 
     // Fetch friends list
     useEffect(() => {
@@ -46,6 +52,28 @@ export default function CreateGroup() {
         }
     };
 
+    const addSkill = () => {
+        if (skillInput.trim() && !selectedSkills.includes(skillInput.trim())) {
+            setSelectedSkills([...selectedSkills, skillInput.trim()]);
+            setSkillInput("");
+        }
+    };
+
+    const removeSkill = (skill) => {
+        setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+    };
+
+    const addInterest = () => {
+        if (interestInput.trim() && !selectedInterests.includes(interestInput.trim())) {
+            setSelectedInterests([...selectedInterests, interestInput.trim()]);
+            setInterestInput("");
+        }
+    };
+
+    const removeInterest = (interest) => {
+        setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -71,7 +99,9 @@ export default function CreateGroup() {
                     description: projectDescription,
                     imageUrl: imageUrl || null,
                     isPublic: isPublic,
-                    memberUserIds: memberIds
+                    memberUserIds: memberIds,
+                    skills: selectedSkills.length > 0 ? selectedSkills : null,
+                    interests: selectedInterests.length > 0 ? selectedInterests : null
                 }
             });
 
@@ -132,6 +162,50 @@ export default function CreateGroup() {
                             value={imageUrl}
                             onChange={(e) => setImageUrl(e.target.value)}
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Skills (Optional)</label>
+                        <div className="tag-input-container">
+                            <input
+                                type="text"
+                                placeholder="Add a skill..."
+                                value={skillInput}
+                                onChange={(e) => setSkillInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
+                            />
+                            <button type="button" onClick={addSkill} className="add-tag-btn">+</button>
+                        </div>
+                        <div className="tags-display">
+                            {selectedSkills.map((skill) => (
+                                <span key={skill} className="tag skill-tag">
+                                    {skill}
+                                    <button type="button" onClick={() => removeSkill(skill)}>×</button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Interests (Optional)</label>
+                        <div className="tag-input-container">
+                            <input
+                                type="text"
+                                placeholder="Add an interest..."
+                                value={interestInput}
+                                onChange={(e) => setInterestInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInterest())}
+                            />
+                            <button type="button" onClick={addInterest} className="add-tag-btn">+</button>
+                        </div>
+                        <div className="tags-display">
+                            {selectedInterests.map((interest) => (
+                                <span key={interest} className="tag interest-tag">
+                                    {interest}
+                                    <button type="button" onClick={() => removeInterest(interest)}>×</button>
+                                </span>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="form-group">

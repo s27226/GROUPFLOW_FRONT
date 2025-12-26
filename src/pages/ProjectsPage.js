@@ -1,10 +1,10 @@
 import Layout from "../components/Layout";
-import Groups from "../components/Groups";
+import Projects from "../components/Projects";
 
 export default function ProjectsPage() {
     return (
         <Layout variant="compact">
-            <Groups />
+            <Projects />
         </Layout>
     );
 }
