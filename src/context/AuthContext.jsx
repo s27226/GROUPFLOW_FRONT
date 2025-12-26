@@ -13,7 +13,10 @@ export function AuthProvider({ children }) {
         return storedRefreshToken ? storedRefreshToken : null;
     });
 
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem("user");
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
 
     const [isModerator, setIsModerator] = useState(() => {
         const storedIsModerator = localStorage.getItem("isModerator");
@@ -27,6 +30,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem("refreshToken", newRefreshToken);
         if (userData) {
             setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
             if (userData.isModerator !== undefined) {
                 setIsModerator(userData.isModerator);
                 localStorage.setItem("isModerator", userData.isModerator.toString());
@@ -41,11 +45,13 @@ export function AuthProvider({ children }) {
         setIsModerator(false);
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
         localStorage.removeItem("isModerator");
     };
 
     const updateUser = (userData) => {
         setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
     };
 
     const updateTokens = (accessToken, newRefreshToken) => {

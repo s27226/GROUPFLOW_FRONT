@@ -54,7 +54,10 @@ export default function RegisterPage() {
             login(authData.token, authData.refreshToken, {
                 id: authData.id,
                 name: authData.name,
+                surname: authData.surname,
+                nickname: authData.nickname,
                 email: authData.email,
+                profilePic: authData.profilePic,
                 isModerator: authData.isModerator
             });
             navigate("/");

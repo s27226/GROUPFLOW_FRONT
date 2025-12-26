@@ -4,7 +4,7 @@ import { API_CONFIG } from "../config/api";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 
 export const useAuthenticatedRequest = () => {
-    const { token, refreshToken, updateTokens, logout } = useAuth();
+    const { token, refreshToken, updateTokens, updateUser, logout } = useAuth();
 
     const refreshAccessToken = useCallback(async () => {
         if (!refreshToken) {
@@ -32,6 +32,19 @@ export const useAuthenticatedRequest = () => {
 
             const authData = data.data.auth.refreshToken;
             updateTokens(authData.token, authData.refreshToken);
+            
+            // Update user data if available
+            if (authData.id) {
+                updateUser({
+                    id: authData.id,
+                    name: authData.name,
+                    surname: authData.surname,
+                    nickname: authData.nickname,
+                    email: authData.email,
+                    profilePic: authData.profilePic,
+                    isModerator: authData.isModerator
+                });
+            }
 
             return authData.token;
         } catch (error) {
@@ -39,7 +52,7 @@ export const useAuthenticatedRequest = () => {
             logout();
             throw error;
         }
-    }, [refreshToken, updateTokens, logout]);
+    }, [refreshToken, updateTokens, updateUser, logout]);
 
     const makeRequest = useCallback(
         async (query, variables = {}, options = {}) => {

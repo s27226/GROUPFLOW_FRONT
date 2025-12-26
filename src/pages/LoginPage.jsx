@@ -31,7 +31,10 @@ export default function LoginPage() {
             login(authData.token, authData.refreshToken, {
                 id: authData.id,
                 name: authData.name,
+                surname: authData.surname,
+                nickname: authData.nickname,
                 email: authData.email,
+                profilePic: authData.profilePic,
                 isModerator: authData.isModerator
             });
             console.log('Is Moderator:', authData.isModerator); // Debug log

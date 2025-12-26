@@ -999,7 +999,10 @@ export const GRAPHQL_MUTATIONS = {
         registerUser(input: $input) {
           id
           name
+          surname
+          nickname
           email
+          profilePic
           token
           refreshToken
           isModerator
@@ -1014,7 +1017,10 @@ export const GRAPHQL_MUTATIONS = {
         loginUser(input: $input) {
           id
           name
+          surname
+          nickname
           email
+          profilePic
           token
           refreshToken
           isModerator
@@ -1029,7 +1035,10 @@ export const GRAPHQL_MUTATIONS = {
         refreshToken(refreshToken: $refreshToken) {
           id
           name
+          surname
+          nickname
           email
+          profilePic
           token
           refreshToken
           isModerator
