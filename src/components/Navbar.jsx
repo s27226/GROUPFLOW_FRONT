@@ -15,7 +15,9 @@ import { useClickOutside } from "../hooks/useClickOutside";
 import { useGraphQL } from "../hooks/useGraphQL";
 
 function Navbar() {
-    const { logout, user, updateUser, token } = useAuth();
+    const { logout, user, updateUser, token, isModerator } = useAuth();
+
+    console.log('Navbar - isModerator:', isModerator, 'user:', user); // Debug log
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -301,6 +303,18 @@ function Navbar() {
                             My Skills & Interests
                         </button>
                         <button onClick={() => navigate("/settings")}>Settings</button>
+                        {isModerator && (
+                            <>
+                                <button onClick={() => navigate("/admin/reported-posts")}>
+                                    Reported Posts (Moderator)
+                                </button>
+                                <button onClick={() => {
+                                    navigate("/moderation");
+                                }}>
+                                    User Moderation
+                                </button>
+                            </>
+                        )}
                         <button>Help</button>
                         <button
                             className="CreateGroup"

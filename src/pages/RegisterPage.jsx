@@ -51,7 +51,12 @@ export default function RegisterPage() {
             });
 
             const authData = data.auth.registerUser;
-            login(authData.token, authData.refreshToken);
+            login(authData.token, authData.refreshToken, {
+                id: authData.id,
+                name: authData.name,
+                email: authData.email,
+                isModerator: authData.isModerator
+            });
             navigate("/");
         } catch (err) {
             console.error("Registration error:", err);

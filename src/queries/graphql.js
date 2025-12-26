@@ -950,6 +950,44 @@ export const GRAPHQL_QUERIES = {
         unreadNotificationsCount
       }
     }
+  `,
+
+  // Admin Queries
+  GET_REPORTED_POSTS: `
+    query GetReportedPosts {
+      admin {
+        reportedPosts {
+          id
+          postId
+          reportedBy
+          reason
+          createdAt
+          isResolved
+          post {
+            id
+            title
+            content
+            description
+            imageUrl
+            created
+            user {
+              id
+              nickname
+              name
+              surname
+              profilePic
+            }
+          }
+          reportedByUser {
+            id
+            nickname
+            name
+            surname
+            profilePic
+          }
+        }
+      }
+    }
   `
 };
 
@@ -964,6 +1002,7 @@ export const GRAPHQL_MUTATIONS = {
           email
           token
           refreshToken
+          isModerator
         }
       }
     }
@@ -978,6 +1017,7 @@ export const GRAPHQL_MUTATIONS = {
           email
           token
           refreshToken
+          isModerator
         }
       }
     }
@@ -992,6 +1032,7 @@ export const GRAPHQL_MUTATIONS = {
           email
           token
           refreshToken
+          isModerator
         }
       }
     }
@@ -1490,6 +1531,37 @@ export const GRAPHQL_MUTATIONS = {
     mutation MarkAllNotificationsAsRead {
       notification {
         markAllNotificationsAsRead
+      }
+    }
+  `,
+
+  REPORT_POST: `
+    mutation ReportPost($input: ReportPostInput!) {
+      post {
+        reportPost(input: $input) {
+          id
+          postId
+          reportedBy
+          reason
+          createdAt
+          isResolved
+        }
+      }
+    }
+  `,
+
+  DELETE_REPORTED_POST: `
+    mutation DeleteReportedPost($postId: Int!) {
+      post {
+        deleteReportedPost(postId: $postId)
+      }
+    }
+  `,
+
+  DISCARD_REPORT: `
+    mutation DiscardReport($reportId: Int!) {
+      post {
+        discardReport(reportId: $reportId)
       }
     }
   `

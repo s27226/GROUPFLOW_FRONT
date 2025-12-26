@@ -45,6 +45,8 @@ export default function Post({
     const [showComments, setShowComments] = useState(isFullView);
     const [isFriend, setIsFriend] = useState(false);
     const [checkingFriendship, setCheckingFriendship] = useState(true);
+    const [showReportDialog, setShowReportDialog] = useState(false);
+    const [reportReason, setReportReason] = useState("");
 
     const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
@@ -202,6 +204,35 @@ export default function Post({
         navigate(shareUrl);
     };
 
+    const handleReportPost = async () => {
+        if (!reportReason.trim()) {
+            showToast("Please provide a reason for reporting this post", "error");
+            return;
+        }
+
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.REPORT_POST, {
+                input: {
+                    postId: id,
+                    reason: reportReason
+                }
+            });
+
+            if (!response.errors) {
+                showToast("Post reported successfully. Thank you for helping keep our community safe.", "success");
+                setShowReportDialog(false);
+                setReportReason("");
+                setMenuOpen(false);
+            } else {
+                const errorMessage = response.errors[0]?.message || "Failed to report post";
+                showToast(errorMessage, "error");
+            }
+        } catch (error) {
+            console.error("Error reporting post:", error);
+            showToast("An error occurred while reporting the post", "error");
+        }
+    };
+
     return (
         <div className="post-card">
             <div className="post-header">
@@ -243,7 +274,14 @@ export default function Post({
                             {!isFriend && authorId && authorId !== user?.id && (
                                 <button onClick={handleBlockUser}>Block User</button>
                             )}
-                            <button>Report</button>
+                            {authorId !== user?.id && (
+                                <button onClick={() => {
+                                    setShowReportDialog(true);
+                                    setMenuOpen(false);
+                                }}>
+                                    Report
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>
@@ -374,6 +412,35 @@ export default function Post({
                             }}
                         />
                     ))}
+                </div>
+            )}
+
+            {showReportDialog && (
+                <div className="report-dialog-overlay" onClick={() => setShowReportDialog(false)}>
+                    <div className="report-dialog" onClick={(e) => e.stopPropagation()}>
+                        <h3>Report Post</h3>
+                        <p>Please tell us why you're reporting this post:</p>
+                        <textarea
+                            value={reportReason}
+                            onChange={(e) => setReportReason(e.target.value)}
+                            placeholder="Enter your reason here..."
+                            rows={4}
+                        />
+                        <div className="report-dialog-actions">
+                            <button 
+                                className="btn-cancel" 
+                                onClick={() => {
+                                    setShowReportDialog(false);
+                                    setReportReason("");
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button className="btn-report" onClick={handleReportPost}>
+                                Submit Report
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 

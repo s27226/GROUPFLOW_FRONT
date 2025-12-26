@@ -27,7 +27,14 @@ export default function LoginPage() {
             });
 
             const authData = data.auth.loginUser;
-            login(authData.token, authData.refreshToken);
+            console.log('Login response:', authData); // Debug log
+            login(authData.token, authData.refreshToken, {
+                id: authData.id,
+                name: authData.name,
+                email: authData.email,
+                isModerator: authData.isModerator
+            });
+            console.log('Is Moderator:', authData.isModerator); // Debug log
             navigate("/");
         } catch (err) {
             console.error("Login error:", err);
