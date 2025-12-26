@@ -235,6 +235,31 @@ export const GRAPHQL_QUERIES = {
     }
   `,
 
+    // Check friendship status with a specific user
+    GET_FRIENDSHIP_STATUS: `
+    query GetFriendshipStatus($friendId: Int!) {
+      friendship {
+        friendshipstatus(friendId: $friendId)
+      }
+    }
+  `,
+
+    // Blocked Users
+    GET_BLOCKED_USERS: `
+    query GetBlockedUsers {
+      blockedUser {
+        blockedusers {
+          id
+          nickname
+          name
+          surname
+          profilePic
+          joined
+        }
+      }
+    }
+  `,
+
     // Get or create direct chat with a friend (Chat with null ProjectId)
     GET_OR_CREATE_DIRECT_CHAT: `
     query GetOrCreateDirectChat($friendId: Int!) {
@@ -1067,6 +1092,27 @@ export const GRAPHQL_MUTATIONS = {
     mutation RemoveFriend($friendId: Int!) {
       friendship {
         removeFriend(friendId: $friendId)
+      }
+    }
+  `,
+
+    BLOCK_USER: `
+    mutation BlockUser($userIdToBlock: Int!) {
+      blockedUser {
+        blockUser(userIdToBlock: $userIdToBlock) {
+          id
+          userId
+          blockedUserId
+          blockedAt
+        }
+      }
+    }
+  `,
+
+    UNBLOCK_USER: `
+    mutation UnblockUser($userIdToUnblock: Int!) {
+      blockedUser {
+        unblockUser(userIdToUnblock: $userIdToUnblock)
       }
     }
   `,

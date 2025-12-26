@@ -26,6 +26,7 @@ import NewPostPage from "./pages/NewPostPage";
 import SavedPage from "./pages/SavedPage";
 import PostPage from "./pages/PostPage";
 import ProfileTagsPage from "./pages/ProfileTagsPage";
+import BlockedUsersPage from "./pages/BlockedUsersPage";
 import { ToastProvider } from "./context/ToastContext";
 
 function ProtectedRoute({ children }) {
@@ -77,6 +78,7 @@ function AppContent({ setInvitationsCount }) {
                 <Route path="/profile-tags" element={<ProfileTagsPage />} />
                 <Route path="/friendslist" element={<FriendPage />} />
                 <Route path="/invitations" element={<InvitationsPage />} />
+                <Route path="/blocked-users" element={<BlockedUsersPage />} />
                 <Route path="/Saved" element={<SavedPage />} />
                 <Route path="/post/:postId" element={<PostPage />} />
                 <Route

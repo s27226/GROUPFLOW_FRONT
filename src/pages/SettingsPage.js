@@ -127,6 +127,16 @@ export default function SettingsPage() {
                             <button onClick={() => navigate("/settings/reset-pass")}>Reset</button>
                         </div>
                     </div>
+
+                    <div className="option-section">
+                        <div className="option-row">
+                            <div className="option-label">
+                                <span>Blocked Users</span>
+                                <p className="option-description">Manage users you have blocked</p>
+                            </div>
+                            <button onClick={() => navigate("/blocked-users")}>View List</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

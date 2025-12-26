@@ -5,9 +5,10 @@ import "../styles/feed.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { useAuthenticatedRequest } from "../hooks/useAuthenticatedRequest";
-import { GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { GRAPHQL_MUTATIONS, GRAPHQL_QUERIES } from "../queries/graphql";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../utils/dateFormatter";
+import { useToast } from "../context/ToastContext";
 
 export default function Post({
     id,
@@ -32,6 +33,7 @@ export default function Post({
     const navigate = useNavigate();
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
+    const { showToast } = useToast();
     
     const [likes, setLikes] = useState(initialLikes || []);
     const [liked, setLiked] = useState(false);
@@ -41,6 +43,8 @@ export default function Post({
     const [saved, setSaved] = useState(initialSaved);
     const [showHideToast, setShowHideToast] = useState(false);
     const [showComments, setShowComments] = useState(isFullView);
+    const [isFriend, setIsFriend] = useState(false);
+    const [checkingFriendship, setCheckingFriendship] = useState(true);
 
     const menuRef = useClickOutside(() => setMenuOpen(false), menuOpen);
 
@@ -52,9 +56,65 @@ export default function Post({
         }
     }, [likes, user]);
 
+    // Check friendship status
+    useEffect(() => {
+        const checkFriendship = async () => {
+            if (!authorId || !user || authorId === user.id) {
+                setCheckingFriendship(false);
+                setIsFriend(false);
+                return;
+            }
+
+            try {
+                const response = await makeRequest(GRAPHQL_QUERIES.GET_FRIENDSHIP_STATUS, {
+                    friendId: authorId
+                });
+
+                if (!response.errors && response.data?.friendship?.friendshipstatus) {
+                    setIsFriend(response.data.friendship.friendshipstatus === "friends");
+                }
+            } catch (error) {
+                console.error("Error checking friendship status:", error);
+            } finally {
+                setCheckingFriendship(false);
+            }
+        };
+
+        checkFriendship();
+    }, [authorId, user]);
+
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;
         return comments.reduce((acc, c) => acc + 1 + countComments(c.replies || []), 0);
+    };
+
+    const handleBlockUser = async () => {
+        if (!authorId) return;
+
+        try {
+            const response = await makeRequest(GRAPHQL_MUTATIONS.BLOCK_USER, {
+                userIdToBlock: authorId
+            });
+
+            if (!response.errors) {
+                showToast(`You have blocked ${author}. You will no longer see their posts.`, "success");
+                setMenuOpen(false);
+                
+                // Optionally trigger a refresh of the feed
+                if (onUpdate) {
+                    onUpdate();
+                }
+                
+                // Or navigate to refresh
+                window.location.reload();
+            } else {
+                const errorMessage = response.errors[0]?.message || "Failed to block user";
+                showToast(errorMessage, "error");
+            }
+        } catch (error) {
+            console.error("Error blocking user:", error);
+            showToast("An error occurred while blocking the user", "error");
+        }
     };
 
     const handleLikeToggle = async () => {
@@ -180,7 +240,9 @@ export default function Post({
                             <button onClick={handleSavePost}>
                                 {saved ? "Unsave Post" : "Save Post"}
                             </button>
-                            <button>Block User</button>
+                            {!isFriend && authorId && authorId !== user?.id && (
+                                <button onClick={handleBlockUser}>Block User</button>
+                            )}
                             <button>Report</button>
                         </div>
                     )}
