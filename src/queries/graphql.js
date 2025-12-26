@@ -859,6 +859,8 @@ export const GRAPHQL_QUERIES = {
           matchScore
           commonSkills
           commonInterests
+          commonProjects
+          recentInteractions
           hasPendingRequest
         }
       }

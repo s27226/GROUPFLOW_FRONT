@@ -317,6 +317,7 @@
     font-weight: 600;
     transition: all 0.3s ease;
     font-family: var(--font-family);
+    margin-top: 10px;
 }
 
 .send-request-btn:hover {
@@ -356,15 +357,17 @@
 }
 
 .match-details {
-    margin-top: -0.75rem;
-    margin-bottom: 1rem;
-    padding-left: 1rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-accent);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
 }
 
 .match-details small {
     color: var(--text-secondary);
-    font-style: italic;
     font-size: 0.85rem;
+    line-height: 1.4;
 }
 
 @media (max-width: 768px) {
