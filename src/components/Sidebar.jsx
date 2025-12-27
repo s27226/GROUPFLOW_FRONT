@@ -82,10 +82,51 @@ export default function Sidebar() {
 
             <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
                 <ul>
-                    <li onClick={() => navigate("/myprojects")}>
+                    <li onClick={handleProjectsToggle}>
                         <FaProjectDiagram className="icon" />
-                        {isOpen && <span>My Projects</span>}
+                        {isOpen && <span>Projects</span>}
+                        {isOpen &&
+                            (projectsOpen ? (
+                                <FaChevronUp className="chevron" />
+                            ) : (
+                                <FaChevronDown className="chevron" />
+                            ))}
                     </li>
+                    {projectsOpen && isOpen && (
+                        <ul className="sublist">
+                            <li>
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        localStorage.removeItem("projectSearchQuery");
+                                        navigate("/projects");
+                                    }}
+                                >
+                                    Find Projects
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        navigate("/myprojects");
+                                    }}
+                                >
+                                    My Projects
+                                </button>
+                            </li>
+                            <li>
+                                <button
+                                    className="Friend-button"
+                                    onClick={() => {
+                                        navigate("/creategroup");
+                                    }}
+                                >
+                                    Create Project
+                                </button>
+                            </li>
+                        </ul>
+                    )}
 
                     <li onClick={handleFriendsToggle}>
                         <FaUserFriends className="icon" />

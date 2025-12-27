@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 import "../styles/Invitation.css";
 
 export default function Invitation({ data, onRemove }) {
     const [loading, setLoading] = useState(false);
     const { executeMutation } = useGraphQL();
+    const { showToast } = useToast();
 
     const handleAccept = async () => {
         setLoading(true);
@@ -15,11 +17,17 @@ export default function Invitation({ data, onRemove }) {
                     friendRequestId: data.id
                 });
                 onRemove(data.id);
+            } else if (data.type === "group" || data.type === "project") {
+                await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_PROJECT_INVITATION, {
+                    invitationId: data.id
+                });
+                onRemove(data.id);
             } else {
                 onRemove(data.id);
             }
         } catch (err) {
             console.error("Failed to accept invitation:", err);
+            showToast(err.message || "Failed to accept invitation. Please try again.", "error");
         } finally {
             setLoading(false);
         }
@@ -33,11 +41,17 @@ export default function Invitation({ data, onRemove }) {
                     friendRequestId: data.id
                 });
                 onRemove(data.id);
+            } else if (data.type === "group" || data.type === "project") {
+                await executeMutation(GRAPHQL_MUTATIONS.REJECT_PROJECT_INVITATION, {
+                    invitationId: data.id
+                });
+                onRemove(data.id);
             } else {
                 onRemove(data.id);
             }
         } catch (err) {
             console.error("Failed to reject invitation:", err);
+            showToast(err.message || "Failed to reject invitation. Please try again.", "error");
         } finally {
             setLoading(false);
         }
@@ -48,7 +62,8 @@ export default function Invitation({ data, onRemove }) {
             <div className="info">
                 <h3>{data.name}</h3>
                 <span className="type">
-                    {data.type === "friend" ? "Friend Request" : "Group Invite"}
+                    {data.type === "friend" ? "Friend Request" : 
+                     data.type === "project" ? "Project Invite" : "Group Invite"}
                 </span>
             </div>
 

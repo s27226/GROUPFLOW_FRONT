@@ -4,10 +4,12 @@ import SkeletonPost from "../components/ui/SkeletonPost";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useSavedPosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 
 export default function SavedPage() {
     const { posts, setPosts, loading, error, refetch: fetchSavedPosts } = useSavedPosts();
     const { executeQuery } = useGraphQL();
+    const { showToast } = useToast();
 
     const handleSavePost = async (postId) => {
         const post = posts.find((p) => p.id === postId);
@@ -24,16 +26,8 @@ export default function SavedPage() {
             }
         } catch (err) {
             console.error("Error toggling save status:", err);
-            alert("Failed to update save status. Please try again.");
+            showToast("Failed to update save status. Please try again.", "error");
         }
-    };
-
-    const handleHidePost = (postId) => {
-        setPosts(posts.map((post) => (post.id === postId ? { ...post, hidden: true } : post)));
-    };
-
-    const handleUndoHide = (postId) => {
-        setPosts(posts.map((post) => (post.id === postId ? { ...post, hidden: false } : post)));
     };
 
     const visiblePosts = posts.filter((post) => !post.hidden);
@@ -114,11 +108,10 @@ export default function SavedPage() {
                             content={post.content}
                             image={post.image}
                             comments={post.comments}
+                            likes={post.likes}
                             saved={post.saved}
                             hidden={post.hidden}
                             sharedPost={post.sharedPost}
-                            onHide={handleHidePost}
-                            onUndoHide={handleUndoHide}
                             onSave={handleSavePost}
                         />
                     ))

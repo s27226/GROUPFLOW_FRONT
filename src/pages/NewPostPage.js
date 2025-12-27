@@ -2,16 +2,44 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Image, X } from "lucide-react";
+import { useToast } from "../context/ToastContext";
 import "../styles/NewPostPage.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useAuthenticatedRequest } from "../hooks/useAuthenticatedRequest";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 
 export default function NewPostPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { projectId } = useParams();
+    const { showToast } = useToast();
+    const { makeRequest } = useAuthenticatedRequest();
+    
     const [content, setContent] = useState("");
+    const [title, setTitle] = useState("");
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [sharedPost, setSharedPost] = useState(null);
+    const [selectedProjectId, setSelectedProjectId] = useState(projectId || null);
+    const [myProjects, setMyProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [isPublic, setIsPublic] = useState(true);
+
+    useEffect(() => {
+        // Fetch user's projects
+        const fetchProjects = async () => {
+            try {
+                const response = await makeRequest(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
+                if (response?.data?.project?.myprojects) {
+                    setMyProjects(response.data.project.myprojects);
+                }
+            } catch (error) {
+                console.error("Failed to fetch projects:", error);
+            }
+        };
+
+        fetchProjects();
+    }, [makeRequest]);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -25,6 +53,13 @@ export default function NewPostPage() {
             }
         }
     }, [location]);
+
+    useEffect(() => {
+        // If we have a projectId from the route, set it as selected
+        if (projectId) {
+            setSelectedProjectId(parseInt(projectId));
+        }
+    }, [projectId]);
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -43,25 +78,53 @@ export default function NewPostPage() {
         setImagePreview(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!content.trim()) {
-            alert("Please write something for your post");
+            showToast("Please write something for your post", "warning");
             return;
         }
 
-        // TODO: Send to backend
-        const newPost = {
-            content,
-            image: imagePreview,
-            timestamp: new Date().toISOString()
-        };
+        if (!selectedProjectId) {
+            showToast("Please select a project for your post", "warning");
+            return;
+        }
 
-        console.log("New post:", newPost);
-        alert("Post created successfully!");
+        setLoading(true);
 
-        navigate("/");
+        try {
+            const input = {
+                title: title.trim() || "Post",
+                content: content.trim(),
+                description: "",
+                imageUrl: imagePreview || null,
+                projectId: selectedProjectId ? parseInt(selectedProjectId) : null,
+                sharedPostId: sharedPost?.id || null,
+                isPublic: isPublic
+            };
+
+            const response = await makeRequest(GRAPHQL_MUTATIONS.CREATE_POST, { input });
+
+            if (response?.data?.post?.createPost) {
+                showToast("Post created successfully!", "success");
+                
+                // Navigate to the project profile page if posted to a project
+                if (selectedProjectId) {
+                    navigate(`/project/${selectedProjectId}`);
+                } else {
+                    navigate("/");
+                }
+            } else {
+                console.error("Failed to create post:", response);
+                showToast("Failed to create post", "error");
+            }
+        } catch (error) {
+            console.error("Error creating post:", error);
+            showToast("Failed to create post", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -80,6 +143,34 @@ export default function NewPostPage() {
                             </div>
 
                             <form onSubmit={handleSubmit} className="newpost-form">
+                                <div className="newpost-project-selector">
+                                    <label htmlFor="project-select">Post to Project:</label>
+                                    <select
+                                        id="project-select"
+                                        value={selectedProjectId || ""}
+                                        onChange={(e) => setSelectedProjectId(e.target.value ? parseInt(e.target.value) : null)}
+                                        className="newpost-project-select"
+                                    >
+                                        <option value="">Select a project...</option>
+                                        {myProjects.map((project) => (
+                                            <option key={project.id} value={project.id}>
+                                                {project.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="newpost-title-wrapper">
+                                    <input
+                                        type="text"
+                                        className="newpost-title-input"
+                                        placeholder="Post title (optional)"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        maxLength={100}
+                                    />
+                                </div>
+
                                 <div className="newpost-textarea-wrapper">
                                     <textarea
                                         className="newpost-textarea"
@@ -90,6 +181,23 @@ export default function NewPostPage() {
                                         maxLength={1000}
                                     />
                                     <div className="newpost-char-count">{content.length}/1000</div>
+                                </div>
+
+                                <div className="newpost-visibility-toggle">
+                                    <label className="newpost-toggle-label">
+                                        <span className="newpost-toggle-text">
+                                            {isPublic ? "Public (Anyone can see)" : "Private (Only project members)"}
+                                        </span>
+                                        <div className="newpost-toggle-switch">
+                                            <input
+                                                type="checkbox"
+                                                checked={isPublic}
+                                                onChange={(e) => setIsPublic(e.target.checked)}
+                                                className="newpost-toggle-input"
+                                            />
+                                            <span className="newpost-toggle-slider"></span>
+                                        </div>
+                                    </label>
                                 </div>
 
                                 {imagePreview && (
@@ -113,7 +221,7 @@ export default function NewPostPage() {
                                         <div className="newpost-shared-content">
                                             <div className="newpost-shared-info">
                                                 <img
-                                                    src={`https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                                    src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
                                                     alt={sharedPost.author}
                                                     className="newpost-shared-avatar"
                                                 />
@@ -172,9 +280,9 @@ export default function NewPostPage() {
                                         <button
                                             type="submit"
                                             className="newpost-submit-btn"
-                                            disabled={!content.trim()}
+                                            disabled={!content.trim() || !selectedProjectId || loading}
                                         >
-                                            Post
+                                            {loading ? "Posting..." : "Post"}
                                         </button>
                                     </div>
                                 </div>

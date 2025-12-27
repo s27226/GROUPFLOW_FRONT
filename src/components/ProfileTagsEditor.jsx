@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/ProfileTagsEditor.css";
 
@@ -11,6 +12,7 @@ export default function ProfileTagsEditor() {
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
     const { executeQuery, executeMutation } = useGraphQL();
+    const { showToast } = useToast();
 
     useEffect(() => {
         loadTags();
@@ -33,7 +35,7 @@ export default function ProfileTagsEditor() {
         if (!skillInput.trim()) return;
 
         try {
-            const data = await executeMutation(GRAPHQL_QUERIES.ADD_SKILL, {
+            const data = await executeMutation(GRAPHQL_MUTATIONS.ADD_SKILL, {
                 input: { skillName: skillInput.trim() }
             });
 
@@ -43,13 +45,13 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to add skill:", err);
-            alert("Failed to add skill");
+            showToast("Failed to add skill", "error");
         }
     };
 
     const removeSkill = async (skillId) => {
         try {
-            const success = await executeMutation(GRAPHQL_QUERIES.REMOVE_SKILL, {
+            const success = await executeMutation(GRAPHQL_MUTATIONS.REMOVE_SKILL, {
                 skillId
             });
 
@@ -58,7 +60,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to remove skill:", err);
-            alert("Failed to remove skill");
+            showToast("Failed to remove skill", "error");
         }
     };
 
@@ -66,7 +68,7 @@ export default function ProfileTagsEditor() {
         if (!interestInput.trim()) return;
 
         try {
-            const data = await executeMutation(GRAPHQL_QUERIES.ADD_INTEREST, {
+            const data = await executeMutation(GRAPHQL_MUTATIONS.ADD_INTEREST, {
                 input: { interestName: interestInput.trim() }
             });
 
@@ -76,13 +78,13 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to add interest:", err);
-            alert("Failed to add interest");
+            showToast("Failed to add interest", "error");
         }
     };
 
     const removeInterest = async (interestId) => {
         try {
-            const success = await executeMutation(GRAPHQL_QUERIES.REMOVE_INTEREST, {
+            const success = await executeMutation(GRAPHQL_MUTATIONS.REMOVE_INTEREST, {
                 interestId
             });
 
@@ -91,7 +93,7 @@ export default function ProfileTagsEditor() {
             }
         } catch (err) {
             console.error("Failed to remove interest:", err);
-            alert("Failed to remove interest");
+            showToast("Failed to remove interest", "error");
         }
     };
 

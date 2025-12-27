@@ -39,8 +39,8 @@ export const useTrendingProjects = (pageSize = 5) => {
                     name: project.name,
                     description: project.description,
                     image: project.imageUrl || `https://picsum.photos/60?random=${project.id}`,
-                    viewCount: project.viewCount,
-                    likeCount: project.likeCount,
+                    viewCount: project.views?.length || 0,
+                    likeCount: project.likes?.length || 0,
                     owner: project.owner
                 }));
 

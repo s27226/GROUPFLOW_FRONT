@@ -1,7 +1,7 @@
 import { useChat } from "../hooks/useChat";
 
 export default function ChatWindow({ user, currentUserId, onMinimize }) {
-    const { messages, input, setInput, loading, sendMessage, handleKeyPress, bottomRef } = useChat(
+    const { messages, input, setInput, loading, sendMessage, handleKeyPress } = useChat(
         user,
         currentUserId
     );
@@ -45,15 +45,23 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
                         <p className="no-messages">Brak wiadomości. Rozpocznij rozmowę!</p>
                     ) : (
                         messages.map((msg) => (
-                            <div
-                                key={msg.id}
-                                className={`chat-bubble ${msg.from === "me" ? "me" : "them"}`}
-                            >
-                                {msg.text}
+                            <div key={msg.id} className={`priv-chat-message-wrapper ${msg.from === "me" ? "me" : "them"}`}>
+                                {msg.from !== "me" && msg.sender?.profilePic && (
+                                    <img 
+                                        src={msg.sender.profilePic} 
+                                        alt={msg.sender.nickname}
+                                        className="chat-message-avatar"
+                                        style={{ width: 24, height: 24, borderRadius: "50%", marginRight: 8 }}
+                                    />
+                                )}
+                                <div
+                                    className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
+                                >
+                                    {msg.text}
+                                </div>
                             </div>
                         ))
                     )}
-                    <div ref={bottomRef} />
                 </div>
 
                 <div className="chat-input-area">

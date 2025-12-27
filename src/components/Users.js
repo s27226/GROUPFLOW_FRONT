@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Users.css";
 
@@ -15,6 +16,7 @@ export default function Users() {
     const [sentRequests, setSentRequests] = useState(new Set());
     const [friends, setFriends] = useState(new Set());
     const { executeQuery, executeMutation } = useGraphQL();
+    const navigate = useNavigate();
 
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
@@ -43,19 +45,29 @@ export default function Users() {
 
     useEffect(() => {
         loadSuggestedUsers();
+        
+        // Check if there's a search query from the navbar
+        const storedQuery = localStorage.getItem('userSearchQuery');
+        if (storedQuery) {
+            setSearchTerm(storedQuery);
+            setActiveTab("search");
+            localStorage.removeItem('userSearchQuery'); // Clear it after using
+            
+            // Trigger search with the stored query
+            setTimeout(() => {
+                handleSearchWithQuery(storedQuery);
+            }, 100);
+        }
     }, []);
 
-    const handleSearch = async () => {
+    const handleSearchWithQuery = async (query) => {
         setLoading(true);
         try {
             const input = {
-                searchTerm: searchTerm || null,
+                searchTerm: query || null,
                 skills: selectedSkills.length > 0 ? selectedSkills : null,
                 interests: selectedInterests.length > 0 ? selectedInterests : null
             };
-
-            console.log("Executing search with query:", GRAPHQL_QUERIES.SEARCH_USERS);
-            console.log("Variables:", { input });
 
             const data = await executeQuery(GRAPHQL_QUERIES.SEARCH_USERS, { input });
             const results = data?.users?.searchusers || [];
@@ -76,6 +88,10 @@ export default function Users() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = async () => {
+        await handleSearchWithQuery(searchTerm);
     };
 
     const addSkillFilter = () => {
@@ -109,7 +125,7 @@ export default function Users() {
         }
     };
 
-    const renderUserCard = (user, matchScore = null) => {
+    const renderUserCard = (user, matchScore = null, matchDetails = null) => {
         const isFriend = friends.has(user.id);
         const hasPendingRequest = sentRequests.has(user.id);
 
@@ -129,7 +145,11 @@ export default function Users() {
 
         return (
             <div key={user.id} className="user-card">
-                <div className="user-card-header">
+                <div 
+                    className="user-card-header"
+                    onClick={() => navigate(`/profile/${user.id}`)}
+                    style={{ cursor: "pointer" }}
+                >
                     <img
                         src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`}
                         alt={user.nickname}
@@ -145,6 +165,12 @@ export default function Users() {
                         )}
                     </div>
                 </div>
+
+                {matchDetails && (
+                    <div className="match-details">
+                        <small>{matchDetails}</small>
+                    </div>
+                )}
 
                 {user.skills && user.skills.length > 0 && (
                     <div className="user-tags">
@@ -293,32 +319,32 @@ export default function Users() {
             {activeTab === "suggested" && (
                 <div className="suggested-section">
                     <p className="suggested-description">
-                        Based on your skills and interests, here are some users you might connect
-                        with:
+                        Users matched based on shared skills, interests, common projects, and recent interactions:
                     </p>
                     {loading ? (
                         <LoadingSpinner />
                     ) : suggestedUsers.length > 0 ? (
                         <div className="user-cards">
                             {suggestedUsers.map(
-                                ({ user, matchScore, commonSkills, commonInterests }) => (
-                                    <div key={user.id}>
-                                        {renderUserCard(user, matchScore)}
-                                        {(commonSkills > 0 || commonInterests > 0) && (
-                                            <div className="match-details">
-                                                <small>
-                                                    {commonSkills > 0 &&
-                                                        `${commonSkills} common skill${commonSkills > 1 ? "s" : ""}`}
-                                                    {commonSkills > 0 &&
-                                                        commonInterests > 0 &&
-                                                        ", "}
-                                                    {commonInterests > 0 &&
-                                                        `${commonInterests} common interest${commonInterests > 1 ? "s" : ""}`}
-                                                </small>
-                                            </div>
-                                        )}
-                                    </div>
-                                )
+                                ({ user, matchScore, commonSkills, commonInterests, commonProjects, recentInteractions }) => {
+                                    const details = [];
+                                    if (commonSkills > 0) {
+                                        details.push(`${commonSkills} common skill${commonSkills > 1 ? "s" : ""}`);
+                                    }
+                                    if (commonInterests > 0) {
+                                        details.push(`${commonInterests} common interest${commonInterests > 1 ? "s" : ""}`);
+                                    }
+                                    if (commonProjects > 0) {
+                                        details.push(`${commonProjects} shared project${commonProjects > 1 ? "s" : ""}`);
+                                    }
+                                    if (recentInteractions > 0) {
+                                        details.push(`${recentInteractions} recent interaction${recentInteractions > 1 ? "s" : ""}`);
+                                    }
+                                    
+                                    const matchDetailsText = details.length > 0 ? details.join(", ") : null;
+                                    
+                                    return renderUserCard(user, matchScore, matchDetailsText);
+                                }
                             )}
                         </div>
                     ) : (

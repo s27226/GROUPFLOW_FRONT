@@ -10,6 +10,7 @@ import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
 
@@ -17,9 +18,11 @@ export default function ProjectProfilePage() {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
+    const { user: authUser } = useAuth();
 
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isOwner, setIsOwner] = useState(false);
 
     const { posts, loading: postsLoading } = useProjectPosts(projectId);
 
@@ -60,10 +63,12 @@ export default function ProjectProfilePage() {
                     id: projectData.id,
                     name: projectData.name,
                     description: projectData.description,
-                    banner: `https://picsum.photos/900/200?random=${projectData.id}`,
+                    banner: projectData.bannerUrl || `https://picsum.photos/900/200?random=${projectData.id}`,
                     image:
                         projectData.imageUrl ||
                         `https://picsum.photos/200?random=${projectData.id}`,
+                    skills: projectData.skills || [],
+                    interests: projectData.interests || [],
                     members: [
                         // Add owner as first member
                         {
@@ -76,16 +81,21 @@ export default function ProjectProfilePage() {
                         },
                         // Add collaborators
                         ...(projectData.collaborators?.map((collab) => ({
-                            userId: collab.user.id,
-                            name: collab.user.nickname || collab.user.name,
-                            role: collab.role,
-                            image:
-                                collab.user.profilePic ||
-                                `https://i.pravatar.cc/60?u=${collab.user.id}`
-                        })) || [])
+                                userId: collab.user.id,
+                                name: collab.user.nickname || collab.user.name,
+                                role: collab.role,
+                                image:
+                                    collab.user.profilePic ||
+                                    `https://i.pravatar.cc/60?u=${collab.user.id}`
+                            })) || [])
                     ],
                     owner: projectData.owner
                 });
+
+                // Check if current user is the owner
+                if (authUser && projectData.owner.id === authUser.id) {
+                    setIsOwner(true);
+                }
 
                 setLoading(false);
             } catch (err) {
@@ -95,6 +105,7 @@ export default function ProjectProfilePage() {
         };
 
         fetchProjectProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId]);
 
     if (loading || postsLoading) {
@@ -165,9 +176,14 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className="profile-pfp" />
                         <div className="profile-info">
                             <h2>{project.name}</h2>
-                            <button className="edit-btn" onClick={() => navigate("/project/edit")}>
-                                Edit Frontpage
-                            </button>
+                            {isOwner && (
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => navigate(`/project/${projectId}/edit`)}
+                                >
+                                    Edit Frontpage
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -177,6 +193,32 @@ export default function ProjectProfilePage() {
                                 <h3>Description</h3>
                                 <p>{project.description}</p>
                             </section>
+
+                            {project.skills && project.skills.length > 0 && (
+                                <section className="about-me">
+                                    <h3>Skills</h3>
+                                    <div className="tags-display">
+                                        {project.skills.map((skill) => (
+                                            <span key={skill.id} className="tag skill-tag">
+                                                {skill.skillName}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {project.interests && project.interests.length > 0 && (
+                                <section className="about-me">
+                                    <h3>Interests</h3>
+                                    <div className="tags-display">
+                                        {project.interests.map((interest) => (
+                                            <span key={interest.id} className="tag interest-tag">
+                                                {interest.interestName}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
 
                             <section className="owned-projects">
                                 <h3>Members</h3>
@@ -213,6 +255,7 @@ export default function ProjectProfilePage() {
                                                 id={post.id}
                                                 author={post.user.nickname}
                                                 authorId={post.user.id}
+                                                authorProfilePic={post.user.profilePic}
                                                 time={post.time}
                                                 content={post.content}
                                                 image={post.imageUrl}
@@ -220,6 +263,7 @@ export default function ProjectProfilePage() {
                                                 saved={false}
                                                 sharedPost={post.sharedPost}
                                                 likes={0}
+                                                projectId={projectId}
                                             />
                                         ))
                                     )}

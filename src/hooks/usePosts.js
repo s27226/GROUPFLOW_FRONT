@@ -4,6 +4,28 @@ import { formatTime } from "../utils/dateFormatter";
 import { useGraphQL } from "./useGraphQL";
 
 /**
+ * Helper function to format comment data
+ * @param {Object} comment - Raw comment data from API
+ * @returns {Object} Formatted comment data
+ */
+const formatCommentData = (comment) => {
+    if (!comment) return null;
+    
+    return {
+        id: comment.id,
+        user: comment.user?.nickname || `${comment.user?.name || ''} ${comment.user?.surname || ''}`.trim() || "Unknown",
+        userId: comment.userId,
+        profilePic: comment.user?.profilePic,
+        time: formatTime(comment.createdAt),
+        text: comment.content,
+        likes: comment.likes || [],
+        liked: false,
+        menuOpen: false,
+        replies: comment.replies ? comment.replies.map(formatCommentData) : []
+    };
+};
+
+/**
  * Helper function to format post data with sharedPost
  * @param {Object} post - Raw post data from API
  * @returns {Object} Formatted post data
@@ -15,14 +37,18 @@ export const formatPostData = (post) => {
         ...post,
         author: post.user?.nickname || "Unknown",
         authorId: post.user?.id,
+        authorProfilePic: post.user?.profilePic,
         time: formatTime(post.created),
         content: post.content || post.description,
         image: post.imageUrl,
+        likes: post.likes || [],
+        comments: post.comments ? post.comments.map(formatCommentData) : [],
         sharedPost: post.sharedPost
             ? {
                   id: post.sharedPost.id,
                   author: post.sharedPost.user?.nickname || "Unknown",
                   authorId: post.sharedPost.user?.id,
+                  authorProfilePic: post.sharedPost.user?.profilePic,
                   time: formatTime(post.sharedPost.created),
                   content: post.sharedPost.content || post.sharedPost.description,
                   image: post.sharedPost.imageUrl
@@ -95,10 +121,7 @@ export const usePost = (postId) => {
                 setPost(null);
             } else {
                 const formattedPost = formatPostData(foundPost);
-                setPost({
-                    ...formattedPost,
-                    comments: []
-                });
+                setPost(formattedPost);
                 setError(null);
             }
         } catch (err) {
@@ -178,8 +201,7 @@ export const useSavedPosts = () => {
             const formattedPosts = savedPosts.map((post) => ({
                 ...formatPostData(post),
                 saved: true,
-                hidden: false,
-                comments: []
+                hidden: false
             }));
             setPosts(formattedPosts);
             setError(null);

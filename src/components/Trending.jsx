@@ -47,14 +47,27 @@ export default function Trending() {
                             <h4 className="trending-name">{project.name}</h4>
                             <p className="trending-desc">{project.description}</p>
                             {project.owner && (
-                                <span className="trending-owner">by {project.owner.nickname}</span>
+                                <span className="trending-owner">
+                                    by{" "}
+                                    <span
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(`/profile/${project.owner.id}`);
+                                        }}
+                                        style={{
+                                            cursor: "pointer",
+                                            color: "var(--primary-color)",
+                                            fontWeight: "500"
+                                        }}
+                                    >
+                                        {project.owner.nickname}
+                                    </span>
+                                </span>
                             )}
-                            {(project.viewCount || project.likeCount) && (
-                                <div className="trending-stats">
-                                    {project.viewCount > 0 && <span>👀 {project.viewCount}</span>}
-                                    {project.likeCount > 0 && <span>❤️ {project.likeCount}</span>}
-                                </div>
-                            )}
+                            <div className="trending-stats">
+                                <span>👀 {project.viewCount ?? 0}</span>
+                                <span>❤️ {project.likeCount ?? 0}</span>
+                            </div>
                         </div>
                     </li>
                 ))}

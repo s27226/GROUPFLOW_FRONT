@@ -1,20 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useGraphQL } from "../hooks/useGraphQL";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import "../styles/CreateGroup.css";
 
 export default function CreateGroup() {
-    const [groupName, setGroupName] = useState("");
-
-    const [members, setMembers] = useState([]);
-    const [newMember, setNewMember] = useState("");
+    const navigate = useNavigate();
+    const { executeQuery } = useGraphQL();
+    const [projectName, setProjectName] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const [groupDescription, setGroupDescription] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
+    const [isPublic, setIsPublic] = useState(true);
+    const [friends, setFriends] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [creating, setCreating] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [error, setError] = useState("");
+    
+    // Skills and interests
+    const [selectedSkills, setSelectedSkills] = useState([]);
+    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [skillInput, setSkillInput] = useState("");
+    const [interestInput, setInterestInput] = useState("");
 
-    const users = [
-        { id: 1, name: "Oleh", email: "oleh@example.com" },
-        { id: 2, name: "Julia", email: "julia@example.com" },
-        { id: 3, name: "Jan", email: "jan@example.com" },
-        { id: 4, name: "Tomek", email: "tomek@example.com" }
-    ];
+    // Fetch friends list
+    useEffect(() => {
+        const fetchFriends = async () => {
+            try {
+                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
+                
+                if (data && data.friendship && data.friendship.myfriends) {
+                    setFriends(data.friendship.myfriends);
+                }
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch friends:", err);
+                setFriends([]);
+                setLoading(false);
+            }
+        };
+
+        fetchFriends();
+    }, [executeQuery]);
 
     const toggleUser = (user) => {
         if (selectedUsers.some((u) => u.id === user.id)) {
@@ -24,91 +52,286 @@ export default function CreateGroup() {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const newGroup = {
-            name: groupName,
-            groupDescription,
-            members
-        };
-
-        console.log("Nowa grupa:", newGroup);
-
-        alert(`Grupa "${groupName}" została utworzona!`);
-        setGroupName("");
-        setGroupDescription("");
-        setSelectedUsers([]);
-        setMembers([]);
+    const addSkill = () => {
+        if (skillInput.trim() && !selectedSkills.includes(skillInput.trim())) {
+            setSelectedSkills([...selectedSkills, skillInput.trim()]);
+            setSkillInput("");
+        }
     };
+
+    const removeSkill = (skill) => {
+        setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+    };
+
+    const addInterest = () => {
+        if (interestInput.trim() && !selectedInterests.includes(interestInput.trim())) {
+            setSelectedInterests([...selectedInterests, interestInput.trim()]);
+            setInterestInput("");
+        }
+    };
+
+    const removeInterest = (interest) => {
+        setSelectedInterests(selectedInterests.filter((i) => i !== interest));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        if (!projectName.trim()) {
+            setError("Please enter a project name.");
+            return;
+        }
+
+        if (!projectDescription.trim()) {
+            setError("Please enter a project description.");
+            return;
+        }
+
+        setCreating(true);
+
+        try {
+            const memberIds = selectedUsers.map(u => u.id);
+            
+            const data = await executeQuery(GRAPHQL_MUTATIONS.CREATE_PROJECT_WITH_MEMBERS, {
+                input: {
+                    name: projectName,
+                    description: projectDescription,
+                    imageUrl: imageUrl || null,
+                    isPublic: isPublic,
+                    memberUserIds: memberIds,
+                    skills: selectedSkills.length > 0 ? selectedSkills : null,
+                    interests: selectedInterests.length > 0 ? selectedInterests : null
+                }
+            });
+
+            if (data && data.project && data.project.createProjectWithMembers) {
+                const projectId = data.project.createProjectWithMembers.id;
+                // Navigate to the newly created project page
+                navigate(`/project/${projectId}`);
+            }
+        } catch (err) {
+            console.error("Failed to create project:", err);
+            setError("Failed to create project. Please try again.");
+        } finally {
+            setCreating(false);
+        }
+    };
+
+    // Filter friends based on search term
+    const filteredFriends = friends.filter(friend => {
+        const fullName = `${friend.name} ${friend.surname}`.toLowerCase();
+        const nickname = friend.nickname?.toLowerCase() || "";
+        const search = searchTerm.toLowerCase();
+        return fullName.includes(search) || nickname.includes(search);
+    });
 
     return (
         <div className="create-group-page">
-            {/* Lewa sekcja - formularz */}
+            {/* Left section - form */}
             <div className="left-section">
-                <h2>Stwórz nową grupę</h2>
+                <h2>Create New Project</h2>
+                {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit} className="create-group-form">
-                    <label>Nazwa grupy</label>
-                    <input
-                        type="text"
-                        placeholder="Wpisz nazwę grupy..."
-                        value={groupName}
-                        onChange={(e) => setGroupName(e.target.value)}
-                        required
-                    />
+                    <div className="form-group">
+                        <label>Project Name *</label>
+                        <input
+                            type="text"
+                            placeholder="Enter project name..."
+                            value={projectName}
+                            onChange={(e) => setProjectName(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    <label>Opis grupy</label>
-                    <textarea
-                        placeholder="Dodaj krótki opis grupy..."
-                        value={groupDescription}
-                        onChange={(e) => setGroupDescription(e.target.value)}
-                        required
-                    ></textarea>
+                    <div className="form-group">
+                        <label>Description *</label>
+                        <textarea
+                            placeholder="Describe your project..."
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                            required
+                        ></textarea>
+                    </div>
 
-                    <button type="submit" className="submit-btn">
-                        Utwórz grupę
+                    <div className="form-group">
+                        <label>Image URL (Optional)</label>
+                        <input
+                            type="url"
+                            placeholder="https://example.com/image.jpg"
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Skills (Optional)</label>
+                        <div className="tag-input-container">
+                            <input
+                                type="text"
+                                placeholder="Add a skill..."
+                                value={skillInput}
+                                onChange={(e) => setSkillInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
+                            />
+                            <button type="button" onClick={addSkill} className="add-tag-btn">+</button>
+                        </div>
+                        <div className="tags-display">
+                            {selectedSkills.map((skill) => (
+                                <span key={skill} className="tag skill-tag">
+                                    {skill}
+                                    <button type="button" onClick={() => removeSkill(skill)}>×</button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Interests (Optional)</label>
+                        <div className="tag-input-container">
+                            <input
+                                type="text"
+                                placeholder="Add an interest..."
+                                value={interestInput}
+                                onChange={(e) => setInterestInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInterest())}
+                            />
+                            <button type="button" onClick={addInterest} className="add-tag-btn">+</button>
+                        </div>
+                        <div className="tags-display">
+                            {selectedInterests.map((interest) => (
+                                <span key={interest} className="tag interest-tag">
+                                    {interest}
+                                    <button type="button" onClick={() => removeInterest(interest)}>×</button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={isPublic}
+                                onChange={(e) => setIsPublic(e.target.checked)}
+                            />
+                            <span>Make project public</span>
+                        </label>
+                        <span className="form-hint">Public projects can be viewed by anyone</span>
+                    </div>
+
+                    <div className="selected-members-summary">
+                        <h4>Selected Collaborators ({selectedUsers.length})</h4>
+                        {selectedUsers.length === 0 ? (
+                            <p className="empty-state">No collaborators selected yet</p>
+                        ) : (
+                            <div className="selected-chips">
+                                {selectedUsers.map(user => (
+                                    <div key={user.id} className="member-chip">
+                                        {user.profilePic && (
+                                            <img 
+                                                src={user.profilePic} 
+                                                alt={user.nickname} 
+                                                className="chip-avatar"
+                                            />
+                                        )}
+                                        <span>{user.nickname || `${user.name} ${user.surname}`}</span>
+                                        <button
+                                            type="button"
+                                            className="chip-remove"
+                                            onClick={() => toggleUser(user)}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="submit-btn"
+                        disabled={creating}
+                    >
+                        {creating ? "Creating..." : "Create Project"}
                     </button>
                 </form>
             </div>
 
-            {/* Prawa sekcja - uczestnicy */}
+            {/* Right section - participants */}
             <div className="right-section">
                 <div className="participants-header">
-                    <h3>Uczestnicy</h3>
+                    <h3>Invite Collaborators</h3>
                     <span className="count">
-                        Wybrano: {selectedUsers.length} / {users.length}
+                        {selectedUsers.length} / {friends.length} selected
                     </span>
                 </div>
 
-                <table className="participants-table">
-                    <thead>
-                        <tr>
-                            <th>Użytkownik</th>
-                            <th>Email</th>
-                            <th>Akcja</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => {
-                            const isSelected = selectedUsers.some((u) => u.id === user.id);
+                <div className="search-box">
+                    <input
+                        type="text"
+                        placeholder="Search friends..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                </div>
+
+                {loading ? (
+                    <div className="loading-state">
+                        <p>Loading friends...</p>
+                    </div>
+                ) : filteredFriends.length === 0 ? (
+                    <div className="empty-state">
+                        <p>{searchTerm ? "No friends match your search" : "You don't have any friends yet"}</p>
+                    </div>
+                ) : (
+                    <div className="participants-list">
+                        {filteredFriends.map((friend) => {
+                            const isSelected = selectedUsers.some((u) => u.id === friend.id);
                             return (
-                                <tr key={user.id} className={isSelected ? "selected" : ""}>
-                                    <td>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>
-                                        <button
-                                            type="button"
-                                            className={`toggle-btn ${isSelected ? "remove" : "add"}`}
-                                            onClick={() => toggleUser(user)}
-                                        >
-                                            {isSelected ? "-" : "+"}
-                                        </button>
-                                    </td>
-                                </tr>
+                                <div 
+                                    key={friend.id} 
+                                    className={`participant-card ${isSelected ? "selected" : ""}`}
+                                    onClick={() => toggleUser(friend)}
+                                >
+                                    <div className="participant-info">
+                                        {friend.profilePic ? (
+                                            <img 
+                                                src={friend.profilePic} 
+                                                alt={friend.nickname} 
+                                                className="participant-avatar"
+                                            />
+                                        ) : (
+                                            <div className="participant-avatar-placeholder">
+                                                {(friend.name?.[0] || '') + (friend.surname?.[0] || '')}
+                                            </div>
+                                        )}
+                                        <div className="participant-details">
+                                            <div className="participant-name">
+                                                {friend.nickname || `${friend.name} ${friend.surname}`}
+                                            </div>
+                                            <div className="participant-fullname">
+                                                {friend.nickname && `${friend.name} ${friend.surname}`}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className={`toggle-btn ${isSelected ? "remove" : "add"}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleUser(friend);
+                                        }}
+                                    >
+                                        {isSelected ? "✓" : "+"}
+                                    </button>
+                                </div>
                             );
                         })}
-                    </tbody>
-                </table>
+                    </div>
+                )}
             </div>
         </div>
     );

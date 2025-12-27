@@ -117,3 +117,5 @@
 .add-event button:hover {
     background-color: color-mix(in srgb, var(--accent) 85%, #000);
 }
+
+.event-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; } .event-content { flex: 1; } .delete-event-btn { background-color: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s ease; padding: 0; flex-shrink: 0; } .delete-event-btn:hover { background-color: #dc2626; transform: scale(1.1); } .delete-event-btn:active { transform: scale(0.95); }

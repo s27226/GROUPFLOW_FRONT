@@ -51,7 +51,15 @@ export default function RegisterPage() {
             });
 
             const authData = data.auth.registerUser;
-            login(authData.token, authData.refreshToken);
+            login(authData.token, authData.refreshToken, {
+                id: authData.id,
+                name: authData.name,
+                surname: authData.surname,
+                nickname: authData.nickname,
+                email: authData.email,
+                profilePic: authData.profilePic,
+                isModerator: authData.isModerator
+            });
             navigate("/");
         } catch (err) {
             console.error("Registration error:", err);

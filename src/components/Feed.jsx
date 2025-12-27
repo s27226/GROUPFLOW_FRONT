@@ -4,11 +4,13 @@ import SkeletonPost from "./ui/SkeletonPost";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { usePosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useToast } from "../context/ToastContext";
 
 export default function Feed() {
     const { posts, loading, error } = usePosts();
     const [savedPostIds, setSavedPostIds] = useState(new Set());
     const { executeQuery } = useGraphQL();
+    const { showToast } = useToast();
 
     useEffect(() => {
         fetchSavedPosts();
@@ -23,16 +25,6 @@ export default function Feed() {
         } catch (err) {
             console.error("Failed to fetch saved posts:", err);
         }
-    };
-
-    const handleHidePost = (postId) => {
-        // TODO: Implement hide functionality with proper state management
-        console.log("Hide post:", postId);
-    };
-
-    const handleUndoHide = (postId) => {
-        // TODO: Implement undo hide functionality with proper state management
-        console.log("Undo hide post:", postId);
     };
 
     const handleSavePost = async (postId) => {
@@ -55,7 +47,7 @@ export default function Feed() {
             });
         } catch (err) {
             console.error("Error toggling save status:", err);
-            alert("Failed to update save status. Please try again.");
+            showToast("Failed to update save status. Please try again.", "error");
         }
     };
 
@@ -72,16 +64,17 @@ export default function Feed() {
                     <Post
                         key={post.id}
                         id={post.id}
-                        author={post.user?.nickname || "Unknown"}
-                        authorId={post.user?.id}
+                        author={post.author}
+                        authorId={post.authorId}
+                        authorProfilePic={post.authorProfilePic}
                         time={post.time}
                         content={post.content}
                         title={post.title}
-                        image={post.imageUrl || null}
+                        image={post.image}
                         saved={savedPostIds.has(post.id)}
                         sharedPost={post.sharedPost}
-                        onHide={handleHidePost}
-                        onUndoHide={handleUndoHide}
+                        likes={post.likes || []}
+                        comments={post.comments || []}
                         onSave={handleSavePost}
                     />
                 ))

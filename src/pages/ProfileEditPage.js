@@ -2,23 +2,30 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ImageUploadButton from "../components/ImageUploadButton";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
+import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useBlobUpload } from "../hooks/useBlobUpload";
+import { useToast } from "../context/ToastContext";
 
 export default function ProfileEditPage() {
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
-    const { executeQuery } = useGraphQL();
+    const { executeQuery, executeMutation } = useGraphQL();
+    const { uploadBlob, deleteBlob, uploading: blobUploading } = useBlobUpload();
+    const { showToast } = useToast();
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState("");
     const [bio, setBio] = useState("");
     const [banner, setBanner] = useState("");
+    const [bannerFile, setBannerFile] = useState(null);
     const [pfp, setPfp] = useState("");
+    const [pfpFile, setPfpFile] = useState(null);
     const [abt, setAbt] = useState("");
 
     useEffect(() => {
@@ -36,9 +43,10 @@ export default function ProfileEditPage() {
                 setUser(userData);
                 setName(userData.name || "");
                 setBio(userData.bio || "");
-                setBanner(userData.banner || "https://picsum.photos/900/200?random=10");
+                // Use blob URL if available, otherwise fallback to old URL
+                setBanner(userData.bannerPicUrl || userData.bannerPic || "https://picsum.photos/900/200?random=10");
                 setPfp(
-                    userData.profilePic ||
+                    userData.profilePicUrl || userData.profilePic ||
                         `https://api.dicebear.com/9.x/identicon/svg?seed=${userData.nickname}`
                 );
                 setAbt(userData.about || "");
@@ -52,25 +60,116 @@ export default function ProfileEditPage() {
         fetchCurrentUser();
     }, [executeQuery]);
 
-    const handleFileUpload = (e, type) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            if (type === "pfp") setPfp(reader.result);
-            if (type === "banner") setBanner(reader.result);
-        };
-        reader.readAsDataURL(file);
+    const handleProfileImageSelect = ({ file, preview }) => {
+        setPfpFile(file);
+        setPfp(preview);
     };
 
-    const handleSave = () => {
-        if (user && user.id) {
-            navigate(`/profile/${user.id}`);
+    const handleProfileImageRemove = async () => {
+        // If user has a blob ID, delete the blob from S3
+        if (user?.profilePicBlobId) {
+            try {
+                await deleteBlob(user.profilePicBlobId);
+                // Update user to remove blob ID
+                await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE_IMAGE, {
+                    input: { 
+                        userId: user.id,
+                        profilePicBlobId: null 
+                    }
+                });
+                showToast("Profile picture removed", "success");
+            } catch (err) {
+                console.error("Failed to delete profile picture:", err);
+                showToast("Failed to remove profile picture", "error");
+            }
+        }
+        setPfpFile(null);
+        setPfp(`https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname}`);
+    };
+
+    const handleBannerImageSelect = ({ file, preview }) => {
+        setBannerFile(file);
+        setBanner(preview);
+    };
+
+    const handleBannerImageRemove = async () => {
+        // If user has a blob ID, delete the blob from S3
+        if (user?.bannerPicBlobId) {
+            try {
+                await deleteBlob(user.bannerPicBlobId);
+                // Update user to remove blob ID
+                await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_BANNER_IMAGE, {
+                    input: { 
+                        userId: user.id,
+                        bannerPicBlobId: null 
+                    }
+                });
+                showToast("Banner removed", "success");
+            } catch (err) {
+                console.error("Failed to delete banner:", err);
+                showToast("Failed to remove banner", "error");
+            }
+        }
+        setBannerFile(null);
+        setBanner("https://picsum.photos/900/200?random=10");
+    };
+
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+
+            // Upload profile picture to S3 if a new file was selected
+            if (pfpFile) {
+                try {
+                    const blobData = await uploadBlob(pfpFile, "UserProfilePicture");
+                    // Update user profile image blob ID
+                    await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE_IMAGE, {
+                        input: { 
+                            userId: user.id,
+                            profilePicBlobId: blobData.id 
+                        }
+                    });
+                    showToast("Profile picture uploaded successfully", "success");
+                } catch (err) {
+                    showToast("Failed to upload profile picture: " + err.message, "error");
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            // Upload banner to S3 if a new file was selected
+            if (bannerFile) {
+                try {
+                    const blobData = await uploadBlob(bannerFile, "UserBanner");
+                    // Update user banner image blob ID
+                    await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_BANNER_IMAGE, {
+                        input: { 
+                            userId: user.id,
+                            bannerPicBlobId: blobData.id 
+                        }
+                    });
+                    showToast("Banner uploaded successfully", "success");
+                } catch (err) {
+                    showToast("Failed to upload banner: " + err.message, "error");
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            // Navigate back to profile
+            showToast("Profile updated successfully", "success");
+            if (user && user.id) {
+                navigate(`/profile/${user.id}`);
+            }
+        } catch (err) {
+            console.error("Error saving profile:", err);
+            showToast("Failed to save profile changes", "error");
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) {
+    if (loading && !user) {
         return (
             <div className="edit-layout">
                 <Navbar />
@@ -91,35 +190,29 @@ export default function ProfileEditPage() {
                 <div className="edit-main">
                     <h2>Edit Profile</h2>
 
-                    <div className="option-section image-section">
-                        <label>Profile Picture</label>
-                        <img src={pfp} alt="Profile" className="preview-image" />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, "pfp")}
-                        />
-                        <input
-                            type="text"
-                            value={pfp}
-                            onChange={(e) => setPfp(e.target.value)}
-                            placeholder="Or enter image URL"
+                    <div className="option-section">
+                        <ImageUploadButton
+                            label="Profile Picture"
+                            preview={pfp}
+                            onImageSelect={handleProfileImageSelect}
+                            onImageRemove={handleProfileImageRemove}
+                            onUrlChange={setPfp}
+                            urlValue={pfp}
+                            type="profile"
+                            showUrlInput={true}
                         />
                     </div>
 
-                    <div className="option-section image-section">
-                        <label>Banner</label>
-                        <img src={banner} alt="Banner" className="preview-image banner-preview" />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, "banner")}
-                        />
-                        <input
-                            type="text"
-                            value={banner}
-                            onChange={(e) => setBanner(e.target.value)}
-                            placeholder="Or enter banner URL"
+                    <div className="option-section">
+                        <ImageUploadButton
+                            label="Banner"
+                            preview={banner}
+                            onImageSelect={handleBannerImageSelect}
+                            onImageRemove={handleBannerImageRemove}
+                            onUrlChange={setBanner}
+                            urlValue={banner}
+                            type="banner"
+                            showUrlInput={true}
                         />
                     </div>
 
@@ -142,8 +235,8 @@ export default function ProfileEditPage() {
                         <textarea value={abt} onChange={(e) => setAbt(e.target.value)} />
                     </div>
 
-                    <button className="edit-btn" onClick={handleSave}>
-                        Save Changes
+                    <button className="edit-btn" onClick={handleSave} disabled={blobUploading || loading}>
+                        {blobUploading || loading ? "Saving..." : "Save Changes"}
                     </button>
                 </div>
             </div>

@@ -483,3 +483,148 @@ html,
     text-decoration: underline;
     color: color-mix(in srgb, var(--accent) 85%, #000);
 }
+
+.comment-delete-confirm {
+    margin-top: 10px;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-delete-confirm p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.comment-delete-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.comment-delete-actions .btn-cancel,
+.comment-delete-actions .btn-delete {
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+.comment-delete-actions .btn-cancel {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.comment-delete-actions .btn-cancel:hover {
+    background-color: var(--bg-accent);
+}
+
+.comment-delete-actions .btn-delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.comment-delete-actions .btn-delete:hover {
+    background-color: #dc2626;
+    transform: scale(1.02);
+}
+
+/* Report Dialog Styles */
+.report-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.report-dialog {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow-soft);
+}
+
+.report-dialog h3 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.report-dialog p {
+    margin: 0 0 16px 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.report-dialog textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.report-dialog textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.report-dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.report-dialog-actions .btn-cancel,
+.report-dialog-actions .btn-report {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+.report-dialog-actions .btn-cancel {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.report-dialog-actions .btn-cancel:hover {
+    background-color: var(--bg-accent);
+}
+
+.report-dialog-actions .btn-report {
+    background-color: #ef4444;
+    color: white;
+}
+
+.report-dialog-actions .btn-report:hover {
+    background-color: #dc2626;
+    transform: scale(1.02);
+}

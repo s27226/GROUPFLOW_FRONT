@@ -26,6 +26,10 @@ import NewPostPage from "./pages/NewPostPage";
 import SavedPage from "./pages/SavedPage";
 import PostPage from "./pages/PostPage";
 import ProfileTagsPage from "./pages/ProfileTagsPage";
+import BlockedUsersPage from "./pages/BlockedUsersPage";
+import ReportedPostsPage from "./pages/ReportedPostsPage";
+import ModerationPage from "./pages/ModerationPage";
+import { ToastProvider } from "./context/ToastContext";
 
 function ProtectedRoute({ children }) {
     const { token } = useAuth();
@@ -65,6 +69,7 @@ function AppContent({ setInvitationsCount }) {
                 <Route path="/project/:projectId" element={<ProjectProfilePage />} />
                 <Route path="/project/:projectId/edit" element={<ProjectEditFrontPage />} />
                 <Route path="/project/:projectId/new-post" element={<NewPostPage />} />
+                <Route path="/new-post" element={<NewPostPage />} />
                 <Route path="/chat/:username" element={<PrivateChat />} />
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/project/:id/workspace" element={<ProjectChatPage />} />
@@ -75,6 +80,9 @@ function AppContent({ setInvitationsCount }) {
                 <Route path="/profile-tags" element={<ProfileTagsPage />} />
                 <Route path="/friendslist" element={<FriendPage />} />
                 <Route path="/invitations" element={<InvitationsPage />} />
+                <Route path="/blocked-users" element={<BlockedUsersPage />} />
+                <Route path="/admin/reported-posts" element={<ReportedPostsPage />} />
+                <Route path="/moderation" element={<ModerationPage />} />
                 <Route path="/Saved" element={<SavedPage />} />
                 <Route path="/post/:postId" element={<PostPage />} />
                 <Route
@@ -105,10 +113,12 @@ export default function App() {
     );
 
     return (
-        <InvitationContext.Provider value={{ invitationsCount, setInvitationsCount }}>
-            <AuthProvider>
-                <AppContent setInvitationsCount={setInvitationsCount} />
-            </AuthProvider>
-        </InvitationContext.Provider>
+        <ToastProvider>
+            <InvitationContext.Provider value={{ invitationsCount, setInvitationsCount }}>
+                <AuthProvider>
+                    <AppContent setInvitationsCount={setInvitationsCount} />
+                </AuthProvider>
+            </InvitationContext.Provider>
+        </ToastProvider>
     );
 }
