@@ -334,7 +334,9 @@ export const GRAPHQL_QUERIES = {
           joined
           dateOfBirth
           profilePic
+          profilePicUrl
           bannerPic
+          bannerPicUrl
         }
       }
     }
@@ -353,7 +355,9 @@ export const GRAPHQL_QUERIES = {
           joined
           dateOfBirth
           profilePic
+          profilePicUrl
           bannerPic
+          bannerPicUrl
         }
       }
     }
@@ -430,6 +434,7 @@ export const GRAPHQL_QUERIES = {
           name
           description
           imageUrl
+          bannerUrl
           created
           lastUpdated
           isPublic
@@ -990,10 +995,30 @@ export const GRAPHQL_QUERIES = {
         }
       }
     }
+  `,
+
+  GET_PROJECT_FILES: `
+    query GetProjectFiles($projectId: Int!) {
+      projectFiles(projectId: $projectId) {
+        id
+        fileName
+        blobPath
+        contentType
+        fileSize
+        type
+        uploadedAt
+        uploadedBy {
+          id
+          nickname
+          name
+          profilePic
+        }
+      }
+    }
   `
 };
 
-// GraphQL Mutations (for future use)
+// GraphQL Mutations
 export const GRAPHQL_MUTATIONS = {
     REGISTER_USER: `
     mutation RegisterUser($input: UserRegisterInput!) {
@@ -1573,6 +1598,66 @@ export const GRAPHQL_MUTATIONS = {
     mutation DiscardReport($reportId: Int!) {
       post {
         discardReport(reportId: $reportId)
+      }
+    }
+  `,
+
+  // Blob storage mutations
+  UPLOAD_BLOB: `
+    mutation UploadBlob($input: UploadBlobInput!) {
+      uploadBlob(input: $input) {
+        id
+        fileName
+        blobPath
+        contentType
+        fileSize
+        type
+        uploadedAt
+      }
+    }
+  `,
+
+  DELETE_BLOB: `
+    mutation DeleteBlob($input: DeleteBlobInput!) {
+      deleteBlob(input: $input)
+    }
+  `,
+
+  UPDATE_USER_PROFILE_IMAGE: `
+    mutation UpdateUserProfileImage($input: UpdateUserProfileImageInput!) {
+      updateUserProfileImage(input: $input) {
+        id
+        profilePic
+        profilePicBlobId
+      }
+    }
+  `,
+
+  UPDATE_USER_BANNER_IMAGE: `
+    mutation UpdateUserBannerImage($input: UpdateUserBannerImageInput!) {
+      updateUserBannerImage(input: $input) {
+        id
+        bannerPic
+        bannerPicBlobId
+      }
+    }
+  `,
+
+  UPDATE_PROJECT_IMAGE: `
+    mutation UpdateProjectImage($input: UpdateProjectImageInput!) {
+      updateProjectImage(input: $input) {
+        id
+        imageUrl
+        imageBlobId
+      }
+    }
+  `,
+
+  UPDATE_PROJECT_BANNER: `
+    mutation UpdateProjectBanner($input: UpdateProjectBannerInput!) {
+      updateProjectBanner(input: $input) {
+        id
+        bannerBlobId
       }
     }
   `

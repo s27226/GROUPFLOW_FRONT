@@ -63,7 +63,7 @@ export default function ProjectProfilePage() {
                     id: projectData.id,
                     name: projectData.name,
                     description: projectData.description,
-                    banner: `https://picsum.photos/900/200?random=${projectData.id}`,
+                    banner: projectData.bannerUrl || `https://picsum.photos/900/200?random=${projectData.id}`,
                     image:
                         projectData.imageUrl ||
                         `https://picsum.photos/200?random=${projectData.id}`,

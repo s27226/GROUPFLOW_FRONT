@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import ChatBox from "../components/ChatBox";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import "../styles/ProjectViewPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import FilesView from "../components/FilesView";
@@ -15,9 +16,12 @@ export default function ProjectsViewPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
+    const { user: authUser } = useAuth();
     const [activeTab, setActiveTab] = useState("messages");
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isOwner, setIsOwner] = useState(false);
+    const [isCollaborator, setIsCollaborator] = useState(false);
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -40,6 +44,19 @@ export default function ProjectsViewPage() {
                 }
 
                 setProject(projectData);
+                
+                // Check if current user is owner or collaborator
+                if (authUser) {
+                    if (Array.isArray(projectData)) {
+                        const proj = projectData[0];
+                        setIsOwner(proj?.owner?.id === authUser.id);
+                        setIsCollaborator(proj?.collaborators?.some(c => c.userId === authUser.id) || false);
+                    } else {
+                        setIsOwner(projectData?.owner?.id === authUser.id);
+                        setIsCollaborator(projectData?.collaborators?.some(c => c.userId === authUser.id) || false);
+                    }
+                }
+                
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch project:", err);
@@ -53,7 +70,7 @@ export default function ProjectsViewPage() {
     const renderContent = () => {
         switch (activeTab) {
             case "files":
-                return <FilesView projectId={id} />;
+                return <FilesView projectId={id} isOwner={isOwner} isCollaborator={isCollaborator} />;
             case "termins":
                 return <TerminsView projectId={id} project={project} />;
             default:

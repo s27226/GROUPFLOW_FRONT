@@ -69,14 +69,23 @@ export default function ProfilePage() {
                     return;
                 }
 
+                console.log('[ProfilePage] User info from GraphQL:', {
+                    id: userInfo.id,
+                    nickname: userInfo.nickname,
+                    profilePic: userInfo.profilePic,
+                    profilePicUrl: userInfo.profilePicUrl,
+                    bannerPic: userInfo.bannerPic,
+                    bannerPicUrl: userInfo.bannerPicUrl
+                });
+
                 setUser({
                     id: userInfo.id,
                     name: userInfo.name,
                     surname: userInfo.surname,
                     handle: `@${userInfo.nickname}`,
                     bio: "Professional developer", // TODO: Add bio field to backend
-                    banner: userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
-                    pfp: userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
+                    banner: userInfo.bannerPicUrl || userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
+                    pfp: userInfo.profilePicUrl || userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
                     abt: `Member since ${new Date(userInfo.joined).toLocaleDateString()}`
                 });
 

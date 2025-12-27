@@ -2,17 +2,22 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import ImageUploadButton from "../components/ImageUploadButton";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useAuth } from "../context/AuthContext";
+import { useBlobUpload } from "../hooks/useBlobUpload";
+import { useToast } from "../context/ToastContext";
 
 export default function ProjectEditPage() {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery, executeMutation } = useGraphQL();
     const { user: authUser } = useAuth();
+    const { uploadBlob, deleteBlob, uploading: blobUploading } = useBlobUpload();
+    const { showToast } = useToast();
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -24,6 +29,9 @@ export default function ProjectEditPage() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [imageFile, setImageFile] = useState(null);
+    const [bannerUrl, setBannerUrl] = useState("");
+    const [bannerFile, setBannerFile] = useState(null);
     const [isPublic, setIsPublic] = useState(true);
 
     useEffect(() => {
@@ -61,6 +69,7 @@ export default function ProjectEditPage() {
                 setName(projectData.name || "");
                 setDescription(projectData.description || "");
                 setImageUrl(projectData.imageUrl || "");
+                setBannerUrl(projectData.bannerUrl || "");
                 setIsPublic(projectData.isPublic ?? true);
                 setError(null);
             } catch (err) {
@@ -75,15 +84,24 @@ export default function ProjectEditPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projectId]);
 
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+    const handleImageSelect = ({ file, preview }) => {
+        setImageFile(file);
+        setImageUrl(preview);
+    };
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImageUrl(reader.result);
-        };
-        reader.readAsDataURL(file);
+    const handleImageRemove = () => {
+        setImageFile(null);
+        setImageUrl("");
+    };
+
+    const handleBannerSelect = ({ file, preview }) => {
+        setBannerFile(file);
+        setBannerUrl(preview);
+    };
+
+    const handleBannerRemove = () => {
+        setBannerFile(null);
+        setBannerUrl("");
     };
 
     const handleSave = async () => {
@@ -101,6 +119,44 @@ export default function ProjectEditPage() {
             setSaving(true);
             setError(null);
 
+            // Upload logo to S3 if a new file was selected
+            if (imageFile) {
+                try {
+                    const blobData = await uploadBlob(imageFile, "ProjectLogo", parseInt(projectId));
+                    // Update project image blob ID
+                    await executeMutation(GRAPHQL_MUTATIONS.UPDATE_PROJECT_IMAGE, {
+                        input: { 
+                            projectId: parseInt(projectId), 
+                            imageBlobId: blobData.id 
+                        }
+                    });
+                    showToast("Project logo uploaded successfully", "success");
+                } catch (err) {
+                    showToast("Failed to upload project logo: " + err.message, "error");
+                    setSaving(false);
+                    return;
+                }
+            }
+
+            // Upload banner to S3 if a new file was selected
+            if (bannerFile) {
+                try {
+                    const blobData = await uploadBlob(bannerFile, "ProjectBanner", parseInt(projectId));
+                    // Update project banner blob ID
+                    await executeMutation(GRAPHQL_MUTATIONS.UPDATE_PROJECT_BANNER, {
+                        input: { 
+                            projectId: parseInt(projectId), 
+                            bannerBlobId: blobData.id 
+                        }
+                    });
+                    showToast("Project banner uploaded successfully", "success");
+                } catch (err) {
+                    showToast("Failed to upload project banner: " + err.message, "error");
+                    setSaving(false);
+                    return;
+                }
+            }
+
             const input = {
                 id: parseInt(projectId),
                 name: name.trim(),
@@ -111,6 +167,7 @@ export default function ProjectEditPage() {
 
             await executeMutation(GRAPHQL_MUTATIONS.UPDATE_PROJECT, { input });
 
+            showToast("Project updated successfully", "success");
             // Navigate back to project profile
             navigate(`/project/${projectId}`);
         } catch (err) {
@@ -239,15 +296,29 @@ export default function ProjectEditPage() {
                         </div>
                     )}
 
-                    <div className="option-section image-section">
-                        <label>Project Logo</label>
-                        {imageUrl && <img src={imageUrl} alt="Logo" className="preview-image" />}
-                        <input type="file" accept="image/*" onChange={handleFileUpload} />
-                        <input
-                            type="text"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            placeholder="Or enter logo URL"
+                    <div className="option-section">
+                        <ImageUploadButton
+                            label="Project Logo *"
+                            preview={imageUrl}
+                            onImageSelect={handleImageSelect}
+                            onImageRemove={handleImageRemove}
+                            onUrlChange={setImageUrl}
+                            urlValue={imageUrl}
+                            type="project-logo"
+                            showUrlInput={true}
+                        />
+                    </div>
+
+                    <div className="option-section">
+                        <ImageUploadButton
+                            label="Project Banner"
+                            preview={bannerUrl}
+                            onImageSelect={handleBannerSelect}
+                            onImageRemove={handleBannerRemove}
+                            onUrlChange={setBannerUrl}
+                            urlValue={bannerUrl}
+                            type="project-banner"
+                            showUrlInput={true}
                         />
                     </div>
 
@@ -299,16 +370,16 @@ export default function ProjectEditPage() {
                         <button
                             className="edit-btn"
                             onClick={handleSave}
-                            disabled={saving || deleting || !name.trim() || !description.trim()}
+                            disabled={saving || deleting || blobUploading || !name.trim() || !description.trim()}
                             style={{
-                                opacity: saving || deleting || !name.trim() || !description.trim() ? 0.6 : 1,
+                                opacity: saving || deleting || blobUploading || !name.trim() || !description.trim() ? 0.6 : 1,
                                 cursor:
-                                    saving || deleting || !name.trim() || !description.trim()
+                                    saving || deleting || blobUploading || !name.trim() || !description.trim()
                                         ? "not-allowed"
                                         : "pointer"
                             }}
                         >
-                            {saving ? "Saving..." : "Save Changes"}
+                            {saving || blobUploading ? "Saving..." : "Save Changes"}
                         </button>
 
                         <button
