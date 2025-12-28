@@ -67,7 +67,12 @@ export default function MyProjectsPage() {
                         ) : myProjects.length === 0 ? (
                             <div className="no-projects-message">
                                 <p>You don't have any projects yet.</p>
-                                <button className="create-project-btn">Create New Project</button>
+                                <button 
+                                    className="create-project-btn"
+                                    onClick={() => navigate('/creategroup')}
+                                >
+                                    Create New Project
+                                </button>
                             </div>
                         ) : (
                             <div className="projects-grid">
