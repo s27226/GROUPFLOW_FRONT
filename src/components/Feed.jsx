@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Post from "./Post";
 import SkeletonPost from "./ui/SkeletonPost";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
@@ -12,11 +12,7 @@ export default function Feed() {
     const { executeQuery } = useGraphQL();
     const { showToast } = useToast();
 
-    useEffect(() => {
-        fetchSavedPosts();
-    }, []);
-
-    const fetchSavedPosts = async () => {
+    const fetchSavedPosts = useCallback(async () => {
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SAVED_POSTS);
 
@@ -25,7 +21,11 @@ export default function Feed() {
         } catch (err) {
             console.error("Failed to fetch saved posts:", err);
         }
-    };
+    }, [executeQuery]);
+
+    useEffect(() => {
+        fetchSavedPosts();
+    }, [fetchSavedPosts]);
 
     const handleSavePost = async (postId) => {
         const isSaved = savedPostIds.has(postId);

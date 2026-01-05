@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { FileText, Download, Trash2, Upload, X } from "lucide-react";
 import { useBlobUpload } from "../hooks/useBlobUpload";
 import { useToast } from "../context/ToastContext";
@@ -20,10 +20,9 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
 
     useEffect(() => {
         fetchFiles();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [projectId]);
+    }, [fetchFiles]);
 
-    const fetchFiles = async () => {
+    const fetchFiles = useCallback(async () => {
         if (!projectId) return;
         
         setLoading(true);
@@ -36,7 +35,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [projectId, getProjectFiles, showToast]);
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];

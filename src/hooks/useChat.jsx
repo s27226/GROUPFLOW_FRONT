@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "./useGraphQL";
 
@@ -15,7 +15,7 @@ export function useChat(user, currentUserId) {
     const { executeQuery } = useGraphQL();
 
     // Load messages for a chat
-    const loadMessages = async (chatIdToLoad) => {
+    const loadMessages = useCallback(async (chatIdToLoad) => {
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_CHAT_MESSAGES, {
                 chatId: chatIdToLoad
@@ -34,7 +34,7 @@ export function useChat(user, currentUserId) {
         } catch (err) {
             console.error("Failed to load messages:", err);
         }
-    };
+    }, [executeQuery, currentUserId]);
 
     // Fetch or create chat and load messages
     useEffect(() => {
@@ -75,7 +75,7 @@ export function useChat(user, currentUserId) {
         if (user && currentUserId) {
             initializeChat();
         }
-    }, [user, currentUserId]);
+    }, [user, currentUserId, executeQuery]);
 
     // Removed auto-scroll on messages change - users can scroll manually
 
@@ -88,7 +88,7 @@ export function useChat(user, currentUserId) {
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [chatId, currentUserId]);
+    }, [chatId, loadMessages]);
 
     // Send message function
     const sendMessage = async () => {

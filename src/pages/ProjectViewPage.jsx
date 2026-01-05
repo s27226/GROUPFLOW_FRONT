@@ -65,7 +65,7 @@ export default function ProjectsViewPage() {
         };
 
         fetchProject();
-    }, [id, executeQuery]);
+    }, [id, executeQuery, authUser]);
 
     const renderContent = () => {
         switch (activeTab) {

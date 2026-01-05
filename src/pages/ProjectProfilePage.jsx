@@ -101,8 +101,7 @@ export default function ProjectProfilePage() {
         };
 
         fetchProjectProfile();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [projectId]);
+    }, [projectId, executeQuery, authUser]);
 
     if (loading || postsLoading) {
         return (

@@ -32,7 +32,7 @@ export default function SettingsPage() {
         const fontValue =
             fontSize === "small" ? "0.9rem" : fontSize === "large" ? "1.1rem" : "1rem";
         document.documentElement.style.setProperty("--font-size-base", fontValue);
-    }, []);
+    }, [theme, fontSize]);
 
     return (
         <div className="settings-layout">

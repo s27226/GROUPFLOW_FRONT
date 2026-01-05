@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { formatTime } from "../utils/dateFormatter";
 import { useGraphQL } from "./useGraphQL";
@@ -67,7 +67,7 @@ export const usePosts = () => {
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
 
-    const fetchPosts = async () => {
+    const fetchPosts = useCallback(async () => {
         try {
             setLoading(true);
             const data = await executeQuery(GRAPHQL_QUERIES.GET_POSTS, {});
@@ -82,11 +82,11 @@ export const usePosts = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery]);
 
     useEffect(() => {
         fetchPosts();
-    }, []);
+    }, [fetchPosts]);
 
     return { posts, loading, error, refetch: fetchPosts };
 };

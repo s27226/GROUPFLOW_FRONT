@@ -81,8 +81,7 @@ export default function ProjectEditPage() {
         };
 
         fetchProject();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [projectId]);
+    }, [projectId, executeQuery]);
 
     const handleImageSelect = ({ file, preview }) => {
         setImageFile(file);

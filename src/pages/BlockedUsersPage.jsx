@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
@@ -16,11 +16,7 @@ export default function BlockedUsersPage() {
     const { showToast } = useToast();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchBlockedUsers();
-    }, []);
-
-    const fetchBlockedUsers = async () => {
+    const fetchBlockedUsers = useCallback(async () => {
         try {
             setLoading(true);
             const data = await executeQuery(GRAPHQL_QUERIES.GET_BLOCKED_USERS, {});
@@ -34,7 +30,11 @@ export default function BlockedUsersPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery, showToast]);
+
+    useEffect(() => {
+        fetchBlockedUsers();
+    }, [fetchBlockedUsers]);
 
     const handleUnblock = async (userId, userName) => {
         try {

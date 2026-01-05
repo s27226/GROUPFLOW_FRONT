@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ export default function Users() {
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
 
-    const loadSuggestedUsers = async () => {
+    const loadSuggestedUsers = useCallback(async () => {
         setLoading(true);
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SUGGESTED_USERS, { limit: 20 });
@@ -41,26 +41,9 @@ export default function Users() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery]);
 
-    useEffect(() => {
-        loadSuggestedUsers();
-        
-        // Check if there's a search query from the navbar
-        const storedQuery = localStorage.getItem('userSearchQuery');
-        if (storedQuery) {
-            setSearchTerm(storedQuery);
-            setActiveTab("search");
-            localStorage.removeItem('userSearchQuery'); // Clear it after using
-            
-            // Trigger search with the stored query
-            setTimeout(() => {
-                handleSearchWithQuery(storedQuery);
-            }, 100);
-        }
-    }, []);
-
-    const handleSearchWithQuery = async (query) => {
+    const handleSearchWithQuery = useCallback(async (query) => {
         setLoading(true);
         try {
             const input = {
@@ -88,7 +71,24 @@ export default function Users() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery, selectedSkills, selectedInterests]);
+
+    useEffect(() => {
+        loadSuggestedUsers();
+        
+        // Check if there's a search query from the navbar
+        const storedQuery = localStorage.getItem('userSearchQuery');
+        if (storedQuery) {
+            setSearchTerm(storedQuery);
+            setActiveTab("search");
+            localStorage.removeItem('userSearchQuery'); // Clear it after using
+            
+            // Trigger search with the stored query
+            setTimeout(() => {
+                handleSearchWithQuery(storedQuery);
+            }, 100);
+        }
+    }, [loadSuggestedUsers, handleSearchWithQuery]);
 
     const handleSearch = async () => {
         await handleSearchWithQuery(searchTerm);

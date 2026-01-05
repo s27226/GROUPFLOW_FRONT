@@ -92,14 +92,14 @@
 }
 
 .user-nickname {
-    color: #e7e9ea;
+    color: var(--text-primary);
     font-size: 0.95rem;
     font-weight: 600;
     transition: color 0.2s ease;
 }
 
 .user-nickname:hover {
-    color: #1d9bf0;
+    color: var(--accent);
 }
 
 .user-pfp {
@@ -152,7 +152,7 @@
 
 .dropdown-menu button:hover {
     background-color: var(--accent);
-    color: #fff;
+    color: var(--bg-main);
 }
 
 .dropdown-menu .logout {
@@ -162,7 +162,7 @@
 
 .dropdown-menu .logout:hover {
     background-color: var(--error);
-    color: #fff;
+    color: var(--bg-main);
 }
 
 .dropdown-user-info {
@@ -173,12 +173,12 @@
 }
 
 .dropdown-user-info strong {
-    color: #e7e9ea;
+    color: var(--text-primary);
     font-size: 0.95rem;
 }
 
 .dropdown-user-info small {
-    color: #71767b;
+    color: var(--text-secondary);
     font-size: 0.85rem;
 }
 

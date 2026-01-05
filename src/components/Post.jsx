@@ -83,7 +83,7 @@ export default function Post({
         };
 
         checkFriendship();
-    }, [authorId, user]);
+    }, [authorId, user, makeRequest]);
 
     const countComments = (comments) => {
         if (!comments || comments.length === 0) return 0;

@@ -2,7 +2,6 @@ import "../styles/auth.css";
 
 /**
  * Shared authentication layout component for login and registration pages
- * Provides consistent styling and structure for auth pages
  */
 export default function AuthLayout({ children }) {
     return (

@@ -61,13 +61,13 @@
     position: fixed;
     top: 15px;
     left: 15px;
-    background-color: var(--bg-main, #0f1419);
-    color: var(--text-primary, #e7e9ea);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
     padding: 10px;
     border-radius: 6px;
     cursor: pointer;
     z-index: 1001;
-    box-shadow: var(--shadow-soft, 0 4px 12px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--shadow-soft);
 }
 
 .sidebar::-webkit-scrollbar {

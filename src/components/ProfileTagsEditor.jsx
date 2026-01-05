@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useToast } from "../context/ToastContext";
@@ -14,11 +14,7 @@ export default function ProfileTagsEditor() {
     const { executeQuery, executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
-    useEffect(() => {
-        loadTags();
-    }, []);
-
-    const loadTags = async () => {
+    const loadTags = useCallback(async () => {
         setLoading(true);
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_TAGS, {});
@@ -29,7 +25,11 @@ export default function ProfileTagsEditor() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery]);
+
+    useEffect(() => {
+        loadTags();
+    }, [loadTags]);
 
     const addSkill = async () => {
         if (!skillInput.trim()) return;

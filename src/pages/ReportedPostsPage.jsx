@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useAuthenticatedRequest } from "../hooks/useAuthenticatedRequest";
@@ -26,9 +26,9 @@ export default function ReportedPostsPage() {
         }
 
         fetchReportedPosts();
-    }, [isModerator, navigate]);
+    }, [isModerator, navigate, fetchReportedPosts]);
 
-    const fetchReportedPosts = async () => {
+    const fetchReportedPosts = useCallback(async () => {
         setLoading(true);
         try {
             const response = await makeRequest(GRAPHQL_QUERIES.GET_REPORTED_POSTS);
@@ -45,7 +45,7 @@ export default function ReportedPostsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [makeRequest, showToast]);
 
     const handleDeletePost = async (postId, reportId) => {
         if (!window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
