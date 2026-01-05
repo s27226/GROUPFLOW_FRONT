@@ -17,8 +17,6 @@ import { useGraphQL } from "../hooks/useGraphQL";
 function Navbar() {
     const { logout, user, updateUser, token, isModerator } = useAuth();
 
-    console.log('Navbar - isModerator:', isModerator, 'user:', user); // Debug log
-
     const navigate = useNavigate();
     const location = useLocation();
 

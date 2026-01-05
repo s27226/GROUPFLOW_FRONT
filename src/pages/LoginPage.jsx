@@ -27,7 +27,6 @@ export default function LoginPage() {
             });
 
             const authData = data.auth.loginUser;
-            console.log('Login response:', authData); // Debug log
             login(authData.token, authData.refreshToken, {
                 id: authData.id,
                 name: authData.name,
@@ -37,7 +36,6 @@ export default function LoginPage() {
                 profilePic: authData.profilePic,
                 isModerator: authData.isModerator
             });
-            console.log('Is Moderator:', authData.isModerator); // Debug log
             navigate("/");
         } catch (err) {
             console.error("Login error:", err);

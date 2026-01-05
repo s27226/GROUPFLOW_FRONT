@@ -9,9 +9,7 @@ const ModerationPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('ModerationPage - user:', user, 'isModerator:', isModerator);
     if (user && !isModerator) {
-      console.log('Redirecting - not a moderator');
       navigate('/');
     }
   }, [user, isModerator, navigate]);

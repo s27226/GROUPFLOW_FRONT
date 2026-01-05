@@ -39,8 +39,6 @@ export default function ProjectProfilePage() {
                     id: parseInt(projectId)
                 });
 
-                console.log("Project response:", data);
-
                 if (!data) {
                     console.error("No data received");
                     setLoading(false);
@@ -50,8 +48,6 @@ export default function ProjectProfilePage() {
                 // projectbyid returns an array, so we need to get the first element
                 const projectArray = data.project?.projectbyid;
                 const projectData = Array.isArray(projectArray) ? projectArray[0] : projectArray;
-
-                console.log("Project data:", projectData);
 
                 if (!projectData) {
                     console.error("Project not found - projectData is null");

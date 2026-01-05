@@ -33,7 +33,6 @@ const ChatBox = ({ projectId }) => {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                console.log("Fetching current user...");
                 const res = await axios.post(
                     API_CONFIG.GRAPHQL_ENDPOINT,
                     {
@@ -50,9 +49,7 @@ const ChatBox = ({ projectId }) => {
                 }
 
                 const userData = res.data.data.users.me;
-                console.log("Current user data:", userData);
                 setCurrentUserId(userData?.id);
-                console.log("Set currentUserId to:", userData?.id);
             } catch (err) {
                 console.error("Failed to fetch current user:", err);
             }
@@ -90,11 +87,9 @@ const ChatBox = ({ projectId }) => {
                     return;
                 }
 
-                console.log("Project data:", project);
                 setProjectName(project.name);
 
                 // Get the chat for this project
-                console.log("Looking for chat with projectId:", projectId);
                 // Fetch all chats and find one for this project
                 const chatsRes = await axios.post(
                     API_CONFIG.GRAPHQL_ENDPOINT,
@@ -109,16 +104,12 @@ const ChatBox = ({ projectId }) => {
 
                 if (!chatsRes.data.errors) {
                     const allChats = chatsRes.data.data.chat.allchats.nodes || [];
-                    console.log("All chats:", allChats);
                     const projectChat = allChats.find(
                         (chat) => chat.projectId === parseInt(projectId)
                     );
-                    console.log("Found project chat:", projectChat);
 
                     if (projectChat) {
                         setChatId(projectChat.id);
-                    } else {
-                        console.log("No chat found for this project");
                     }
                 }
 
@@ -138,7 +129,6 @@ const ChatBox = ({ projectId }) => {
 
         const fetchUserChat = async () => {
             try {
-                console.log("Fetching UserChat for chatId:", chatId, "and userId:", currentUserId);
                 const userChatRes = await axios.post(
                     API_CONFIG.GRAPHQL_ENDPOINT,
                     {
@@ -152,19 +142,13 @@ const ChatBox = ({ projectId }) => {
 
                 if (!userChatRes.data.errors) {
                     const chatData = userChatRes.data.data.chat.chatbyid;
-                    console.log("Chat data:", chatData);
-                    console.log("Current user ID:", currentUserId);
 
                     // Handle both array and single object response
                     const chat = Array.isArray(chatData) ? chatData[0] : chatData;
 
                     const myUserChat = chat?.userChats?.find((uc) => uc.userId === currentUserId);
-                    console.log("My UserChat:", myUserChat);
                     if (myUserChat) {
                         setUserChatId(myUserChat.id);
-                        console.log("UserChatId set to:", myUserChat.id);
-                    } else {
-                        console.log("UserChat not found for current user");
                     }
                 } else {
                     console.error("Error fetching UserChat:", userChatRes.data.errors);
@@ -225,17 +209,11 @@ const ChatBox = ({ projectId }) => {
     }, [chatId, currentUserId]);
 
     const sendMessage = async () => {
-        console.log("sendMessage called");
-        console.log("input:", input);
-        console.log("userChatId:", userChatId);
-
         if (!input.trim() || !userChatId) {
-            console.log("Returning early - input or userChatId missing");
             return;
         }
 
         try {
-            console.log("Sending message...");
             const res = await axios.post(
                 API_CONFIG.GRAPHQL_ENDPOINT,
                 {
@@ -257,7 +235,6 @@ const ChatBox = ({ projectId }) => {
                 throw new Error(res.data.errors[0].message);
             }
 
-            console.log("Message sent successfully");
             setInput("");
 
             // Immediately fetch updated messages
@@ -285,8 +262,6 @@ const ChatBox = ({ projectId }) => {
             }
         } catch (err) {
             console.error("Failed to send message:", err);
-            console.error("Error response:", err.response?.data);
-            console.error("Error status:", err.response?.status);
         }
     };
 

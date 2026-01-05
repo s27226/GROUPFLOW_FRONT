@@ -69,15 +69,6 @@ export default function ProfilePage() {
                     return;
                 }
 
-                console.log('[ProfilePage] User info from GraphQL:', {
-                    id: userInfo.id,
-                    nickname: userInfo.nickname,
-                    profilePic: userInfo.profilePic,
-                    profilePicUrl: userInfo.profilePicUrl,
-                    bannerPic: userInfo.bannerPic,
-                    bannerPicUrl: userInfo.bannerPicUrl
-                });
-
                 setUser({
                     id: userInfo.id,
                     name: userInfo.name,
@@ -128,7 +119,6 @@ export default function ProfilePage() {
                 
                 // Filter to only projects where current user is owner
                 const owned = myProjects.filter(p => p.owner.id === currentUser.id);
-                console.log(`[ProfilePage] Current user owns ${owned.length} projects:`, owned.map(p => ({ id: p.id, name: p.name })));
                 setOwnedProjects(owned);
             } catch (err) {
                 console.error("Failed to fetch owned projects:", err);
@@ -144,8 +134,6 @@ export default function ProfilePage() {
                 
                 // Store project IDs the user is already a member of
                 const projectIds = new Set(projects.map(p => p.id));
-                console.log(`[ProfilePage] User ${user.id} (${user.name}) belongs to ${projectIds.size} projects:`, Array.from(projectIds));
-                console.log('[ProfilePage] Full project details:', projects.map(p => ({ id: p.id, name: p.name })));
                 setUserProjectIds(projectIds);
             } catch (err) {
                 console.error("Failed to fetch user projects:", err);
@@ -363,7 +351,6 @@ export default function ProfilePage() {
                                 ) : (
                                     ownedProjects.map((project) => {
                                         const isAlreadyMember = userProjectIds.has(project.id);
-                                        console.log(`[ProfilePage Modal] Project ${project.id} "${project.name}": isAlreadyMember = ${isAlreadyMember}, userProjectIds =`, Array.from(userProjectIds));
                                         return (
                                             <div key={project.id} className="project-invite-item">
                                                 <div>
