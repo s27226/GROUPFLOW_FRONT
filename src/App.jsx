@@ -32,24 +32,9 @@ import ModerationPage from "./pages/ModerationPage";
 import { ToastProvider } from "./context/ToastContext";
 
 function ProtectedRoute({ children }) {
-    const { token } = useAuth();
+    const { token, isAuthenticated } = useAuth();
 
-    // No token, redirect
-    if (!token) return <Navigate to="/login" replace />;
-
-    try {
-        const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000;
-
-        // Token expired?
-        if (decoded.exp && decoded.exp < currentTime) {
-            console.warn("Token expired");
-            return <Navigate to="/login" replace />;
-        }
-    } catch (err) {
-        console.error("Invalid token:", err);
-        return <Navigate to="/login" replace />;
-    }
+    if (!token && !isAuthenticated) return <Navigate to="/login" replace />;
 
     return children;
 }

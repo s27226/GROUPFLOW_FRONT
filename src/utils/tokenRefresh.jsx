@@ -1,4 +1,4 @@
-import { API_CONFIG } from "./api";
+import { API_CONFIG, getRequestOptions } from "../config/api";
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -15,27 +15,24 @@ const processQueue = (error, token = null) => {
     failedQueue = [];
 };
 
-export const refreshAccessToken = async (refreshToken) => {
+export const refreshAccessToken = async () => {
     const mutation = `
-    mutation RefreshToken($refreshToken: String!) {
-      refreshToken(refreshToken: $refreshToken) {
-        id
-        name
-        email
-        token
-        refreshToken
+    mutation RefreshToken {
+      auth {
+        refreshToken {
+          id
+          name
+          email
+          token
+          refreshToken
+        }
       }
     }
   `;
 
     const response = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            query: mutation,
-            variables: { refreshToken }
+        ...getRequestOptions("POST", {
+            query: mutation
         })
     });
 
@@ -45,7 +42,7 @@ export const refreshAccessToken = async (refreshToken) => {
         throw new Error(data.errors[0]?.message || "Failed to refresh token");
     }
 
-    return data.data.refreshToken;
+    return data.data.auth.refreshToken;
 };
 
 export const setupTokenRefresh = (updateTokensFn, logoutFn) => {

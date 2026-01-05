@@ -1,26 +1,31 @@
 import { useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { API_CONFIG } from "../config/api";
-import { GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { API_CONFIG, getRequestOptions } from "../config/api";
 
 export const useAuthenticatedRequest = () => {
-    const { token, refreshToken, updateTokens, updateUser, logout } = useAuth();
+    const { updateTokens, updateUser, logout, checkAuthStatus } = useAuth();
 
     const refreshAccessToken = useCallback(async () => {
-        if (!refreshToken) {
-            logout();
-            throw new Error("No refresh token available");
-        }
-
         try {
             const response = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    query: GRAPHQL_MUTATIONS.REFRESH_TOKEN,
-                    variables: { refreshToken }
+                ...getRequestOptions("POST", {
+                    query: `
+                        mutation RefreshToken {
+                            auth {
+                                refreshToken {
+                                    id
+                                    name
+                                    surname
+                                    nickname
+                                    email
+                                    profilePic
+                                    token
+                                    refreshToken
+                                    isModerator
+                                }
+                            }
+                        }
+                    `
                 })
             });
 
@@ -52,28 +57,21 @@ export const useAuthenticatedRequest = () => {
             logout();
             throw error;
         }
-    }, [refreshToken, updateTokens, updateUser, logout]);
+    }, [updateTokens, updateUser, logout]);
 
     const makeRequest = useCallback(
         async (query, variables = {}, options = {}) => {
-            const makeApiCall = async (authToken) => {
-                const headers = {
-                    "Content-Type": "application/json",
-                    ...(authToken && { Authorization: `Bearer ${authToken}` })
-                };
-
+            const makeApiCall = async () => {
                 const response = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
-                    method: "POST",
-                    headers,
-                    body: JSON.stringify({ query, variables })
+                    ...getRequestOptions("POST", { query, variables })
                 });
 
                 return await response.json();
             };
 
             try {
-                // First attempt with current token
-                let data = await makeApiCall(token);
+                // Make request with cookies (HttpOnly cookies are automatically included)
+                let data = await makeApiCall();
 
                 // Check if we got an authentication error
                 if (data.errors && data.errors.length > 0) {
@@ -84,13 +82,15 @@ export const useAuthenticatedRequest = () => {
                         error.message?.toLowerCase().includes("expired");
 
                     if (isAuthError && !options.skipRetry) {
-                        // Try to refresh the token
+                        // Try to refresh the token using cookies
                         try {
-                            const newToken = await refreshAccessToken();
-                            // Retry the request with the new token
-                            data = await makeApiCall(newToken);
+                            await refreshAccessToken();
+                            // Retry the request (cookies will be updated by server)
+                            data = await makeApiCall();
                         } catch (refreshError) {
                             console.error("Failed to refresh and retry:", refreshError);
+                            // Re-check auth status
+                            checkAuthStatus();
                             throw refreshError;
                         }
                     }
@@ -102,8 +102,8 @@ export const useAuthenticatedRequest = () => {
                 throw error;
             }
         },
-        [token, refreshAccessToken]
+        [refreshAccessToken, checkAuthStatus]
     );
 
-    return { makeRequest, refreshAccessToken };
+    return { makeRequest };
 };

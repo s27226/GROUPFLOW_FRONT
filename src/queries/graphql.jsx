@@ -1057,9 +1057,9 @@ export const GRAPHQL_MUTATIONS = {
   `,
 
     REFRESH_TOKEN: `
-    mutation RefreshToken($refreshToken: String!) {
+    mutation RefreshToken {
       auth {
-        refreshToken(refreshToken: $refreshToken) {
+        refreshToken {
           id
           name
           surname
@@ -1070,6 +1070,14 @@ export const GRAPHQL_MUTATIONS = {
           refreshToken
           isModerator
         }
+      }
+    }
+  `,
+
+    LOGOUT: `
+    mutation Logout {
+      auth {
+        logout
       }
     }
   `,
