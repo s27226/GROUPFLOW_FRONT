@@ -102,7 +102,7 @@ export const usePost = (postId) => {
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
 
-    const fetchPost = async () => {
+    const fetchPost = useCallback(async () => {
         if (!postId) {
             setError("No post ID provided");
             setLoading(false);
@@ -131,11 +131,11 @@ export const usePost = (postId) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [postId, executeQuery]);
 
     useEffect(() => {
         fetchPost();
-    }, [postId]);
+    }, [fetchPost]);
 
     return { post, loading, error, refetch: fetchPost };
 };
@@ -151,7 +151,7 @@ export const useProjectPosts = (projectId) => {
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
 
-    const fetchProjectPosts = async () => {
+    const fetchProjectPosts = useCallback(async () => {
         if (!projectId) {
             setLoading(false);
             return;
@@ -173,11 +173,11 @@ export const useProjectPosts = (projectId) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [projectId, executeQuery]);
 
     useEffect(() => {
         fetchProjectPosts();
-    }, [projectId]);
+    }, [fetchProjectPosts]);
 
     return { posts, loading, error, refetch: fetchProjectPosts };
 };
@@ -192,7 +192,7 @@ export const useSavedPosts = () => {
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
 
-    const fetchSavedPosts = async () => {
+    const fetchSavedPosts = useCallback(async () => {
         try {
             setLoading(true);
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SAVED_POSTS);
@@ -211,11 +211,11 @@ export const useSavedPosts = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery]);
 
     useEffect(() => {
         fetchSavedPosts();
-    }, []);
+    }, [fetchSavedPosts]);
 
     return { posts, setPosts, loading, error, refetch: fetchSavedPosts };
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { GET_ALL_USERS, GET_BANNED_USERS, GET_SUSPENDED_USERS } from '../queries/moderationQueries';
 import { useGraphQL } from '../hooks/useGraphQL';
 import UserManagement from './UserManagement';
@@ -7,12 +7,11 @@ import '../styles/ModerationPanel.css';
 const ModerationPanel = () => {
   const { executeQuery } = useGraphQL();
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       let query;
@@ -39,33 +38,30 @@ const ModerationPanel = () => {
       }
 
       setUsers(userData);
-      setFilteredUsers(userData);
     } catch (error) {
       console.error('Error fetching users:', error);
       setUsers([]);
-      setFilteredUsers([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, executeQuery]);
 
   useEffect(() => {
     fetchUsers();
-  }, [activeTab]);
+  }, [fetchUsers]);
 
-  useEffect(() => {
+  const filteredUsers = useMemo(() => {
     if (searchTerm === '') {
-      setFilteredUsers(users);
-    } else {
-      const filtered = users.filter(
-        (user) =>
-          user.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.surname.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredUsers(filtered);
+      return users;
     }
+    
+    return users.filter(
+      (user) =>
+        user.nickname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.surname.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   }, [searchTerm, users]);
 
   const handleRefresh = () => {

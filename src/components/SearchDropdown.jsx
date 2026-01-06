@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
@@ -12,22 +12,7 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (!query.trim() || !isOpen) {
-            setUsers([]);
-            setProjects([]);
-            return;
-        }
-
-        // Debounce search - wait 300ms after user stops typing
-        const timeoutId = setTimeout(() => {
-            searchAll();
-        }, 300);
-
-        return () => clearTimeout(timeoutId);
-    }, [query, isOpen]);
-
-    const searchAll = async () => {
+    const searchAll = useCallback(async () => {
         setLoading(true);
         try {
             // For now, only search users - project search will be implemented later
@@ -53,7 +38,22 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [executeQuery, query]);
+
+    useEffect(() => {
+        if (!query.trim() || !isOpen) {
+            setUsers([]);
+            setProjects([]);
+            return;
+        }
+
+        // Debounce search - wait 300ms after user stops typing
+        const timeoutId = setTimeout(() => {
+            searchAll();
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [query, isOpen, searchAll]);
 
     const handleUserClick = (e, userId) => {
         e.preventDefault();

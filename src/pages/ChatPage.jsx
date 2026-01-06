@@ -71,7 +71,7 @@ export default function ChatPage() {
         };
 
         fetchChats();
-    }, []);
+    }, [executeQuery]);
 
     return (
         <div className="maincomp-layout">

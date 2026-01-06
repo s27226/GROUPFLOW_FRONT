@@ -75,7 +75,7 @@ export function useChat(user, currentUserId) {
         if (user && currentUserId) {
             initializeChat();
         }
-    }, [user, currentUserId, executeQuery]);
+    }, [user, currentUserId, executeQuery, loadMessages]);
 
     // Removed auto-scroll on messages change - users can scroll manually
 
