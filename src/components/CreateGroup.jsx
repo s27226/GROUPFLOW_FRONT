@@ -1,19 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGraphQL } from "../hooks/useGraphQL";
-import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { useFriends } from "../hooks/useFriends";
+import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import "../styles/CreateGroup.css";
 
 export default function CreateGroup() {
     const navigate = useNavigate();
-    const { executeQuery } = useGraphQL();
+    const { executeMutation } = useGraphQL();
     const [projectName, setProjectName] = useState("");
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [projectDescription, setProjectDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [isPublic, setIsPublic] = useState(true);
-    const [friends, setFriends] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [creating, setCreating] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState("");
@@ -24,25 +23,8 @@ export default function CreateGroup() {
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
 
-    // Fetch friends list
-    useEffect(() => {
-        const fetchFriends = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-                
-                if (data && data.friendship && data.friendship.myfriends) {
-                    setFriends(data.friendship.myfriends);
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch friends:", err);
-                setFriends([]);
-                setLoading(false);
-            }
-        };
-
-        fetchFriends();
-    }, [executeQuery]);
+    // Use the unified hook for friends
+    const { friends, loading } = useFriends({ autoFetch: true });
 
     const toggleUser = (user) => {
         if (selectedUsers.some((u) => u.id === user.id)) {

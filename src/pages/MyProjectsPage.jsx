@@ -1,51 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import SkeletonCard from "../components/ui/SkeletonCard";
 import { useNavigate } from "react-router-dom";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
-import { useGraphQL } from "../hooks/useGraphQL";
+import { useMyProjects } from "../hooks/useProjects";
 import "../styles/MainComponents.css";
 import "../styles/ProjectsPage.css";
 
 export default function MyProjectsPage() {
-    const [myProjects, setMyProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const { executeQuery } = useGraphQL();
-
-    useEffect(() => {
-        const fetchMyProjects = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
-
-                if (data) {
-                    const projects = data.project.myprojects || [];
-                    setMyProjects(
-                        projects.map((project) => ({
-                            id: project.id,
-                            name: project.name,
-                            description: project.description,
-                            imageUrl:
-                                project.imageUrl ||
-                                `https://picsum.photos/300/200?random=${project.id}`,
-                            owner: project.owner,
-                            collaborators: project.collaborators || [],
-                            lastUpdated: project.lastUpdated
-                        }))
-                    );
-                }
-
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch my projects:", err);
-                setLoading(false);
-                setMyProjects([]);
-            }
-        };
-
-        fetchMyProjects();
-    }, [executeQuery]);
+    
+    // Use unified hook for projects
+    const { projects: rawProjects, loading } = useMyProjects({ autoFetch: true });
+    
+    // Map projects to the format expected by the UI
+    const myProjects = rawProjects.map((project) => ({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        imageUrl:
+            project.imageUrl ||
+            `https://picsum.photos/300/200?random=${project.id}`,
+        owner: project.owner,
+        collaborators: project.collaborators || [],
+        lastUpdated: project.lastUpdated
+    }));
 
     return (
         <div>

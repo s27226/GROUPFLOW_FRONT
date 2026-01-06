@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useUserSearch } from "../hooks/useUsers";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import "../styles/Users.css";
@@ -9,53 +10,42 @@ export default function Users() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState([]);
     const [selectedInterests, setSelectedInterests] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
-    const [suggestedUsers, setSuggestedUsers] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("search");
     const [sentRequests, setSentRequests] = useState(new Set());
     const [friends, setFriends] = useState(new Set());
-    const { executeQuery, executeMutation } = useGraphQL();
+    const { executeMutation } = useGraphQL();
     const navigate = useNavigate();
 
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
 
-    const loadSuggestedUsers = useCallback(async () => {
-        setLoading(true);
-        try {
-            const data = await executeQuery(GRAPHQL_QUERIES.GET_SUGGESTED_USERS, { limit: 20 });
-            const results = data?.users?.suggestedusers || [];
-            setSuggestedUsers(results);
+    // Use unified user search hook
+    const { 
+        results: searchResults, 
+        suggestedUsers,
+        loading, 
+        search, 
+        loadSuggested 
+    } = useUserSearch({ autoFetch: true });
 
-            // Update sentRequests and friends state from backend data
-            const pendingUserIds = results
-                .filter((result) => result.hasPendingRequest)
-                .map((result) => result.user.id);
-            setSentRequests(new Set(pendingUserIds));
-
-            // Note: suggestedUsers already filters out friends, but we'll set it anyway for consistency
-            setFriends(new Set());
-        } catch (err) {
-            console.error("Failed to load suggested users:", err);
-        } finally {
-            setLoading(false);
+    // Load suggested users on mount
+    useEffect(() => {
+        loadSuggested(20);
+        
+        // Check if there's a search query from the navbar
+        const storedQuery = localStorage.getItem('userSearchQuery');
+        if (storedQuery) {
+            setSearchTerm(storedQuery);
+            search(storedQuery, selectedSkills, selectedInterests);
+            localStorage.removeItem('userSearchQuery');
         }
-    }, [executeQuery]);
+    }, []);
 
-    const handleSearchWithQuery = useCallback(async (query) => {
-        setLoading(true);
-        try {
-            const input = {
-                searchTerm: query || null,
-                skills: selectedSkills.length > 0 ? selectedSkills : null,
-                interests: selectedInterests.length > 0 ? selectedInterests : null
-            };
-
-            const data = await executeQuery(GRAPHQL_QUERIES.SEARCH_USERS, { input });
-            const results = data?.users?.searchusers || [];
-            setSearchResults(results);
-
+    // Update state from search results
+    useEffect(() => {
+        if (searchResults.length > 0 || suggestedUsers.length > 0) {
+            const results = activeTab === "search" ? searchResults : suggestedUsers;
+            
             // Update sentRequests and friends state from backend data
             const pendingUserIds = results
                 .filter((result) => result.hasPendingRequest)
@@ -66,29 +56,12 @@ export default function Users() {
                 .filter((result) => result.isFriend)
                 .map((result) => result.user.id);
             setFriends(new Set(friendUserIds));
-        } catch (err) {
-            console.error("Search failed:", err);
-        } finally {
-            setLoading(false);
         }
-    }, [executeQuery, selectedSkills, selectedInterests]);
+    }, [searchResults, suggestedUsers, activeTab]);
 
-    useEffect(() => {
-        loadSuggestedUsers();
-        
-        // Check if there's a search query from the navbar
-        const storedQuery = localStorage.getItem('userSearchQuery');
-        if (storedQuery) {
-            setSearchTerm(storedQuery);
-            setActiveTab("search");
-            localStorage.removeItem('userSearchQuery'); // Clear it after using
-            
-            // Trigger search with the stored query
-            setTimeout(() => {
-                handleSearchWithQuery(storedQuery);
-            }, 100);
-        }
-    }, [loadSuggestedUsers, handleSearchWithQuery]);
+    const handleSearchWithQuery = useCallback(async (query) => {
+        await search(query || searchTerm, selectedSkills, selectedInterests);
+    }, [search, searchTerm, selectedSkills, selectedInterests]);
 
     const handleSearch = async () => {
         await handleSearchWithQuery(searchTerm);

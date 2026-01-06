@@ -13,6 +13,7 @@ import PrivateChat from "./PrivateChat";
 import SearchDropdown from "./SearchDropdown";
 import { useClickOutside } from "../hooks/useClickOutside";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useFriends } from "../hooks/useFriends";
 
 function Navbar() {
     const { logout, user, updateUser, token, isModerator } = useAuth();
@@ -26,8 +27,11 @@ function Navbar() {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
     const [loadingUser, setLoadingUser] = useState(false);
-    const [friends, setFriends] = useState([]);
-    const [loadingFriends, setLoadingFriends] = useState(false);
+    
+    // Use unified friends hook
+    const { friends, loading: loadingFriends } = useFriends({ 
+        autoFetch: !!(token && user) 
+    });
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(false);
     const { executeQuery } = useGraphQL();
@@ -54,27 +58,6 @@ function Navbar() {
 
         fetchCurrentUser();
     }, [user, updateUser, executeQuery, token]);
-
-    // Fetch friends list
-    useEffect(() => {
-        const fetchFriends = async () => {
-            if (!token || !user) return; // Not authenticated or user not loaded
-
-            setLoadingFriends(true);
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-
-                const friendsList = data.friendship.myfriends || [];
-                setFriends(friendsList);
-            } catch (err) {
-                console.error("Failed to fetch friends:", err);
-            } finally {
-                setLoadingFriends(false);
-            }
-        };
-
-        fetchFriends();
-    }, [user, executeQuery, token]);
 
     const [activeChat, setActiveChat] = useState(null);
 

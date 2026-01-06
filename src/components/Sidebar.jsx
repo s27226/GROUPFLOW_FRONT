@@ -8,56 +8,36 @@ import {
     FaChevronDown,
     FaChevronUp
 } from "react-icons/fa";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Sidebar.css";
 import { useNavigate, Link } from "react-router-dom";
 import { InvitationContext } from "../context/InvitationContext";
 import { FcInvite } from "react-icons/fc";
-import { useGraphQL } from "../hooks/useGraphQL";
+import { useFriends } from "../hooks/useFriends";
+import { useMyProjects } from "../hooks/useProjects";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
     const [projectsOpen, setProjectsOpen] = useState(false);
     const [friendsOpen, setFriendsOpen] = useState(false);
     const navigate = useNavigate();
-    // Dynamic data state
-    const [projects, setProjects] = useState([]);
-    const [friends, setFriends] = useState([]);
-    const [loadingProjects, setLoadingProjects] = useState(false);
-    const [loadingFriends, setLoadingFriends] = useState(false);
+    
     const { invitationsCount } = useContext(InvitationContext);
-    const { executeQuery } = useGraphQL();
+    
+    // Use unified hooks with lazy loading
+    const { 
+        projects, 
+        loading: loadingProjects, 
+        refetch: fetchProjects 
+    } = useMyProjects({ autoFetch: false });
+    
+    const { 
+        friends, 
+        loading: loadingFriends, 
+        refetch: fetchFriends 
+    } = useFriends({ autoFetch: false });
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
-    };
-
-    const fetchProjects = async () => {
-        if (projects.length > 0) return; // Don't fetch if already loaded
-
-        setLoadingProjects(true);
-        try {
-            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
-
-            setProjects(data.project.myprojects || []);
-        } catch (err) {
-            console.error("Failed to fetch projects:", err);
-        }
-        setLoadingProjects(false);
-    };
-
-    const fetchFriends = async () => {
-        if (friends.length > 0) return; // Don't fetch if already loaded
-
-        setLoadingFriends(true);
-        try {
-            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-
-            setFriends(data.friendship.myfriends || []);
-        } catch (err) {
-            console.error("Failed to fetch friends:", err);
-        }
-        setLoadingFriends(false);
     };
 
     const handleProjectsToggle = () => {

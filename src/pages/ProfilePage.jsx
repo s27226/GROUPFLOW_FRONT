@@ -11,6 +11,8 @@ import { usePosts } from "../hooks/usePosts";
 import { useAuth } from "../context/AuthContext";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useToast } from "../context/ToastContext";
+import { useFriends } from "../hooks/useFriends";
+import { useMyProjects, useUserProjects } from "../hooks/useProjects";
 import { sanitizeText } from "../utils/sanitize";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
@@ -18,19 +20,36 @@ import "../styles/feed.css";
 export default function ProfilePage() {
     const { userId } = useParams();
     const navigate = useNavigate();
-    const { user: authUser } = useAuth();
+    const { user: currentUser } = useAuth(); // Renamed to currentUser from authUser
     const { executeQuery, executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
     const [user, setUser] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showInviteModal, setShowInviteModal] = useState(false);
-    const [ownedProjects, setOwnedProjects] = useState([]);
-    const [userProjectIds, setUserProjectIds] = useState(new Set());
     const [inviting, setInviting] = useState(false);
-    const [isFriend, setIsFriend] = useState(false);
+
+    // Use unified hooks
+    const { friends: myFriends } = useFriends({ autoFetch: false });
+    const { projects: myProjects } = useMyProjects({ autoFetch: !!currentUser });
+    const { projects: userProjects } = useUserProjects(user?.id, { autoFetch: !!user });
+    
+    // Derive state from hooks
+    const isFriend = useMemo(() => 
+        myFriends.some(friend => friend.id === user?.id),
+        [myFriends, user]
+    );
+    
+    const ownedProjects = useMemo(() => 
+        myProjects.filter(p => p.owner?.id === currentUser?.id),
+        [myProjects, currentUser]
+    );
+    
+    const userProjectIds = useMemo(() => 
+        new Set(userProjects.map(p => p.id)),
+        [userProjects]
+    );
 
     const { posts: allPosts, loading: postsLoading } = usePosts();
 
@@ -43,13 +62,6 @@ export default function ProfilePage() {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                // Always fetch current user for comparison
-                const currentUserData = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
-
-                if (currentUserData) {
-                    setCurrentUser(currentUserData.users.me);
-                }
-
                 // Fetch user details (either from userId param or current user)
                 const userData = await executeQuery(
                     userId ? GRAPHQL_QUERIES.GET_USER_BY_ID : GRAPHQL_QUERIES.GET_CURRENT_USER,
@@ -108,57 +120,6 @@ export default function ProfilePage() {
 
         fetchUserProfile();
     }, [userId, executeQuery]);
-
-    // Fetch owned projects when viewing someone else's profile
-    useEffect(() => {
-        if (!currentUser || !user || currentUser.id === user.id) return;
-
-        const fetchOwnedProjects = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
-                const myProjects = data.project.myprojects || [];
-                
-                // Filter to only projects where current user is owner
-                const owned = myProjects.filter(p => p.owner.id === currentUser.id);
-                setOwnedProjects(owned);
-            } catch (err) {
-                console.error("Failed to fetch owned projects:", err);
-            }
-        };
-
-        const fetchUserProjects = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_USER_PROJECTS, {
-                    userId: user.id
-                });
-                const projects = data.project.userprojects || [];
-                
-                // Store project IDs the user is already a member of
-                const projectIds = new Set(projects.map(p => p.id));
-                setUserProjectIds(projectIds);
-            } catch (err) {
-                console.error("Failed to fetch user projects:", err);
-            }
-        };
-
-        const checkIfFriend = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-                const friends = data.friendship.myfriends || [];
-                
-                // Check if the viewed user is in the friends list
-                const friendExists = friends.some(friend => friend.id === user.id);
-                setIsFriend(friendExists);
-            } catch (err) {
-                console.error("Failed to fetch friends:", err);
-                setIsFriend(false);
-            }
-        };
-
-        fetchOwnedProjects();
-        fetchUserProjects();
-        checkIfFriend();
-    }, [currentUser, user, executeQuery]);
 
     const handleInviteToProject = async (projectId) => {
         if (!currentUser || !user) return;

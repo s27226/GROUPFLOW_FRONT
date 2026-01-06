@@ -1,74 +1,32 @@
 import { useContext, useEffect, useState } from "react";
-import { GRAPHQL_QUERIES } from "../queries/graphql";
 import "../styles/Invitation.css";
 import Invitation from "./Invitation";
 import { InvitationContext } from "../context/InvitationContext";
-import { useGraphQL } from "../hooks/useGraphQL";
+import { useInvitations } from "../hooks/useInvitations";
 import LoadingSpinner from "./ui/LoadingSpinner";
 
 export default function Invitations() {
-    const [friendRequests, setFriendRequests] = useState([]);
-    const [groupInvitations, setGroupInvitations] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("friends");
-    const { executeQuery } = useGraphQL();
-
-    useEffect(() => {
-        const fetchInvitations = async () => {
-            try {
-                const [friendRequestsData, groupInvitationsData] = await Promise.all([
-                    executeQuery(GRAPHQL_QUERIES.GET_FRIEND_REQUESTS, { first: 50 }),
-                    executeQuery(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, { first: 50 })
-                ]);
-
-                const friendReqs =
-                    friendRequestsData?.friendRequest?.allfriendrequests?.nodes || [];
-                const groupInvs =
-                    groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes || [];
-
-                const formattedFriendRequests = friendReqs.map((req) => ({
-                    id: req.id,
-                    name: `${req.requester.name} ${req.requester.surname}`,
-                    nickname: req.requester.nickname,
-                    type: "friend",
-                    sent: req.sent
-                }));
-
-                const formattedGroupInvitations = groupInvs.map((inv) => ({
-                    id: inv.id,
-                    name: inv.project.name,
-                    description: inv.project.description,
-                    invitedBy: `${inv.inviting.name} ${inv.inviting.surname}`,
-                    type: "project"
-                }));
-
-                setFriendRequests(formattedFriendRequests);
-                setGroupInvitations(formattedGroupInvitations);
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch invitations:", err);
-                setFriendRequests([]);
-                setGroupInvitations([]);
-                setLoading(false);
-            }
-        };
-
-        fetchInvitations();
-    }, [executeQuery]);
-
-    const handleRemove = (id) => {
-        // Remove invitation from the appropriate list
-        setFriendRequests((prev) => prev.filter((inv) => inv.id !== id));
-        setGroupInvitations((prev) => prev.filter((inv) => inv.id !== id));
-    };
-
     const { setInvitationsCount } = useContext(InvitationContext);
+    
+    // Use unified invitations hook
+    const { 
+        friendRequests, 
+        projectInvitations, 
+        loading, 
+        removeFromList,
+        totalCount 
+    } = useInvitations({ autoFetch: true });
 
+    // Update invitations count in context
     useEffect(() => {
-        const totalCount = friendRequests.length + groupInvitations.length;
         setInvitationsCount(totalCount);
-        localStorage.setItem("InvitationsCount", totalCount);
-    }, [friendRequests, groupInvitations, setInvitationsCount]);
+        localStorage.setItem("InvitationsCount", totalCount.toString());
+    }, [totalCount, setInvitationsCount]);
+
+    const handleRemove = (id, type) => {
+        removeFromList(id, type);
+    };
 
     if (loading) {
         return (
@@ -78,7 +36,7 @@ export default function Invitations() {
         );
     }
 
-    const currentInvitations = activeTab === "friends" ? friendRequests : groupInvitations;
+    const currentInvitations = activeTab === "friends" ? friendRequests : projectInvitations;
 
     return (
         <div className="invitations-container">
@@ -95,7 +53,7 @@ export default function Invitations() {
                     className={`tab ${activeTab === "groups" ? "active" : ""}`}
                     onClick={() => setActiveTab("groups")}
                 >
-                    Group Invitations ({groupInvitations.length})
+                    Group Invitations ({projectInvitations.length})
                 </button>
             </div>
 

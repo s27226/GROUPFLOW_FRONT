@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../utils/dateFormatter";
 import { useToast } from "../context/ToastContext";
 import { sanitizeText } from "../utils/sanitize";
+import { usePostInteractions } from "../hooks/usePostInteractions";
 
 export default function Post({
     id,
@@ -35,6 +36,14 @@ export default function Post({
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
     const { showToast } = useToast();
+    const {
+        likePost,
+        unlikePost,
+        addComment,
+        savePost: savePostMutation,
+        unsavePost: unsavePostMutation,
+        canModifyPost
+    } = usePostInteractions();
     
     const [likes, setLikes] = useState(initialLikes || []);
     const [liked, setLiked] = useState(false);
@@ -123,19 +132,13 @@ export default function Post({
     const handleLikeToggle = async () => {
         try {
             if (liked) {
-                // Unlike the post
-                const response = await makeRequest(GRAPHQL_MUTATIONS.UNLIKE_POST, { postId: id });
-                if (!response.errors) {
-                    setLikes(likes.filter(like => like.userId !== user.id));
-                    setLiked(false);
-                }
+                await unlikePost(id, (updatedLikes) => setLikes(updatedLikes));
+                setLiked(false);
             } else {
-                // Like the post
-                const response = await makeRequest(GRAPHQL_MUTATIONS.LIKE_POST, { postId: id });
-                if (!response.errors && response.data.post.likePost) {
-                    setLikes([...likes, response.data.post.likePost]);
+                await likePost(id, (newLike) => {
+                    setLikes([...likes, newLike]);
                     setLiked(true);
-                }
+                });
             }
         } catch (error) {
             console.error("Error toggling like:", error);
@@ -146,14 +149,9 @@ export default function Post({
         if (!commentInput.trim()) return;
 
         try {
-            const response = await makeRequest(GRAPHQL_MUTATIONS.ADD_COMMENT, {
-                postId: id,
-                content: commentInput,
-                parentCommentId: null
-            });
-
-            if (!response.errors && response.data?.post?.addComment) {
-                const newComment = response.data.post.addComment;
+            const newComment = await addComment(id, commentInput, null);
+            
+            if (newComment) {
                 const commentData = {
                     id: newComment.id,
                     user: newComment.user.nickname || `${newComment.user.name} ${newComment.user.surname}`,
@@ -179,10 +177,20 @@ export default function Post({
         }
     };
 
-    const handleSavePost = () => {
-        setSaved(!saved);
-        if (onSave) onSave(id);
-        setMenuOpen(false);
+    const handleSavePost = async () => {
+        try {
+            if (saved) {
+                await unsavePostMutation(id);
+            } else {
+                await savePostMutation(id);
+            }
+            setSaved(!saved);
+            if (onSave) onSave(id);
+            setMenuOpen(false);
+        } catch (error) {
+            console.error("Error saving/unsaving post:", error);
+            showToast("Failed to update saved status", "error");
+        }
     };
 
     const handleShare = () => {
@@ -456,6 +464,13 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const {
+        likeComment,
+        unlikeComment,
+        addComment: replyToComment,
+        deleteComment,
+        canModifyComment
+    } = usePostInteractions();
 
     const [replyOpen, setReplyOpen] = useState(false);
     const [replyText, setReplyText] = useState("");
@@ -480,29 +495,18 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
         
         try {
             if (liked) {
-                // Unlike the comment
-                const response = await makeRequest(GRAPHQL_MUTATIONS.UNLIKE_COMMENT, { commentId: comment.id });
-                if (!response.errors) {
-                    const newLikes = Array.isArray(likes) ? likes.filter(like => like.userId !== user.id) : [];
-                    setLikes(newLikes);
+                await unlikeComment(comment.id, (updatedLikes) => {
+                    setLikes(updatedLikes);
                     setLiked(false);
-                    update({
-                        ...comment,
-                        likes: newLikes
-                    });
-                }
+                    update({ ...comment, likes: updatedLikes });
+                });
             } else {
-                // Like the comment
-                const response = await makeRequest(GRAPHQL_MUTATIONS.LIKE_COMMENT, { commentId: comment.id });
-                if (!response.errors && response.data.post.likeComment) {
-                    const newLikes = Array.isArray(likes) ? [...likes, response.data.post.likeComment] : [response.data.post.likeComment];
+                await likeComment(comment.id, (newLike) => {
+                    const newLikes = Array.isArray(likes) ? [...likes, newLike] : [newLike];
                     setLikes(newLikes);
                     setLiked(true);
-                    update({
-                        ...comment,
-                        likes: newLikes
-                    });
-                }
+                    update({ ...comment, likes: newLikes });
+                });
             }
         } catch (error) {
             console.error("Error toggling comment like:", error);
@@ -515,19 +519,12 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
         if (!comment.id) return;
 
         try {
-            const response = await makeRequest(GRAPHQL_MUTATIONS.DELETE_COMMENT, {
-                commentId: comment.id
-            });
-
-            if (!response.errors) {
-                // Call onDelete to remove from parent state
-                if (onDelete) {
-                    onDelete(comment.id);
-                }
-                setShowDeleteConfirm(false);
-            } else {
-                console.error("Error deleting comment:", response.errors);
+            await deleteComment(comment.id);
+            // Call onDelete to remove from parent state
+            if (onDelete) {
+                onDelete(comment.id);
             }
+            setShowDeleteConfirm(false);
         } catch (error) {
             console.error("Error deleting comment:", error);
         }
@@ -542,14 +539,9 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
         if (!replyText.trim()) return;
 
         try {
-            const response = await makeRequest(GRAPHQL_MUTATIONS.ADD_COMMENT, {
-                postId: postId,
-                content: replyText,
-                parentCommentId: comment.id
-            });
-
-            if (!response.errors && response.data?.post?.addComment) {
-                const newReply = response.data.post.addComment;
+            const newReply = await replyToComment(postId, replyText, comment.id);
+            
+            if (newReply) {
                 const replyData = {
                     id: newReply.id,
                     user: newReply.user.nickname || `${newReply.user.name} ${newReply.user.surname}`,

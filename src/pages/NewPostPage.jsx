@@ -6,7 +6,8 @@ import { useToast } from "../context/ToastContext";
 import "../styles/NewPostPage.css";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useAuthenticatedRequest } from "../hooks/useAuthenticatedRequest";
-import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { useMyProjects } from "../hooks/useProjects";
+import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 
 export default function NewPostPage() {
     const navigate = useNavigate();
@@ -21,25 +22,11 @@ export default function NewPostPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [sharedPost, setSharedPost] = useState(null);
     const [selectedProjectId, setSelectedProjectId] = useState(projectId || null);
-    const [myProjects, setMyProjects] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isPublic, setIsPublic] = useState(true);
 
-    useEffect(() => {
-        // Fetch user's projects
-        const fetchProjects = async () => {
-            try {
-                const response = await makeRequest(GRAPHQL_QUERIES.GET_MY_PROJECTS, {});
-                if (response?.data?.project?.myprojects) {
-                    setMyProjects(response.data.project.myprojects);
-                }
-            } catch (error) {
-                console.error("Failed to fetch projects:", error);
-            }
-        };
-
-        fetchProjects();
-    }, [makeRequest]);
+    // Use unified hook for projects
+    const { projects: myProjects } = useMyProjects({ autoFetch: true });
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);

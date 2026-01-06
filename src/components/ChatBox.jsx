@@ -4,16 +4,17 @@ import { API_CONFIG, getAuthHeaders } from "../config/api";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import { sanitizeText } from "../utils/sanitize";
+import { useAuth } from "../context/AuthContext";
 import "../styles/ChatBox.css";
 
 const ChatBox = ({ projectId }) => {
+    const { user: currentUser } = useAuth();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(true);
     const [chatId, setChatId] = useState(null);
     const [userChatId, setUserChatId] = useState(null);
     const [projectName, setProjectName] = useState("Project Chat");
-    const [currentUserId, setCurrentUserId] = useState(null);
     const messagesEndRef = useRef(null);
     const prevMessageCountRef = useRef(0);
 
@@ -29,35 +30,6 @@ const ChatBox = ({ projectId }) => {
         }
         prevMessageCountRef.current = messages.length;
     }, [messages]);
-
-    // Fetch current user
-    useEffect(() => {
-        const fetchCurrentUser = async () => {
-            try {
-                const res = await axios.post(
-                    API_CONFIG.GRAPHQL_ENDPOINT,
-                    {
-                        query: GRAPHQL_QUERIES.GET_CURRENT_USER,
-                        variables: {}
-                    },
-                    {
-                        headers: getAuthHeaders()
-                    }
-                );
-
-                if (res.data.errors) {
-                    throw new Error(res.data.errors[0].message);
-                }
-
-                const userData = res.data.data.users.me;
-                setCurrentUserId(userData?.id);
-            } catch (err) {
-                console.error("Failed to fetch current user:", err);
-            }
-        };
-
-        fetchCurrentUser();
-    }, []);
 
     // Fetch project and its chat
     useEffect(() => {
@@ -124,9 +96,9 @@ const ChatBox = ({ projectId }) => {
         fetchProjectChat();
     }, [projectId]);
 
-    // Fetch UserChat when we have both chatId and currentUserId
+    // Fetch UserChat when we have both chatId and currentUser
     useEffect(() => {
-        if (!chatId || !currentUserId) return;
+        if (!chatId || !currentUser) return;
 
         const fetchUserChat = async () => {
             try {
@@ -147,7 +119,7 @@ const ChatBox = ({ projectId }) => {
                     // Handle both array and single object response
                     const chat = Array.isArray(chatData) ? chatData[0] : chatData;
 
-                    const myUserChat = chat?.userChats?.find((uc) => uc.userId === currentUserId);
+                    const myUserChat = chat?.userChats?.find((uc) => uc.userId === currentUser.id);
                     if (myUserChat) {
                         setUserChatId(myUserChat.id);
                     }
@@ -160,7 +132,7 @@ const ChatBox = ({ projectId }) => {
         };
 
         fetchUserChat();
-    }, [chatId, currentUserId]);
+    }, [chatId, currentUser]);
 
     // Fetch messages when chatId is set
     useEffect(() => {
@@ -189,7 +161,7 @@ const ChatBox = ({ projectId }) => {
                     user: entry.userChat.user.nickname,
                     text: entry.message,
                     avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
-                    self: currentUserId === entry.userChat.user.id
+                    self: currentUser?.id === entry.userChat.user.id
                 }));
 
                 setMessages(formattedMessages);
@@ -207,7 +179,7 @@ const ChatBox = ({ projectId }) => {
 
         // Cleanup interval on unmount
         return () => clearInterval(interval);
-    }, [chatId, currentUserId]);
+    }, [chatId, currentUser]);
 
     const sendMessage = async () => {
         if (!input.trim() || !userChatId) {
@@ -257,7 +229,7 @@ const ChatBox = ({ projectId }) => {
                     user: entry.userChat.user.nickname,
                     text: entry.message,
                     avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
-                    self: currentUserId === entry.userChat.user.id
+                    self: currentUser?.id === entry.userChat.user.id
                 }));
                 setMessages(formattedMessages);
             }

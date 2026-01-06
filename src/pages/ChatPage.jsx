@@ -7,18 +7,29 @@ import ChatWindow from "../components/ChatWindow";
 import PrivateChat from "../components/PrivateChat";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { useFriends } from "../hooks/useFriends";
+import { useAuth } from "../context/AuthContext";
 
 import "../styles/MainComponents.css";
 import "../styles/Chat.css";
 
 export default function ChatPage() {
     const location = useLocation();
-    const { executeQuery } = useGraphQL();
+    const { user: currentUser } = useAuth();
     const [selectedUser, setSelectedUser] = useState(null);
     const [popupUser, setPopupUser] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [currentUserId, setCurrentUserId] = useState(null);
+
+    // Use unified friends hook
+    const { friends, loading } = useFriends({ autoFetch: true });
+    
+    // Map friends to chat users format
+    const users = friends.map((friend) => ({
+        id: friend.id,
+        name: `${friend.name} ${friend.surname}`,
+        nickname: friend.nickname,
+        profilePic: friend.profilePic,
+        online: false // TODO: Implement online status
+    }));
 
     // Check if a user was passed via navigation state
     useEffect(() => {
@@ -28,50 +39,6 @@ export default function ChatPage() {
             window.history.replaceState({}, document.title);
         }
     }, [location.state]);
-
-    useEffect(() => {
-        const fetchCurrentUser = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_CURRENT_USER, {});
-
-                if (data) {
-                    setCurrentUserId(data.users.me.id);
-                }
-            } catch (err) {
-                console.error("Failed to fetch current user:", err);
-            }
-        };
-
-        fetchCurrentUser();
-    }, [executeQuery]);
-
-    useEffect(() => {
-        const fetchChats = async () => {
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-
-                if (data) {
-                    const friends = data.friendship.myfriends || [];
-                    setUsers(
-                        friends.map((friend) => ({
-                            id: friend.id,
-                            name: `${friend.name} ${friend.surname}`,
-                            nickname: friend.nickname,
-                            profilePic: friend.profilePic,
-                            online: false // TODO: Implement online status
-                        }))
-                    );
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch chats:", err);
-                setUsers([]);
-                setLoading(false);
-            }
-        };
-
-        fetchChats();
-    }, [executeQuery]);
 
     return (
         <div className="maincomp-layout">
@@ -114,7 +81,7 @@ export default function ChatPage() {
             {popupUser && (
                 <PrivateChat
                     user={popupUser}
-                    currentUserId={currentUserId}
+                    currentUserId={currentUser?.id}
                     onClose={() => setPopupUser(null)}
                     onExpand={() => {
                         setSelectedUser(popupUser);

@@ -1,54 +1,14 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { GET_ALL_USERS, GET_BANNED_USERS, GET_SUSPENDED_USERS } from '../queries/moderationQueries';
-import { useGraphQL } from '../hooks/useGraphQL';
+import { useState, useMemo } from 'react';
+import { useModerationUsers } from '../hooks/useModeration';
 import UserManagement from './UserManagement';
 import '../styles/ModerationPanel.css';
 
 const ModerationPanel = () => {
-  const { executeQuery } = useGraphQL();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      let query;
-      switch (activeTab) {
-        case 'banned':
-          query = GET_BANNED_USERS;
-          break;
-        case 'suspended':
-          query = GET_SUSPENDED_USERS;
-          break;
-        default:
-          query = GET_ALL_USERS;
-      }
-
-      const response = await executeQuery(query);
-      let userData = [];
-
-      if (activeTab === 'all' && response?.moderation?.allUsers) {
-        userData = response.moderation.allUsers;
-      } else if (activeTab === 'banned' && response?.moderation?.bannedUsers) {
-        userData = response.moderation.bannedUsers;
-      } else if (activeTab === 'suspended' && response?.moderation?.suspendedUsers) {
-        userData = response.moderation.suspendedUsers;
-      }
-
-      setUsers(userData);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setUsers([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [activeTab, executeQuery]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  // Use unified moderation hook
+  const { users, loading, refetch } = useModerationUsers(activeTab, { autoFetch: true });
 
   const filteredUsers = useMemo(() => {
     if (searchTerm === '') {
@@ -65,7 +25,7 @@ const ModerationPanel = () => {
   }, [searchTerm, users]);
 
   const handleRefresh = () => {
-    fetchUsers();
+    refetch();
   };
 
   return (

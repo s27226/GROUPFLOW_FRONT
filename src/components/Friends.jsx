@@ -1,55 +1,23 @@
-import { useState, useEffect } from "react";
-import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
+import { useState } from "react";
 import LoadingSpinner from "./ui/LoadingSpinner";
 import ConfirmDialog from "./ui/ConfirmDialog";
 import "../styles/Friends.css";
 import { useSearchQuery } from "../hooks/useSearchQuery";
-import { useGraphQL } from "../hooks/useGraphQL";
+import { useFriends } from "../hooks/useFriends";
 import { useNavigate } from "react-router-dom";
 
 export default function Friends() {
-    const [friends, setFriends] = useState([]);
-    const [filteredFriends, setFilteredFriends] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [removeConfirm, setRemoveConfirm] = useState({ show: false, friendId: null, friendName: "" });
     const searchQuery = useSearchQuery();
-    const { executeQuery, executeMutation } = useGraphQL();
     const navigate = useNavigate();
+    
+    // Use the unified hook for friends management
+    const { friends, loading, removeFriend: removeFriendMutation, refetch } = useFriends({
+        autoFetch: true,
+        searchQuery
+    });
 
-    useEffect(() => {
-        const fetchFriends = async () => {
-            setLoading(true);
-            try {
-                const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_FRIENDS, {});
-
-                const friendsData = data.friendship.myfriends || [];
-                setFriends(friendsData);
-
-                // Apply search filter
-                if (searchQuery) {
-                    const filtered = friendsData.filter((friend) =>
-                        `${friend.name} ${friend.surname}`
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase())
-                    );
-                    setFilteredFriends(filtered);
-                } else {
-                    setFilteredFriends(friendsData);
-                }
-
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch friends:", err);
-                setFriends([]);
-                setFilteredFriends([]);
-                setLoading(false);
-            }
-        };
-
-        fetchFriends();
-    }, [searchQuery, executeQuery]);
-
-    const removeFriend = async (id, name) => {
+    const handleRemoveFriend = async (id, name) => {
         setRemoveConfirm({ show: true, friendId: id, friendName: name });
     };
 
@@ -58,10 +26,8 @@ export default function Friends() {
         setRemoveConfirm({ show: false, friendId: null, friendName: "" });
 
         try {
-            await executeMutation(GRAPHQL_MUTATIONS.REMOVE_FRIEND, { friendId });
-            const updated = filteredFriends.filter((friend) => friend.id !== friendId);
-            setFilteredFriends(updated);
-            setFriends(friends.filter((friend) => friend.id !== friendId));
+            await removeFriendMutation(friendId);
+            // Hook automatically updates state
         } catch (err) {
             console.error("Failed to remove friend:", err);
         }
@@ -80,11 +46,11 @@ export default function Friends() {
             <div className="friends-header">
                 <h1>My Friends</h1>
                 <div className="friends-count">
-                    {filteredFriends.length} {filteredFriends.length === 1 ? "Friend" : "Friends"}
+                    {friends.length} {friends.length === 1 ? "Friend" : "Friends"}
                 </div>
             </div>
 
-            {filteredFriends.length === 0 ? (
+            {friends.length === 0 ? (
                 <div className="empty-state">
                     <div className="empty-icon">👥</div>
                     <h2>No friends found</h2>
@@ -96,7 +62,7 @@ export default function Friends() {
                 </div>
             ) : (
                 <div className="friends-grid">
-                    {filteredFriends.map((friend) => (
+                    {friends.map((friend) => (
                         <div className="friend-card" key={friend.id}>
                             <div 
                                 className="friend-card-header"
@@ -141,7 +107,7 @@ export default function Friends() {
                                 </button>
                                 <button
                                     className="remove-btn"
-                                    onClick={() => removeFriend(friend.id, friend.nickname || `${friend.name} ${friend.surname}`)}
+                                    onClick={() => handleRemoveFriend(friend.id, friend.nickname || `${friend.name} ${friend.surname}`)}
                                 >
                                     Remove
                                 </button>
