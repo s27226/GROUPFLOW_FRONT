@@ -3,6 +3,7 @@ import axios from "axios";
 import { API_CONFIG, getAuthHeaders } from "../config/api";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import LoadingSpinner from "./ui/LoadingSpinner";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/ChatBox.css";
 
 const ChatBox = ({ projectId }) => {
@@ -319,7 +320,7 @@ const ChatBox = ({ projectId }) => {
                                         <div
                                             className={`chatbox-message-bubble ${msg.self ? "chatbox-self-bubble" : ""}`}
                                         >
-                                            {msg.text}
+                                            {sanitizeText(msg.text)}
                                         </div>
                                     </div>
                                     {msg.self && (

@@ -5,6 +5,7 @@ import ChatBox from "../components/ChatBox";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useAuth } from "../context/AuthContext";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/ProjectViewPage.css";
 import { useNavigate, useParams } from "react-router-dom";
 import FilesView from "../components/FilesView";
@@ -125,8 +126,8 @@ export default function ProjectsViewPage() {
                         </button>
 
                         <div className="project-header">
-                            <h2>{project.name}</h2>
-                            <p>{project.description}</p>
+                            <h2>{sanitizeText(project.name)}</h2>
+                            <p>{sanitizeText(project.description)}</p>
                         </div>
 
                         <div className="tabs">

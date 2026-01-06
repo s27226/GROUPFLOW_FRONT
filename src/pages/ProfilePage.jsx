@@ -11,6 +11,7 @@ import { usePosts } from "../hooks/usePosts";
 import { useAuth } from "../context/AuthContext";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useToast } from "../context/ToastContext";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
 
@@ -259,10 +260,10 @@ export default function ProfilePage() {
                         <img src={user.pfp} alt="Profile" className="profile-pfp" />
                         <div className="profile-info">
                             <h2>
-                                {user.name} {user.surname}
+                                {sanitizeText(user.name)} {sanitizeText(user.surname)}
                             </h2>
-                            <p className="username">{user.handle}</p>
-                            <p className="bio">{user.bio}</p>
+                            <p className="username">{sanitizeText(user.handle)}</p>
+                            <p className="bio">{sanitizeText(user.bio)}</p>
                             {currentUser && user.id === currentUser.id && (
                                 <button
                                     className="edit-btn"

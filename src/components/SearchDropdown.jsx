@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/SearchDropdown.css";
 
 export default function SearchDropdown({ query, onClose, isOpen }) {
@@ -129,9 +130,9 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
                                         />
                                     </div>
                                     <div className="search-item-content">
-                                        <div className="search-item-title">{project.name}</div>
+                                        <div className="search-item-title">{sanitizeText(project.name)}</div>
                                         <div className="search-item-subtitle">
-                                            by {project.owner?.name || "Unknown"}
+                                            by {sanitizeText(project.owner?.name || "Unknown")}
                                         </div>
                                     </div>
                                     <div className="search-item-stats">
@@ -163,10 +164,10 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
                                     </div>
                                     <div className="search-item-content">
                                         <div className="search-item-title">
-                                            {result.user.name} {result.user.surname}
+                                            {sanitizeText(result.user.name)} {sanitizeText(result.user.surname)}
                                         </div>
                                         <div className="search-item-subtitle">
-                                            @{result.user.nickname}
+                                            @{sanitizeText(result.user.nickname)}
                                         </div>
                                     </div>
                                     {result.isFriend && (

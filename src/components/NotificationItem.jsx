@@ -2,6 +2,7 @@ import "../styles/NotificationItem.css";
 import { Bell } from "lucide-react";
 import defaultPfp from "../images/default-pfp.png";
 import { useNavigate } from "react-router-dom";
+import { sanitizeText } from "../utils/sanitize";
 
 // Helper function to format time ago
 function timeAgo(dateString) {
@@ -45,7 +46,7 @@ export default function NotificationItem({ notification }) {
                 )}
             </div>
             <div className="notif-info">
-                <p className="notif-text">{message}</p>
+                <p className="notif-text">{sanitizeText(message)}</p>
                 <span className="notif-time">{timeAgo(createdAt)}</span>
             </div>
         </div>

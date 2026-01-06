@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts } from "../hooks/usePosts";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useAuth } from "../context/AuthContext";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/ProfilePage.css";
 import "../styles/feed.css";
 
@@ -170,7 +171,7 @@ export default function ProjectProfilePage() {
                     <div className="profile-header">
                         <img src={project.image} alt="Project" className="profile-pfp" />
                         <div className="profile-info">
-                            <h2>{project.name}</h2>
+                            <h2>{sanitizeText(project.name)}</h2>
                             {isOwner && (
                                 <button
                                     className="edit-btn"
@@ -186,7 +187,7 @@ export default function ProjectProfilePage() {
                         <div className="profile-left">
                             <section className="about-me">
                                 <h3>Description</h3>
-                                <p>{project.description}</p>
+                                <p>{sanitizeText(project.description)}</p>
                             </section>
 
                             {project.skills && project.skills.length > 0 && (
@@ -229,8 +230,8 @@ export default function ProjectProfilePage() {
                                                 alt={member.name}
                                                 className="profile-member-pfp"
                                             />
-                                            <p className="profile-member-name">{member.name}</p>
-                                            <p className="profile-member-role">{member.role}</p>
+                                            <p className="profile-member-name">{sanitizeText(member.name)}</p>
+                                            <p className="profile-member-role">{sanitizeText(member.role)}</p>
                                         </div>
                                     ))}
                                 </div>

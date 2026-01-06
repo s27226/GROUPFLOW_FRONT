@@ -1,4 +1,5 @@
 import { useChat } from "../hooks/useChat";
+import { sanitizeText } from "../utils/sanitize";
 
 export default function ChatWindow({ user, currentUserId, onMinimize }) {
     const { messages, input, setInput, loading, sendMessage, handleKeyPress } = useChat(
@@ -57,7 +58,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
                                 <div
                                     className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
                                 >
-                                    {msg.text}
+                                    {sanitizeText(msg.text)}
                                 </div>
                             </div>
                         ))

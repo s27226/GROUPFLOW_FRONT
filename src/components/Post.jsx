@@ -9,6 +9,7 @@ import { GRAPHQL_MUTATIONS, GRAPHQL_QUERIES } from "../queries/graphql";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../utils/dateFormatter";
 import { useToast } from "../context/ToastContext";
+import { sanitizeText } from "../utils/sanitize";
 
 export default function Post({
     id,
@@ -292,7 +293,7 @@ export default function Post({
                 style={{ cursor: isFullView ? "default" : "pointer" }}
                 onClick={() => !isFullView && navigate(`/post/${id}`)}
             >
-                <p>{content}</p>
+                <p>{sanitizeText(content)}</p>
                 {image && (
                     <LazyImage src={image} alt="post" className="post-image" aspectRatio={16 / 9} />
                 )}
@@ -323,7 +324,7 @@ export default function Post({
                                     <span> · {sharedPost.time}</span>
                                 </div>
                             </div>
-                            <p className="post-shared-text">{sharedPost.content}</p>
+                            <p className="post-shared-text">{sanitizeText(sharedPost.content)}</p>
                             {sharedPost.image && (
                                 <LazyImage
                                     src={sharedPost.image}
@@ -621,7 +622,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
                 </div>
             </div>
 
-            <p className="comment-text">{comment.text}</p>
+            <p className="comment-text">{sanitizeText(comment.text)}</p>
 
             {showDeleteConfirm && (
                 <div className="comment-delete-confirm">

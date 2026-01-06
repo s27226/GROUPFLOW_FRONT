@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../hooks/useChat";
+import { sanitizeText } from "../utils/sanitize";
 import "../styles/PrivateChat.css";
 
 export default function PrivateChat({ user, currentUserId, onClose, onExpand }) {
@@ -52,7 +53,7 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }) 
                             <div
                                 className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
                             >
-                                {msg.text}
+                                {sanitizeText(msg.text)}
                             </div>
                         </div>
                     ))
