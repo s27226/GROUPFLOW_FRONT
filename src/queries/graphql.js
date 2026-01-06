@@ -1030,8 +1030,6 @@ export const GRAPHQL_MUTATIONS = {
           nickname
           email
           profilePic
-          token
-          refreshToken
           isModerator
         }
       }
@@ -1048,10 +1046,16 @@ export const GRAPHQL_MUTATIONS = {
           nickname
           email
           profilePic
-          token
-          refreshToken
           isModerator
         }
+      }
+    }
+  `,
+
+    LOGOUT: `
+    mutation Logout {
+      auth {
+        logout
       }
     }
   `,
@@ -1066,18 +1070,8 @@ export const GRAPHQL_MUTATIONS = {
           nickname
           email
           profilePic
-          token
-          refreshToken
           isModerator
         }
-      }
-    }
-  `,
-
-    LOGOUT: `
-    mutation Logout {
-      auth {
-        logout
       }
     }
   `,

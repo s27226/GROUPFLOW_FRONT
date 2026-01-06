@@ -1,12 +1,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { clearAuthCookies } from "../utils/cookies";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    // Initialize state without tokens since we can't read HttpOnly cookies
-    const [token, setToken] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
+    // User state stored in localStorage for UI purposes
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
@@ -27,6 +24,7 @@ export function AuthProvider({ children }) {
     const checkAuthStatus = async () => {
         try {
             // Make a simple authenticated request to check if we're logged in
+            // The JWT token is automatically sent via HTTP-only cookie
             const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:5000/api", {
                 method: "POST",
                 credentials: "include",
@@ -44,27 +42,18 @@ export function AuthProvider({ children }) {
 
             if (response.ok) {
                 setIsAuthenticated(true);
-                if (user) {
-                    setToken("cookie-token");
-                }
             } else {
                 setIsAuthenticated(false);
-                setToken(null);
-                setRefreshToken(null);
             }
         } catch (error) {
             console.error("Auth status check failed:", error);
             setIsAuthenticated(false);
-            setToken(null);
-            setRefreshToken(null);
         }
     };
 
-    const login = (accessToken, newRefreshToken, userData = null) => {
-        // Tokens are set as HttpOnly cookies by the server
-        // We just update our local state
-        setToken("cookie-token"); // Placeholder
-        setRefreshToken("cookie-refresh-token"); // Placeholder
+    const login = (userData) => {
+        // JWT token is automatically set as HTTP-only cookie by the server
+        // We only need to update user data and authentication state
         setIsAuthenticated(true);
         
         if (userData) {
@@ -78,8 +67,6 @@ export function AuthProvider({ children }) {
     };
 
     const logout = () => {
-        setToken(null);
-        setRefreshToken(null);
         setUser(null);
         setIsModerator(false);
         setIsAuthenticated(false);
@@ -88,11 +75,10 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("user");
         localStorage.removeItem("isModerator");
         
-        clearAuthCookies();
-        
+        // Call logout mutation to clear HTTP-only cookie on server
         fetch(process.env.REACT_APP_API_URL || "http://localhost:5000/api", {
             method: "POST",
-            credentials: "include",
+            credentials: "include", // Important: sends cookies with request
             headers: {
                 "Content-Type": "application/json"
             },
@@ -113,26 +99,15 @@ export function AuthProvider({ children }) {
         localStorage.setItem("user", JSON.stringify(userData));
     };
 
-    const updateTokens = (accessToken, newRefreshToken) => {
-        // Tokens are managed by server cookies
-        // Just update authentication status
-        setIsAuthenticated(true);
-        setToken("cookie-token"); // Placeholder
-        setRefreshToken("cookie-refresh-token"); // Placeholder
-    };
-
     return (
         <AuthContext.Provider
             value={{ 
-                token, 
-                refreshToken, 
                 user, 
                 isModerator, 
                 isAuthenticated,
                 login, 
                 logout, 
-                updateUser, 
-                updateTokens,
+                updateUser,
                 checkAuthStatus 
             }}
         >

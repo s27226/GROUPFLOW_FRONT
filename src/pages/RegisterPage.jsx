@@ -51,7 +51,7 @@ export default function RegisterPage() {
             });
 
             const authData = data.auth.registerUser;
-            login(authData.token, authData.refreshToken, {
+            login({
                 id: authData.id,
                 name: authData.name,
                 surname: authData.surname,

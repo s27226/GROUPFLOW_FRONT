@@ -7,6 +7,9 @@ import { sanitizeText } from "../utils/sanitize";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ChatBox.css";
 
+// Configure axios to send credentials (cookies) with all requests
+axios.defaults.withCredentials = true;
+
 const ChatBox = ({ projectId }) => {
     const { user: currentUser } = useAuth();
     const [messages, setMessages] = useState([]);

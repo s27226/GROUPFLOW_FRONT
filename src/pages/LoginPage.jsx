@@ -27,7 +27,8 @@ export default function LoginPage() {
             });
 
             const authData = data.auth.loginUser;
-            login(authData.token, authData.refreshToken, {
+            // JWT token is set as HTTP-only cookie by the server
+            login({
                 id: authData.id,
                 name: authData.name,
                 surname: authData.surname,

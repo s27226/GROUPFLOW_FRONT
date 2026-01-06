@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { API_CONFIG, getRequestOptions } from "../config/api";
 
 export const useAuthenticatedRequest = () => {
-    const { updateTokens, updateUser, logout, checkAuthStatus } = useAuth();
+    const { logout, checkAuthStatus, updateUser } = useAuth();
 
     const refreshAccessToken = useCallback(async () => {
         try {
@@ -19,8 +19,6 @@ export const useAuthenticatedRequest = () => {
                                     nickname
                                     email
                                     profilePic
-                                    token
-                                    refreshToken
                                     isModerator
                                 }
                             }
@@ -36,9 +34,8 @@ export const useAuthenticatedRequest = () => {
             }
 
             const authData = data.data.auth.refreshToken;
-            updateTokens(authData.token, authData.refreshToken);
             
-            // Update user data if available
+            // Update user data
             if (authData.id) {
                 updateUser({
                     id: authData.id,
@@ -51,27 +48,23 @@ export const useAuthenticatedRequest = () => {
                 });
             }
 
-            return authData.token;
+            return true;
         } catch (error) {
             console.error("Token refresh failed:", error);
             logout();
             throw error;
         }
-    }, [updateTokens, updateUser, logout]);
+    }, [updateUser, logout]);
 
     const makeRequest = useCallback(
         async (query, variables = {}, options = {}) => {
-            const makeApiCall = async () => {
+            try {
+                // Make request - HttpOnly cookies are automatically included with credentials: 'include'
                 const response = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
                     ...getRequestOptions("POST", { query, variables })
                 });
 
-                return await response.json();
-            };
-
-            try {
-                // Make request with cookies (HttpOnly cookies are automatically included)
-                let data = await makeApiCall();
+                const data = await response.json();
 
                 // Check if we got an authentication error
                 if (data.errors && data.errors.length > 0) {
@@ -79,19 +72,24 @@ export const useAuthenticatedRequest = () => {
                     const isAuthError =
                         error.extensions?.code === "AUTH_NOT_AUTHENTICATED" ||
                         error.message?.toLowerCase().includes("unauthorized") ||
-                        error.message?.toLowerCase().includes("expired");
+                        error.message?.toLowerCase().includes("expired") ||
+                        error.message?.toLowerCase().includes("not authenticated");
 
                     if (isAuthError && !options.skipRetry) {
-                        // Try to refresh the token using cookies
+                        console.log("Access token expired, attempting refresh...");
                         try {
+                            // Try to refresh using the refresh token
                             await refreshAccessToken();
-                            // Retry the request (cookies will be updated by server)
-                            data = await makeApiCall();
+                            
+                            // Retry the original request with new access token
+                            const retryResponse = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
+                                ...getRequestOptions("POST", { query, variables })
+                            });
+                            return await retryResponse.json();
                         } catch (refreshError) {
                             console.error("Failed to refresh and retry:", refreshError);
-                            // Re-check auth status
-                            checkAuthStatus();
-                            throw refreshError;
+                            logout();
+                            throw new Error("Session expired. Please log in again.");
                         }
                     }
                 }
@@ -102,7 +100,7 @@ export const useAuthenticatedRequest = () => {
                 throw error;
             }
         },
-        [refreshAccessToken, checkAuthStatus]
+        [refreshAccessToken, logout]
     );
 
     return { makeRequest };
