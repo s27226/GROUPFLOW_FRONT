@@ -62,7 +62,7 @@ export default function ChatPage() {
                                 {selectedUser ? (
                                     <ChatWindow
                                         user={selectedUser}
-                                        currentUserId={currentUserId}
+                                        currentUserId={currentUser?.id}
                                         onMinimize={() => {
                                             setPopupUser(selectedUser);
                                             setSelectedUser(null);

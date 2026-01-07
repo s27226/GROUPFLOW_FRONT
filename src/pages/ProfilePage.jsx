@@ -68,13 +68,13 @@ export default function ProfilePage() {
                     userId ? { id: parseInt(userId) } : {}
                 );
 
-                if (!userData) {
+                if (!userData || !userData.users) {
                     console.error("User not found");
                     setLoading(false);
                     return;
                 }
 
-                const userInfo = userId ? userData.users.getuserbyid : userData.users.me;
+                const userInfo = userId ? userData.users?.getuserbyid : userData.users?.me;
 
                 if (!userInfo) {
                     console.error("User not found");
@@ -84,13 +84,13 @@ export default function ProfilePage() {
 
                 setUser({
                     id: userInfo.id,
-                    name: userInfo.name,
-                    surname: userInfo.surname,
-                    handle: `@${userInfo.nickname}`,
+                    name: userInfo.name || '',
+                    surname: userInfo.surname || '',
+                    handle: `@${userInfo.nickname || 'unknown'}`,
                     bio: "Professional developer", // TODO: Add bio field to backend
                     banner: userInfo.bannerPicUrl || userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
-                    pfp: userInfo.profilePicUrl || userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname}`,
-                    abt: `Member since ${new Date(userInfo.joined).toLocaleDateString()}`
+                    pfp: userInfo.profilePicUrl || userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname || userInfo.id}`,
+                    abt: `Member since ${userInfo.joined ? new Date(userInfo.joined).toLocaleDateString() : 'Unknown'}`
                 });
 
                 // Fetch user's projects
@@ -98,8 +98,8 @@ export default function ProfilePage() {
                     userId: userInfo.id
                 });
 
-                if (projectsData) {
-                    const projects = projectsData.project.userprojects || [];
+                if (projectsData && projectsData.project) {
+                    const projects = projectsData.project?.userprojects || [];
                     setProjects(
                         projects.map((project) => ({
                             id: project.id,

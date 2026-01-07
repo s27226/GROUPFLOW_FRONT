@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
                 body: JSON.stringify({
                     query: `
                         query Me {
-                            user {
+                            users {
                                 me {
                                     id
                                     nickname
@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
 
             const data = await response.json();
             
-            if (response.ok && data.data?.user?.me) {
+            if (response.ok && data.data?.users?.me) {
                 setIsAuthenticated(true);
             } else {
                 setIsAuthenticated(false);
@@ -66,6 +66,11 @@ export function AuthProvider({ children }) {
         } catch (error) {
             console.error("Auth status check failed:", error);
             setIsAuthenticated(false);
+            // Clear invalid user data on error
+            setUser(null);
+            setIsModerator(false);
+            localStorage.removeItem("user");
+            localStorage.removeItem("isModerator");
         }
     };
 

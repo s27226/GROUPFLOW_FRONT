@@ -69,7 +69,11 @@ export const useUserProjects = (userId, options = {}) => {
         setError(null);
         try {
             const data = await executeQuery(GRAPHQL_QUERIES.GET_USER_PROJECTS, { userId });
-            const projectsData = data?.project?.userprojects || [];
+            if (!data || !data.project) {
+                setProjects([]);
+                return [];
+            }
+            const projectsData = data.project?.userprojects || [];
             setProjects(projectsData);
             return projectsData;
         } catch (err) {
