@@ -5,6 +5,7 @@ export const API_CONFIG = {
     RESET_PASSWORD_ENDPOINT: process.env.REACT_APP_RESET_PASSWORD_URL || "http://localhost:4000/api/reset-password"
 };
 
+
 // Helper function to get auth headers
 export const getAuthHeaders = () => {
     return {
