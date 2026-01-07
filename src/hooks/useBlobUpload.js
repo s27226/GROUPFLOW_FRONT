@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useAuthenticatedRequest } from "./useAuthenticatedRequest";
 import { GRAPHQL_MUTATIONS, GRAPHQL_QUERIES } from "../queries/graphql";
 
@@ -21,7 +21,7 @@ export const useBlobUpload = () => {
         });
     };
 
-    const uploadBlob = async (file, blobType, projectId = null, postId = null) => {
+    const uploadBlob = useCallback(async (file, blobType, projectId = null, postId = null) => {
         setError(null);
         setUploading(true);
 
@@ -55,9 +55,9 @@ export const useBlobUpload = () => {
         } finally {
             setUploading(false);
         }
-    };
+    }, [makeRequest]);
 
-    const deleteBlob = async (blobId) => {
+    const deleteBlob = useCallback(async (blobId) => {
         setError(null);
 
         try {
@@ -69,9 +69,9 @@ export const useBlobUpload = () => {
             setError(err.message || "Failed to delete file");
             throw err;
         }
-    };
+    }, [makeRequest]);
 
-    const getProjectFiles = async (projectId) => {
+    const getProjectFiles = useCallback(async (projectId) => {
         try {
             const response = await makeRequest(GRAPHQL_QUERIES.GET_PROJECT_FILES, { projectId });
             return response?.data?.projectFiles || [];
@@ -79,12 +79,25 @@ export const useBlobUpload = () => {
             console.error("Get project files error:", err);
             return [];
         }
-    };
+    }, [makeRequest]);
+
+    const getBlobUrl = useCallback(async (blobId) => {
+        try {
+            // For AWS S3, the blobPath is already a full URL
+            // We can use it directly or query for it if needed
+            // For now, returning null to indicate we should use blobPath directly
+            return null;
+        } catch (err) {
+            console.error("Get blob URL error:", err);
+            return null;
+        }
+    }, []);
 
     return {
         uploadBlob,
         deleteBlob,
         getProjectFiles,
+        getBlobUrl,
         uploading,
         error,
         setError

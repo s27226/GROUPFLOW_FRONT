@@ -12,7 +12,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
     const [uploading, setUploading] = useState(false);
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState({ show: false, fileId: null, fileName: "", uploadedByUserId: null });
-    const { getProjectFiles, uploadBlob, deleteBlob, getBlobUrl } = useBlobUpload();
+    const { getProjectFiles, uploadBlob, deleteBlob } = useBlobUpload();
     const { showToast } = useToast();
     const { user } = useAuth();
 
@@ -31,7 +31,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
         } finally {
             setLoading(false);
         }
-    }, [projectId, getProjectFiles, showToast]);
+    }, [projectId, getProjectFiles]); // Removed showToast from dependencies
 
     useEffect(() => {
         fetchFiles();
@@ -79,14 +79,13 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
         }
     };
 
-    const handleFileDownload = async (fileId, fileName) => {
+    const handleFileDownload = async (file) => {
         try {
-            const url = await getBlobUrl(fileId);
-            if (url) {
-                // Open in new tab for download
-                window.open(url, '_blank');
+            // Use the blobPath directly as it's already a full URL from AWS S3
+            if (file.blobPath) {
+                window.open(file.blobPath, '_blank');
             } else {
-                showToast("Failed to get file URL", "error");
+                showToast("File URL not available", "error");
             }
         } catch (error) {
             console.error("Download error:", error);
@@ -184,7 +183,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
                             <div className="file-actions">
                                 <button
                                     className="file-action-btn"
-                                    onClick={() => handleFileDownload(file.id, file.fileName)}
+                                    onClick={() => handleFileDownload(file)}
                                     title="Download"
                                 >
                                     <Download size={18} />
