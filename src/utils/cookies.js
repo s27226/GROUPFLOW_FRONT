@@ -10,7 +10,7 @@ export const getCookie = (name) => {
 };
 
 export const deleteCookie = (name) => {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=none`;
 };
 
 // For dev purposes only - HttpOnly cookies can't be read by JS in production

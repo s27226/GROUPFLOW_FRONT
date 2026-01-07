@@ -23,6 +23,12 @@ export function AuthProvider({ children }) {
 
     const checkAuthStatus = async () => {
         try {
+            // Only check if we have user data in localStorage
+            if (!user) {
+                setIsAuthenticated(false);
+                return;
+            }
+            
             // Make a simple authenticated request to check if we're logged in
             // The JWT token is automatically sent via HTTP-only cookie
             const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:5000/api", {
@@ -34,16 +40,28 @@ export function AuthProvider({ children }) {
                 body: JSON.stringify({
                     query: `
                         query Me {
-                            __typename
+                            user {
+                                me {
+                                    id
+                                    nickname
+                                }
+                            }
                         }
                     `
                 })
             });
 
-            if (response.ok) {
+            const data = await response.json();
+            
+            if (response.ok && data.data?.user?.me) {
                 setIsAuthenticated(true);
             } else {
                 setIsAuthenticated(false);
+                // Clear invalid user data
+                setUser(null);
+                setIsModerator(false);
+                localStorage.removeItem("user");
+                localStorage.removeItem("isModerator");
             }
         } catch (error) {
             console.error("Auth status check failed:", error);

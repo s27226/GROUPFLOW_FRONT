@@ -26,6 +26,8 @@ export default function ResetPasswordPage() {
             await axios.post(API_CONFIG.RESET_PASSWORD_ENDPOINT, {
                 currentPassword,
                 newPassword
+            }, {
+                withCredentials: true
             });
 
             setSuccess("Password successfully updated!");
