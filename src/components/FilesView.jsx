@@ -18,10 +18,6 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
 
     const canUpload = isOwner || isCollaborator;
 
-    useEffect(() => {
-        fetchFiles();
-    }, [fetchFiles]);
-
     const fetchFiles = useCallback(async () => {
         if (!projectId) return;
         
@@ -36,6 +32,10 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
             setLoading(false);
         }
     }, [projectId, getProjectFiles, showToast]);
+
+    useEffect(() => {
+        fetchFiles();
+    }, [fetchFiles]);
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
