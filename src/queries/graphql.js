@@ -1003,6 +1003,7 @@ export const GRAPHQL_QUERIES = {
         id
         fileName
         blobPath
+        url
         contentType
         fileSize
         type

@@ -81,9 +81,9 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
 
     const handleFileDownload = async (file) => {
         try {
-            // Use the blobPath directly as it's already a full URL from AWS S3
-            if (file.blobPath) {
-                window.open(file.blobPath, '_blank');
+            // Use the presigned URL from the backend
+            if (file.url) {
+                window.open(file.url, '_blank');
             } else {
                 showToast("File URL not available", "error");
             }
