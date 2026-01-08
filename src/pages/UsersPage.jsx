@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import Users from "../components/Users";
+import { Layout } from "../components/layout";
+import { Users } from "../components/users";
 
 export default function UsersPage() {
     return (

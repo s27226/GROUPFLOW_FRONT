@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import ProfileTagsEditor from "../components/ProfileTagsEditor";
+import { Layout } from "../components/layout";
+import { ProfileTagsEditor } from "../components/profile";
 
 export default function ProfileTagsPage() {
     return (

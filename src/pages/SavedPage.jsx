@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import Post from "../components/Post";
+import { Layout } from "../components/layout";
+import { Post } from "../components/feed";
 import SkeletonPost from "../components/ui/SkeletonPost";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useSavedPosts } from "../hooks/usePosts";

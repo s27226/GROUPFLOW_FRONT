@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import Post from "../components/Post";
-import ProfileBanner from "../components/ProfileBanner";
+import { Navbar, Sidebar } from "../components/layout";
+import { Post } from "../components/feed";
+import { ProfileBanner } from "../components/profile";
 import SkeletonPost from "../components/ui/SkeletonPost";
 import SkeletonCard from "../components/ui/SkeletonCard";
 import { GRAPHQL_QUERIES } from "../queries/graphql";

@@ -4,8 +4,7 @@ import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useToast } from "../context/ToastContext";
 import { Shield, UserX, ChevronLeft, AlertCircle } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import "../styles/BlockedUsersPage.css";
 
 export default function BlockedUsersPage() {

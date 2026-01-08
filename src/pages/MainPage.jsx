@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import Feed from "../components/Feed";
+import { Layout } from "../components/layout";
+import { Feed } from "../components/feed";
 
 export default function MainPage() {
     return (

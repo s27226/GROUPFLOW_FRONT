@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import ChatBox from "../components/ChatBox";
+import { Navbar, Sidebar } from "../components/layout";
+import { ChatBox } from "../components/chat";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useAuth } from "../context/AuthContext";
 import { sanitizeText } from "../utils/sanitize";
 import "../styles/ProjectViewPage.css";
 import { useNavigate, useParams } from "react-router-dom";
-import FilesView from "../components/FilesView";
-import TerminsView from "../components/TerminsView";
-import MembersPanel from "../components/MembersPanel";
-import ProjectInfoPanel from "../components/ProjectInfoPanel";
+import { FilesView, TerminsView, MembersPanel, ProjectInfoPanel } from "../components/projects";
 
 export default function ProjectsViewPage() {
     const { id } = useParams();

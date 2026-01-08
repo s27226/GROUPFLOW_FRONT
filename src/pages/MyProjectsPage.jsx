@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import SkeletonCard from "../components/ui/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { useMyProjects } from "../hooks/useProjects";

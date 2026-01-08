@@ -1,0 +1,184 @@
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
+    width: var(--sidebar-width);
+    background-color: var(--bg-secondary, #121417);
+    color: var(--text-primary, #e7e9ea);
+    padding-top: 10px;
+    overflow-y: auto;
+    font-family: var(--font-family), serif;
+    border-right: 1px solid var(--border-color, #2f3336);
+    box-sizing: border-box;
+    z-index: 900;
+    transition: transform 0.3s ease;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    border-radius: 8px;
+    margin: 4px 8px;
+}
+
+.sidebar li:hover {
+    background-color: var(--bg-accent, #1d1f23);
+    transform: translateX(4px);
+}
+
+.sidebar li:hover > span {
+    color: var(--accent, #1d9bf0);
+}
+
+.sidebar .icon {
+    font-size: 1.2rem;
+    min-width: 20px;
+    transition: transform 0.3s ease;
+}
+
+.sidebar li:hover .icon {
+    transform: scale(1.1);
+}
+
+.sidebar.collapsed,
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+.sidebar-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: var(--shadow-soft);
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--border-color, #2f3336);
+    border-radius: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color, #2f3336) transparent;
+}
+
+.sidebar .menu-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.sidebar .menu-item:hover {
+    color: var(--accent);
+    transform: scale(1.02);
+}
+
+.notification-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--error);
+    border-radius: 50%;
+    margin-left: 4px;
+}
+
+.Friend-button {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    text-align: left;
+    width: 100%;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.Friend-button:hover {
+    background-color: var(--bg-hover);
+    transform: translateX(4px);
+    color: var(--accent, #1d9bf0);
+}
+
+.sublist {
+    padding-left: 30px;
+    list-style: none;
+}
+
+.sublist li {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.sublist li:hover {
+    background-color: var(--bg-hover);
+    transform: translateX(4px);
+}
+
+.sidebar img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.chevron {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.notification-dot {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}

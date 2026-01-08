@@ -10,7 +10,7 @@ import ProjectProfilePage from "./pages/ProjectProfilePage";
 import ProjectEditFrontPage from "./pages/ProjectEditFrontPage";
 import ProjectChatPage from "./pages/ProjectViewPage";
 import ProjectsPage from "./pages/ProjectsPage";
-import PrivateChat from "./components/PrivateChat";
+import { PrivateChat } from "./components/chat";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChatPage from "./pages/ChatPage";
 import CreateGroupPage from "./pages/CreateGroupPage";

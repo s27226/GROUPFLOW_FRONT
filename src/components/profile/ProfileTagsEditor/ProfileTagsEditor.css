@@ -1,0 +1,226 @@
+.profile-tags-editor {
+    max-width: 800px;
+    margin: 64px auto;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.profile-tags-editor h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+}
+
+.tags-description {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.tag-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-main);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.tag-section h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.section-hint {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.tag-input-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.tag-input-group input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.tag-input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.tag-input-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.add-tag-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    font-family: var(--font-family);
+}
+
+.add-tag-btn:hover {
+    opacity: 0.9;
+}
+
+.tags-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 50px;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    animation: tagAppear 0.3s ease;
+}
+
+@keyframes tagAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tag-item span {
+    line-height: 1;
+}
+
+.tag-item.skill-tag {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(29, 155, 240, 0.3);
+}
+
+.tag-item.interest-tag {
+    background: rgba(160, 70, 200, 0.15);
+    color: #a046c8;
+    border: 1px solid rgba(160, 70, 200, 0.3);
+}
+
+[data-theme="light"] .tag-item.skill-tag {
+    background: rgba(29, 155, 240, 0.1);
+    color: #0077ff;
+}
+
+[data-theme="light"] .tag-item.interest-tag {
+    background: rgba(160, 70, 200, 0.1);
+    color: #8b00d4;
+}
+
+.remove-tag-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.3rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-tag-btn:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+.no-tags {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+    padding: 0.5rem;
+    text-align: center;
+    width: 100%;
+}
+
+.tags-summary {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-accent);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+}
+
+.tags-summary p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.tags-summary strong {
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .profile-tags-editor {
+        padding: 1rem;
+    }
+
+    .tag-input-group {
+        flex-direction: column;
+    }
+
+    .add-tag-btn {
+        width: 100%;
+    }
+
+    .profile-tags-editor h2 {
+        font-size: 1.5rem;
+    }
+
+    .tag-section {
+        padding: 0.75rem;
+    }
+}
+
+.profile-tags-editor > div:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}

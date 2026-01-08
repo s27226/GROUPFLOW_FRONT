@@ -1,0 +1,143 @@
+/* UserCard Component Styles */
+.user-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.user-card:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+}
+
+.user-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.user-name {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.match-score {
+    margin: 0.25rem 0 0 0;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.user-tags {
+    margin-bottom: 0.75rem;
+}
+
+.user-tags h4 {
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.skill-tag {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(29, 155, 240, 0.3);
+}
+
+.interest-tag {
+    background: rgba(160, 70, 200, 0.15);
+    color: #a046c8;
+    border: 1px solid rgba(160, 70, 200, 0.3);
+}
+
+[data-theme="light"] .skill-tag {
+    background: rgba(29, 155, 240, 0.1);
+    color: #0077ff;
+}
+
+[data-theme="light"] .interest-tag {
+    background: rgba(160, 70, 200, 0.1);
+    color: #8b00d4;
+}
+
+.send-request-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+    margin-top: 10px;
+}
+
+.send-request-btn:hover {
+    opacity: 0.9;
+}
+
+.send-request-btn.request-sent,
+.send-request-btn.friends {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    cursor: default;
+    opacity: 0.7;
+}
+
+.send-request-btn.request-sent:hover,
+.send-request-btn.friends:hover {
+    opacity: 0.7;
+}
+
+.send-request-btn:disabled {
+    cursor: not-allowed;
+}
+
+.match-details {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-accent);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+}
+
+.match-details small {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}

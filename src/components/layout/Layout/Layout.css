@@ -1,0 +1,34 @@
+
+.mainpage-layout {
+    background-color: var(--bg-main, #0f1419);
+    color: var(--text-primary, #e7e9ea);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-family), serif;
+}
+
+.mainpage-content {
+    display: flex;
+    width: 100%;
+    padding-top: 80px;
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+.mainpage-feed-trending-wrapper {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.mainpage-feed-wrapper {
+    flex: 1;
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+}

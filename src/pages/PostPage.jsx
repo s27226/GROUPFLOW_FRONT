@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import Post from "../components/Post";
+import { Navbar, Sidebar } from "../components/layout";
+import { Post } from "../components/feed";
 import SkeletonPost from "../components/ui/SkeletonPost";
 import { ArrowLeft } from "lucide-react";
 import { usePost } from "../hooks/usePosts";

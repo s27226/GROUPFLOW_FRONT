@@ -4,8 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 import { GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
-import AuthLayout from "../components/AuthLayout";
-import SocialLoginButtons from "../components/SocialLoginButtons";
+import { AuthLayout } from "../components/layout";
+import { SocialLoginButtons } from "../components/common";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");

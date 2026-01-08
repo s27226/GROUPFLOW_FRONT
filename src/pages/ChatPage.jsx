@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import ChatList from "../components/ChatList";
-import ChatWindow from "../components/ChatWindow";
-import PrivateChat from "../components/PrivateChat";
+import { Navbar, Sidebar } from "../components/layout";
+import { ChatList, ChatWindow, PrivateChat } from "../components/chat";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "../hooks/useGraphQL";
 import { useFriends } from "../hooks/useFriends";

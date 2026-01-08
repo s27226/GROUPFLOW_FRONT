@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ModerationPanel from '../components/ModerationPanel';
-import Layout from '../components/Layout';
+import { ModerationPanel } from '../components/moderation';
+import { Layout } from '../components/layout';
 
 const ModerationPage = () => {
   const { user, isModerator } = useAuth();

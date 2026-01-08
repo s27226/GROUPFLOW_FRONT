@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import Friends from "../components/Friends";
+import { Layout } from "../components/layout";
+import { Friends } from "../components/friends";
 
 export default function FriendPage() {
     return (

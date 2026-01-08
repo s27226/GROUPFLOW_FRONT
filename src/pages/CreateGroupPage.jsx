@@ -1,7 +1,6 @@
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 
-import CreateGroup from "../components/CreateGroup";
+import { CreateGroup } from "../components/projects";
 import "../styles/MainComponents.css";
 
 export default function CreateGroupPage() {

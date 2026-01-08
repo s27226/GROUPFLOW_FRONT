@@ -1,0 +1,128 @@
+.trending-bar {
+    position: fixed;
+    right: 0;
+    top: 64px;
+    height: calc(100vh - 64px);
+    width: 300px;
+    background-color: var(--bg-main);
+    border-left: 1px solid #2f3336;
+    padding: 16px;
+    overflow-y: auto;
+    color: var(--text-primary);
+    font-family: var(--font-family), serif;
+}
+
+.trending-bar h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.trending-bar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.trending-card {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.trending-card:hover {
+    transform: scale(1.02);
+}
+
+.trending-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.trending-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding: 8px 0;
+}
+
+.trending-name {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.trending-desc {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: #8b8b8b;
+}
+
+.trending-bar::-webkit-scrollbar {
+    width: 3px;
+}
+
+.trending-bar::-webkit-scrollbar-thumb {
+    background-color: #2f3336;
+    border-radius: 8px;
+}
+
+.trending-bar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.trending-bar {
+    scrollbar-width: thin;
+    scrollbar-color: #2f3336 transparent;
+}
+
+.trending-owner {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b6b6b;
+    margin-top: 2px;
+}
+
+.trending-stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 0.8rem;
+}
+
+.trending-stats span {
+    color: #8b8b8b;
+}
+
+.trending-load-more {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid #2f3336;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.trending-load-more:hover:not(:disabled) {
+    background-color: #2a2a2a;
+}
+
+.trending-load-more:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.my-projects-link-btn { width: 100%; padding: 12px; margin-top: 16px; background-color: #1d9bf0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: background-color 0.2s ease; } .my-projects-link-btn:hover { background-color: #1a8cd8; }

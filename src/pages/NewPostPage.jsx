@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import { Image, X } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import "../styles/NewPostPage.css";

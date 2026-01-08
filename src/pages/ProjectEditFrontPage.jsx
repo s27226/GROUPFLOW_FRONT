@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
-import ImageUploadButton from "../components/ImageUploadButton";
+import { ImageUploadButton } from "../components/profile";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";

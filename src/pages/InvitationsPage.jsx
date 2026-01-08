@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import Invitations from "../components/Invitations";
+import { Layout } from "../components/layout";
+import { Invitations } from "../components/invitations";
 
 export default function InvitationsPage() {
     return (

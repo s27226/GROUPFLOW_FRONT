@@ -6,8 +6,7 @@ import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useToast } from "../context/ToastContext";
 import { formatTime } from "../utils/dateFormatter";
 import { AlertTriangle, Trash2, XCircle, ChevronLeft, ShieldAlert } from "lucide-react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import "../styles/ReportedPostsPage.css";
 
 export default function ReportedPostsPage() {

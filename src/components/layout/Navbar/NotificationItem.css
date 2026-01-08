@@ -1,0 +1,37 @@
+.notif-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 10px;
+}
+
+.notif-item:hover {
+    background: var(--bg-hover);
+}
+
+.notif-item.unread {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--accent);
+}
+
+.notif-icon {
+    font-size: 20px;
+    color: var(--accent);
+}
+
+.notif-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.notif-text {
+    margin: 0;
+}
+
+.notif-time {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}

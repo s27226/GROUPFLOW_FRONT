@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
+import { Navbar, Sidebar } from "../components/layout";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import ImageUploadButton from "../components/ImageUploadButton";
+import { ImageUploadButton } from "../components/profile";
 import "../styles/ProfilePageEdit.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
