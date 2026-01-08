@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 
 /**
@@ -15,8 +16,11 @@ export const useMyProjects = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchProjects = useCallback(async () => {
+        if (!isAuthenticated) return [];
+        
         setLoading(true);
         setError(null);
         try {
@@ -32,13 +36,13 @@ export const useMyProjects = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchProjects();
         }
-    }, [autoFetch, fetchProjects]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchProjects]);
 
     return {
         projects,
@@ -61,9 +65,10 @@ export const useUserProjects = (userId, options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchProjects = useCallback(async () => {
-        if (!userId) return [];
+        if (!userId || !isAuthenticated) return [];
         
         setLoading(true);
         setError(null);
@@ -84,13 +89,13 @@ export const useUserProjects = (userId, options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, userId]);
+    }, [executeQuery, userId, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch && userId) {
+        if (autoFetch && userId && !authLoading && isAuthenticated) {
             fetchProjects();
         }
-    }, [autoFetch, userId, fetchProjects]);
+    }, [autoFetch, userId, authLoading, isAuthenticated, fetchProjects]);
 
     return {
         projects,
@@ -113,9 +118,10 @@ export const useProject = (projectId, options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchProject = useCallback(async () => {
-        if (!projectId) return null;
+        if (!projectId || !isAuthenticated) return null;
         
         setLoading(true);
         setError(null);
@@ -134,13 +140,13 @@ export const useProject = (projectId, options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, projectId]);
+    }, [executeQuery, projectId, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch && projectId) {
+        if (autoFetch && projectId && !authLoading && isAuthenticated) {
             fetchProject();
         }
-    }, [autoFetch, projectId, fetchProject]);
+    }, [autoFetch, projectId, authLoading, isAuthenticated, fetchProject]);
 
     return {
         project,
@@ -162,8 +168,11 @@ export const useProjectInvitations = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery, executeMutation } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchInvitations = useCallback(async () => {
+        if (!isAuthenticated) return [];
+        
         setLoading(true);
         setError(null);
         try {
@@ -189,13 +198,13 @@ export const useProjectInvitations = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchInvitations();
         }
-    }, [autoFetch, fetchInvitations]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchInvitations]);
 
     const acceptInvitation = useCallback(
         async (invitationId) => {

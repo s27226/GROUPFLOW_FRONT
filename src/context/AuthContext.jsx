@@ -1,6 +1,8 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 
 const AuthContext = createContext();
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 export function AuthProvider({ children }) {
     // User state stored in localStorage for UI purposes
@@ -15,23 +17,122 @@ export function AuthProvider({ children }) {
     });
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [authLoading, setAuthLoading] = useState(true); // Track initial auth check
+    const isRefreshing = useRef(false); // Prevent multiple refresh attempts
+    const refreshPromise = useRef(null); // Store the current refresh promise
 
-    // Check authentication status on mount
-    useEffect(() => {
-        checkAuthStatus();
+    // Try to refresh the access token using refresh token
+    const refreshAccessToken = useCallback(async () => {
+        // If already refreshing, wait for the existing refresh to complete
+        if (isRefreshing.current && refreshPromise.current) {
+            return refreshPromise.current;
+        }
+
+        isRefreshing.current = true;
+        
+        refreshPromise.current = (async () => {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            mutation RefreshToken {
+                                auth {
+                                    refreshToken {
+                                        id
+                                        name
+                                        surname
+                                        nickname
+                                        email
+                                        profilePic
+                                        isModerator
+                                    }
+                                }
+                            }
+                        `
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.errors) {
+                    const errorCode = data.errors[0]?.extensions?.code;
+                    const errorMessage = data.errors[0]?.message;
+                    
+                    // If refresh token is invalid/expired, clear session completely
+                    if (errorCode === "INVALID_TOKEN" || 
+                        errorCode === "INVALID_TOKEN_TYPE" || 
+                        errorCode === "NO_REFRESH_TOKEN" ||
+                        errorCode === "TOKEN_EXPIRED" ||
+                        errorMessage?.includes("Invalid token")) {
+                        console.log("Refresh token invalid, clearing session...");
+                        // Call logout to clear server-side cookies
+                        await fetch(API_URL, {
+                            method: "POST",
+                            credentials: "include",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                query: `mutation Logout { auth { logout } }`
+                            })
+                        }).catch(() => {}); // Ignore logout errors
+                    }
+                    
+                    throw new Error(errorMessage || "Failed to refresh token");
+                }
+
+                const authData = data.data?.auth?.refreshToken;
+                
+                if (authData?.id) {
+                    // Update user data with refreshed info
+                    const userData = {
+                        id: authData.id,
+                        name: authData.name,
+                        surname: authData.surname,
+                        nickname: authData.nickname,
+                        email: authData.email,
+                        profilePic: authData.profilePic,
+                        isModerator: authData.isModerator
+                    };
+                    setUser(userData);
+                    localStorage.setItem("user", JSON.stringify(userData));
+                    if (authData.isModerator !== undefined) {
+                        setIsModerator(authData.isModerator);
+                        localStorage.setItem("isModerator", authData.isModerator.toString());
+                    }
+                    setIsAuthenticated(true);
+                    return true;
+                }
+
+                return false;
+            } catch (error) {
+                console.error("Token refresh failed:", error);
+                return false;
+            } finally {
+                isRefreshing.current = false;
+                refreshPromise.current = null;
+            }
+        })();
+        
+        return refreshPromise.current;
     }, []);
 
-    const checkAuthStatus = async () => {
+    // Check authentication status - tries access token first, then refresh token
+    const checkAuthStatus = useCallback(async () => {
         try {
-            // Only check if we have user data in localStorage
-            if (!user) {
+            // Only check if we have user data in localStorage (potential session)
+            const storedUser = localStorage.getItem("user");
+            if (!storedUser) {
                 setIsAuthenticated(false);
-                return;
+                setAuthLoading(false);
+                return false;
             }
             
-            // Make a simple authenticated request to check if we're logged in
-            // The JWT token is automatically sent via HTTP-only cookie
-            const response = await fetch(process.env.REACT_APP_API_URL || "http://localhost:5000/api", {
+            // Make a simple authenticated request to check if access token is valid
+            const response = await fetch(API_URL, {
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -44,6 +145,7 @@ export function AuthProvider({ children }) {
                                 me {
                                     id
                                     nickname
+                                    isModerator
                                 }
                             }
                         }
@@ -53,26 +155,70 @@ export function AuthProvider({ children }) {
 
             const data = await response.json();
             
-            if (response.ok && data.data?.users?.me) {
+            // Check for GraphQL authentication errors
+            const hasAuthError = data.errors?.some(err => 
+                err.extensions?.code === "AUTH_NOT_AUTHENTICATED" ||
+                err.message?.toLowerCase().includes("unauthorized") ||
+                err.message?.toLowerCase().includes("not authenticated")
+            );
+            
+            // Check if access token is valid (no errors and has user data)
+            if (!hasAuthError && data.data?.users?.me) {
                 setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-                // Clear invalid user data
-                setUser(null);
-                setIsModerator(false);
-                localStorage.removeItem("user");
-                localStorage.removeItem("isModerator");
+                // Update moderator status if it changed
+                if (data.data.users.me.isModerator !== undefined) {
+                    setIsModerator(data.data.users.me.isModerator);
+                    localStorage.setItem("isModerator", data.data.users.me.isModerator.toString());
+                }
+                setAuthLoading(false);
+                return true;
             }
-        } catch (error) {
-            console.error("Auth status check failed:", error);
+
+            // Access token expired or invalid - try refresh token
+            console.log("Access token invalid, attempting refresh...");
+            const refreshed = await refreshAccessToken();
+            
+            if (refreshed) {
+                // After successful refresh, we're authenticated
+                setIsAuthenticated(true);
+                setAuthLoading(false);
+                return true;
+            }
+
+            // Both tokens failed - clear session
+            console.log("Session expired, clearing auth state");
             setIsAuthenticated(false);
-            // Clear invalid user data on error
             setUser(null);
             setIsModerator(false);
             localStorage.removeItem("user");
             localStorage.removeItem("isModerator");
+            setAuthLoading(false);
+            return false;
+        } catch (error) {
+            console.error("Auth status check failed:", error);
+            
+            // Try refresh on network error too
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+                setIsAuthenticated(true);
+                setAuthLoading(false);
+                return true;
+            }
+
+            setIsAuthenticated(false);
+            setUser(null);
+            setIsModerator(false);
+            localStorage.removeItem("user");
+            localStorage.removeItem("isModerator");
+            setAuthLoading(false);
+            return false;
         }
-    };
+    }, [refreshAccessToken]);
+
+    // Check authentication status on mount
+    useEffect(() => {
+        checkAuthStatus();
+    }, [checkAuthStatus]);
 
     const login = (userData) => {
         // JWT token is automatically set as HTTP-only cookie by the server
@@ -99,7 +245,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("isModerator");
         
         // Call logout mutation to clear HTTP-only cookie on server
-        fetch(process.env.REACT_APP_API_URL || "http://localhost:5000/api", {
+        fetch(API_URL, {
             method: "POST",
             credentials: "include", // Important: sends cookies with request
             headers: {
@@ -128,10 +274,12 @@ export function AuthProvider({ children }) {
                 user, 
                 isModerator, 
                 isAuthenticated,
+                authLoading,
                 login, 
                 logout, 
                 updateUser,
-                checkAuthStatus 
+                checkAuthStatus,
+                refreshAccessToken
             }}
         >
             {children}

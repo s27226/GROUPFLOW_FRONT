@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 
 /**
@@ -15,8 +16,11 @@ export const useInvitations = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchInvitations = useCallback(async () => {
+        if (!isAuthenticated) return { friendRequests: [], projectInvitations: [] };
+        
         setLoading(true);
         setError(null);
         try {
@@ -68,13 +72,13 @@ export const useInvitations = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchInvitations();
         }
-    }, [autoFetch, fetchInvitations]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchInvitations]);
 
     const removeFromList = useCallback((id, type) => {
         if (type === "friend") {

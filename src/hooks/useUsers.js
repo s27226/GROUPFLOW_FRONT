@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 
 /**
@@ -15,9 +16,12 @@ export const useUserSearch = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const search = useCallback(
         async (searchTerm = "", skills = [], interests = []) => {
+            if (!isAuthenticated) return [];
+            
             setLoading(true);
             setError(null);
             try {
@@ -40,11 +44,13 @@ export const useUserSearch = (options = {}) => {
                 setLoading(false);
             }
         },
-        [executeQuery]
+        [executeQuery, isAuthenticated]
     );
 
     const loadSuggested = useCallback(
         async (limit = 20) => {
+            if (!isAuthenticated) return [];
+            
             setLoading(true);
             setError(null);
             try {
@@ -62,14 +68,14 @@ export const useUserSearch = (options = {}) => {
                 setLoading(false);
             }
         },
-        [executeQuery]
+        [executeQuery, isAuthenticated]
     );
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             loadSuggested();
         }
-    }, [autoFetch, loadSuggested]);
+    }, [autoFetch, authLoading, isAuthenticated, loadSuggested]);
 
     return {
         results,
@@ -94,8 +100,11 @@ export const useAllUsers = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchUsers = useCallback(async () => {
+        if (!isAuthenticated) return [];
+        
         setLoading(true);
         setError(null);
         try {
@@ -111,13 +120,13 @@ export const useAllUsers = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, filter]);
+    }, [executeQuery, filter, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchUsers();
         }
-    }, [autoFetch, fetchUsers]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchUsers]);
 
     return {
         users,
@@ -141,9 +150,10 @@ export const useUser = (identifier, options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchUser = useCallback(async () => {
-        if (!identifier) return null;
+        if (!identifier || !isAuthenticated) return null;
         
         setLoading(true);
         setError(null);
@@ -172,13 +182,13 @@ export const useUser = (identifier, options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, identifier, byNickname]);
+    }, [executeQuery, identifier, byNickname, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch && identifier) {
+        if (autoFetch && identifier && !authLoading && isAuthenticated) {
             fetchUser();
         }
-    }, [autoFetch, identifier, fetchUser]);
+    }, [autoFetch, identifier, authLoading, isAuthenticated, fetchUser]);
 
     return {
         user,

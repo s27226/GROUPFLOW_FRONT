@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Custom hook for managing chat functionality

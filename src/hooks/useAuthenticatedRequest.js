@@ -3,58 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { API_CONFIG, getRequestOptions } from "../config/api";
 
 export const useAuthenticatedRequest = () => {
-    const { logout, checkAuthStatus, updateUser } = useAuth();
-
-    const refreshAccessToken = useCallback(async () => {
-        try {
-            const response = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
-                ...getRequestOptions("POST", {
-                    query: `
-                        mutation RefreshToken {
-                            auth {
-                                refreshToken {
-                                    id
-                                    name
-                                    surname
-                                    nickname
-                                    email
-                                    profilePic
-                                    isModerator
-                                }
-                            }
-                        }
-                    `
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.errors) {
-                throw new Error(data.errors[0]?.message || "Failed to refresh token");
-            }
-
-            const authData = data.data.auth.refreshToken;
-            
-            // Update user data
-            if (authData.id) {
-                updateUser({
-                    id: authData.id,
-                    name: authData.name,
-                    surname: authData.surname,
-                    nickname: authData.nickname,
-                    email: authData.email,
-                    profilePic: authData.profilePic,
-                    isModerator: authData.isModerator
-                });
-            }
-
-            return true;
-        } catch (error) {
-            console.error("Token refresh failed:", error);
-            logout();
-            throw error;
-        }
-    }, [updateUser, logout]);
+    const { logout, refreshAccessToken } = useAuth();
 
     const makeRequest = useCallback(
         async (query, variables = {}, options = {}) => {
@@ -69,23 +18,41 @@ export const useAuthenticatedRequest = () => {
                 // Check if we got an authentication error
                 if (data.errors && data.errors.length > 0) {
                     const error = data.errors[0];
+                    const errorMessage = error.message?.toLowerCase() || "";
+                    const errorCode = error.extensions?.code;
+                    
                     const isAuthError =
-                        error.extensions?.code === "AUTH_NOT_AUTHENTICATED" ||
-                        error.message?.toLowerCase().includes("unauthorized") ||
-                        error.message?.toLowerCase().includes("expired") ||
-                        error.message?.toLowerCase().includes("not authenticated");
+                        errorCode === "AUTH_NOT_AUTHENTICATED" ||
+                        errorCode === "UNAUTHORIZED" ||
+                        errorMessage.includes("unauthorized") ||
+                        errorMessage.includes("expired") ||
+                        errorMessage.includes("not authenticated") ||
+                        errorMessage.includes("unexpected execution error"); // Backend returns this for missing auth
+
+                    console.log("[makeRequest] Error detected:", error.message, "code:", errorCode, "isAuthError:", isAuthError);
 
                     if (isAuthError && !options.skipRetry) {
                         console.log("Access token expired, attempting refresh...");
                         try {
-                            // Try to refresh using the refresh token
-                            await refreshAccessToken();
+                            // Try to refresh using the refresh token from AuthContext
+                            const refreshed = await refreshAccessToken();
+                            
+                            if (!refreshed) {
+                                console.error("Token refresh returned false");
+                                throw new Error("Token refresh failed");
+                            }
+                            
+                            console.log("Token refreshed successfully, retrying request...");
                             
                             // Retry the original request with new access token
                             const retryResponse = await fetch(API_CONFIG.GRAPHQL_ENDPOINT, {
                                 ...getRequestOptions("POST", { query, variables })
                             });
-                            return await retryResponse.json();
+                            const retryData = await retryResponse.json();
+                            
+                            console.log("Retry response received:", retryData.errors ? "has errors" : "success");
+                            
+                            return retryData;
                         } catch (refreshError) {
                             console.error("Failed to refresh and retry:", refreshError);
                             logout();

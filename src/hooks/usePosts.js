@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { formatTime } from "../utils/dateFormatter";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Helper function to format comment data
@@ -66,27 +67,39 @@ export const usePosts = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchPosts = useCallback(async () => {
+        console.log("[usePosts] fetchPosts called, isAuthenticated:", isAuthenticated);
+        if (!isAuthenticated) {
+            console.log("[usePosts] Not authenticated, skipping fetch");
+            return;
+        }
+        
         try {
             setLoading(true);
+            console.log("[usePosts] Making GraphQL request...");
             const data = await executeQuery(GRAPHQL_QUERIES.GET_POSTS, {});
+            console.log("[usePosts] Got data:", data ? "success" : "null");
 
             const allPosts = data.post.allposts || [];
             const formattedPosts = allPosts.map(formatPostData);
             setPosts(formattedPosts);
             setError(null);
         } catch (err) {
-            console.error("Failed to fetch posts:", err);
+            console.error("[usePosts] Failed to fetch posts:", err);
             setError(err.message || "Failed to load posts");
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        fetchPosts();
-    }, [fetchPosts]);
+        console.log("[usePosts] useEffect triggered, authLoading:", authLoading, "isAuthenticated:", isAuthenticated);
+        if (!authLoading && isAuthenticated) {
+            fetchPosts();
+        }
+    }, [authLoading, isAuthenticated, fetchPosts]);
 
     return { posts, loading, error, refetch: fetchPosts };
 };
@@ -101,6 +114,7 @@ export const usePost = (postId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchPost = useCallback(async () => {
         if (!postId) {
@@ -108,6 +122,8 @@ export const usePost = (postId) => {
             setLoading(false);
             return;
         }
+        
+        if (!isAuthenticated) return;
 
         try {
             setLoading(true);
@@ -131,11 +147,13 @@ export const usePost = (postId) => {
         } finally {
             setLoading(false);
         }
-    }, [postId, executeQuery]);
+    }, [postId, executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        fetchPost();
-    }, [fetchPost]);
+        if (!authLoading && isAuthenticated) {
+            fetchPost();
+        }
+    }, [authLoading, isAuthenticated, fetchPost]);
 
     return { post, loading, error, refetch: fetchPost };
 };
@@ -150,12 +168,15 @@ export const useProjectPosts = (projectId) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchProjectPosts = useCallback(async () => {
         if (!projectId) {
             setLoading(false);
             return;
         }
+        
+        if (!isAuthenticated) return;
 
         try {
             setLoading(true);
@@ -173,11 +194,13 @@ export const useProjectPosts = (projectId) => {
         } finally {
             setLoading(false);
         }
-    }, [projectId, executeQuery]);
+    }, [projectId, executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        fetchProjectPosts();
-    }, [fetchProjectPosts]);
+        if (!authLoading && isAuthenticated) {
+            fetchProjectPosts();
+        }
+    }, [authLoading, isAuthenticated, fetchProjectPosts]);
 
     return { posts, loading, error, refetch: fetchProjectPosts };
 };
@@ -191,8 +214,11 @@ export const useSavedPosts = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchSavedPosts = useCallback(async () => {
+        if (!isAuthenticated) return;
+        
         try {
             setLoading(true);
             const data = await executeQuery(GRAPHQL_QUERIES.GET_SAVED_POSTS);
@@ -211,11 +237,13 @@ export const useSavedPosts = () => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     useEffect(() => {
-        fetchSavedPosts();
-    }, [fetchSavedPosts]);
+        if (!authLoading && isAuthenticated) {
+            fetchSavedPosts();
+        }
+    }, [authLoading, isAuthenticated, fetchSavedPosts]);
 
     return { posts, setPosts, loading, error, refetch: fetchSavedPosts };
 };

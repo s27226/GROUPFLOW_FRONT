@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES } from "../queries/graphql";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Custom hook for fetching trending projects with pagination support
@@ -15,9 +16,12 @@ export const useTrendingProjects = (pageSize = 5) => {
     const [endCursor, setEndCursor] = useState(null);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchProjects = useCallback(
         async (after = null, append = false) => {
+            if (!isAuthenticated) return;
+            
             try {
                 if (!append) {
                     setLoading(true);
@@ -63,12 +67,14 @@ export const useTrendingProjects = (pageSize = 5) => {
                 setIsLoadingMore(false);
             }
         },
-        [pageSize, executeQuery]
+        [pageSize, executeQuery, isAuthenticated]
     );
 
     useEffect(() => {
-        fetchProjects();
-    }, [fetchProjects]);
+        if (!authLoading && isAuthenticated) {
+            fetchProjects();
+        }
+    }, [authLoading, isAuthenticated, fetchProjects]);
 
     const loadMore = useCallback(() => {
         if (hasMore && !isLoadingMore && endCursor) {

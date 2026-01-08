@@ -15,10 +15,10 @@ export const useChats = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
-    const { user: currentUser } = useAuth();
+    const { user: currentUser, isAuthenticated, authLoading } = useAuth();
 
     const fetchChats = useCallback(async () => {
-        if (!currentUser) return [];
+        if (!currentUser || !isAuthenticated) return [];
 
         setLoading(true);
         setError(null);
@@ -52,13 +52,13 @@ export const useChats = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, currentUser]);
+    }, [executeQuery, currentUser, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch && currentUser) {
+        if (autoFetch && !authLoading && isAuthenticated && currentUser) {
             fetchChats();
         }
-    }, [autoFetch, currentUser, fetchChats]);
+    }, [autoFetch, authLoading, isAuthenticated, currentUser, fetchChats]);
 
     const createDirectChat = useCallback(
         async (friendId) => {

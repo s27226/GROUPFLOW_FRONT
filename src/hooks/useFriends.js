@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../queries/graphql";
 
 /**
@@ -16,8 +17,11 @@ export const useFriends = (options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery, executeMutation } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchFriends = useCallback(async () => {
+        if (!isAuthenticated) return [];
+        
         setLoading(true);
         setError(null);
         try {
@@ -33,14 +37,14 @@ export const useFriends = (options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery]);
+    }, [executeQuery, isAuthenticated]);
 
     // Auto-fetch on mount if enabled
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchFriends();
         }
-    }, [autoFetch, fetchFriends]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchFriends]);
 
     // Apply search filter
     useEffect(() => {

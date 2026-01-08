@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useGraphQL } from "./useGraphQL";
+import { useAuth } from "../context/AuthContext";
 import { 
     GET_ALL_USERS, 
     GET_BANNED_USERS, 
@@ -19,8 +20,11 @@ export const useModerationUsers = (userType = 'all', options = {}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { executeQuery } = useGraphQL();
+    const { isAuthenticated, authLoading } = useAuth();
 
     const fetchUsers = useCallback(async () => {
+        if (!isAuthenticated) return [];
+        
         setLoading(true);
         setError(null);
         try {
@@ -54,13 +58,13 @@ export const useModerationUsers = (userType = 'all', options = {}) => {
         } finally {
             setLoading(false);
         }
-    }, [executeQuery, userType]);
+    }, [executeQuery, userType, isAuthenticated]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch && !authLoading && isAuthenticated) {
             fetchUsers();
         }
-    }, [autoFetch, fetchUsers]);
+    }, [autoFetch, authLoading, isAuthenticated, fetchUsers]);
 
     return {
         users,

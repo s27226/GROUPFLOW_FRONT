@@ -16,7 +16,7 @@ import { useGraphQL } from "../hooks/useGraphQL";
 import { useFriends } from "../hooks/useFriends";
 
 function Navbar() {
-    const { logout, user, updateUser, token, isModerator } = useAuth();
+    const { logout, user, updateUser, isAuthenticated, isModerator } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -30,7 +30,7 @@ function Navbar() {
     
     // Use unified friends hook
     const { friends, loading: loadingFriends } = useFriends({ 
-        autoFetch: !!(token && user) 
+        autoFetch: !!(isAuthenticated && user) 
     });
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(false);
@@ -39,7 +39,7 @@ function Navbar() {
     // Fetch current user data on mount
     useEffect(() => {
         const fetchCurrentUser = async () => {
-            if (user || !token) return; // Already loaded or not authenticated
+            if (user || !isAuthenticated) return; // Already loaded or not authenticated
 
             setLoadingUser(true);
             try {
@@ -57,7 +57,7 @@ function Navbar() {
         };
 
         fetchCurrentUser();
-    }, [user, updateUser, executeQuery, token]);
+    }, [user, updateUser, executeQuery, isAuthenticated]);
 
     const [activeChat, setActiveChat] = useState(null);
 
@@ -91,7 +91,7 @@ function Navbar() {
     // Fetch notifications
     useEffect(() => {
         const fetchNotifications = async () => {
-            if (!token || !user) return;
+            if (!isAuthenticated || !user) return;
 
             setLoadingNotifications(true);
             try {
@@ -109,7 +109,7 @@ function Navbar() {
         };
 
         fetchNotifications();
-    }, [user, executeQuery, token, notifOpen]); // Re-fetch when notification dropdown is opened
+    }, [user, executeQuery, isAuthenticated, notifOpen]); // Re-fetch when notification dropdown is opened
 
     // Convert friends to message format
     const messages = friends.slice(0, 5).map((friend) => ({

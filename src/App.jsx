@@ -2,8 +2,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MainPage from "./pages/MainPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfileEditPage from "./pages/ProfileEditPage";
@@ -31,10 +30,46 @@ import ReportedPostsPage from "./pages/ReportedPostsPage";
 import ModerationPage from "./pages/ModerationPage";
 import { ToastProvider } from "./context/ToastContext";
 
-function ProtectedRoute({ children }) {
-    const { token, isAuthenticated } = useAuth();
+/**
+ * RequireAuth - Unified authentication wrapper for protected routes
+ * Handles both traditional navigation and direct URL access
+ * Waits for auth check to complete before redirecting
+ */
+function RequireAuth({ children }) {
+    const { isAuthenticated, authLoading } = useAuth();
+    const location = useLocation();
 
-    if (!token && !isAuthenticated) return <Navigate to="/login" replace />;
+    // Return null while checking authentication (brief blank screen)
+    if (authLoading) {
+        return null;
+    }
+
+    // Redirect to login if not authenticated, preserving the intended destination
+    if (!isAuthenticated) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return children;
+}
+
+/**
+ * PublicRoute - Wrapper for public-only routes (login, register)
+ * Redirects authenticated users to home
+ */
+function PublicRoute({ children }) {
+    const { isAuthenticated, authLoading } = useAuth();
+    const location = useLocation();
+
+    // Return null while checking authentication (brief blank screen)
+    if (authLoading) {
+        return null;
+    }
+
+    // Redirect to intended destination or home if already authenticated
+    if (isAuthenticated) {
+        const from = location.state?.from?.pathname || "/";
+        return <Navigate to={from} replace />;
+    }
 
     return children;
 }
@@ -45,39 +80,141 @@ function AppContent({ setInvitationsCount }) {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/profile/:userId" element={<ProfilePage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/settings/reset-pass" element={<ResetPasswordPage />} />
-                <Route path="/profile/edit" element={<ProfileEditPage />} />
-                <Route path="/project/:projectId" element={<ProjectProfilePage />} />
-                <Route path="/project/:projectId/edit" element={<ProjectEditFrontPage />} />
-                <Route path="/project/:projectId/new-post" element={<NewPostPage />} />
-                <Route path="/new-post" element={<NewPostPage />} />
-                <Route path="/chat/:username" element={<PrivateChat />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route path="/project/:id/workspace" element={<ProjectChatPage />} />
-                <Route path="/chats" element={<ChatPage />} />
-                <Route path="/creategroup" element={<CreateGroupPage />} />
-                <Route path="/myprojects" element={<MyProjectsPage />} />
-                <Route path="/findfriends" element={<UsersPage />} />
-                <Route path="/profile-tags" element={<ProfileTagsPage />} />
-                <Route path="/friendslist" element={<FriendPage />} />
-                <Route path="/invitations" element={<InvitationsPage />} />
-                <Route path="/blocked-users" element={<BlockedUsersPage />} />
-                <Route path="/admin/reported-posts" element={<ReportedPostsPage />} />
-                <Route path="/moderation" element={<ModerationPage />} />
-                <Route path="/Saved" element={<SavedPage />} />
-                <Route path="/post/:postId" element={<PostPage />} />
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <MainPage />
-                        </ProtectedRoute>
-                    }
-                />
+                {/* Public routes - redirect to home if already logged in */}
+                <Route path="/login" element={
+                    <PublicRoute>
+                        <LoginPage />
+                    </PublicRoute>
+                } />
+                <Route path="/register" element={
+                    <PublicRoute>
+                        <RegisterPage />
+                    </PublicRoute>
+                } />
+                
+                {/* Protected routes - require authentication */}
+                <Route path="/" element={
+                    <RequireAuth>
+                        <MainPage />
+                    </RequireAuth>
+                } />
+                <Route path="/profile/:userId" element={
+                    <RequireAuth>
+                        <ProfilePage />
+                    </RequireAuth>
+                } />
+                <Route path="/settings" element={
+                    <RequireAuth>
+                        <SettingsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/settings/reset-pass" element={
+                    <RequireAuth>
+                        <ResetPasswordPage />
+                    </RequireAuth>
+                } />
+                <Route path="/profile/edit" element={
+                    <RequireAuth>
+                        <ProfileEditPage />
+                    </RequireAuth>
+                } />
+                <Route path="/project/:projectId" element={
+                    <RequireAuth>
+                        <ProjectProfilePage />
+                    </RequireAuth>
+                } />
+                <Route path="/project/:projectId/edit" element={
+                    <RequireAuth>
+                        <ProjectEditFrontPage />
+                    </RequireAuth>
+                } />
+                <Route path="/project/:projectId/new-post" element={
+                    <RequireAuth>
+                        <NewPostPage />
+                    </RequireAuth>
+                } />
+                <Route path="/new-post" element={
+                    <RequireAuth>
+                        <NewPostPage />
+                    </RequireAuth>
+                } />
+                <Route path="/chat/:username" element={
+                    <RequireAuth>
+                        <PrivateChat />
+                    </RequireAuth>
+                } />
+                <Route path="/projects" element={
+                    <RequireAuth>
+                        <ProjectsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/project/:id/workspace" element={
+                    <RequireAuth>
+                        <ProjectChatPage />
+                    </RequireAuth>
+                } />
+                <Route path="/chats" element={
+                    <RequireAuth>
+                        <ChatPage />
+                    </RequireAuth>
+                } />
+                <Route path="/creategroup" element={
+                    <RequireAuth>
+                        <CreateGroupPage />
+                    </RequireAuth>
+                } />
+                <Route path="/myprojects" element={
+                    <RequireAuth>
+                        <MyProjectsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/findfriends" element={
+                    <RequireAuth>
+                        <UsersPage />
+                    </RequireAuth>
+                } />
+                <Route path="/profile-tags" element={
+                    <RequireAuth>
+                        <ProfileTagsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/friendslist" element={
+                    <RequireAuth>
+                        <FriendPage />
+                    </RequireAuth>
+                } />
+                <Route path="/invitations" element={
+                    <RequireAuth>
+                        <InvitationsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/blocked-users" element={
+                    <RequireAuth>
+                        <BlockedUsersPage />
+                    </RequireAuth>
+                } />
+                <Route path="/admin/reported-posts" element={
+                    <RequireAuth>
+                        <ReportedPostsPage />
+                    </RequireAuth>
+                } />
+                <Route path="/moderation" element={
+                    <RequireAuth>
+                        <ModerationPage />
+                    </RequireAuth>
+                } />
+                <Route path="/Saved" element={
+                    <RequireAuth>
+                        <SavedPage />
+                    </RequireAuth>
+                } />
+                <Route path="/post/:postId" element={
+                    <RequireAuth>
+                        <PostPage />
+                    </RequireAuth>
+                } />
+                
+                {/* 404 Page */}
                 <Route
                     path="*"
                     element={
