@@ -1,0 +1,19 @@
+{
+  "id": "1",
+  "nickname": "testuser",
+  "name": "Test",
+  "surname": "User",
+  "email": "test@example.com",
+  "profilePic": null,
+  "bannerUrl": null,
+  "bio": "This is my bio",
+  "skills": [
+    { "id": 1, "skillName": "JavaScript" },
+    { "id": 2, "skillName": "React" },
+    { "id": 3, "skillName": "TypeScript" }
+  ],
+  "interests": [
+    { "id": 1, "interestName": "Web Development" },
+    { "id": 2, "interestName": "Open Source" }
+  ]
+}
