@@ -1,0 +1,94 @@
+.postpageWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.postpageBackBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+    width: fit-content;
+}
+
+.postpageBackBtn:hover {
+    background-color: var(--bg-hover);
+}
+
+.postpageCard {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    color: var(--text-primary);
+    box-shadow: none;
+}
+
+.postpageCard :global(.post-card) {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+
+.postpageCard :global(.post-avatar) {
+    width: 56px;
+    height: 56px;
+}
+
+.postpageCard :global(.post-author) {
+    font-size: 1.15rem;
+}
+
+.postpageCard :global(.post-content) p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.postpageCard :global(.post-image) {
+    max-height: 600px;
+}
+
+.postpageCard :global(.icon-btn) {
+    font-size: 1.05rem;
+    gap: 10px;
+}
+
+.postpageCard :global(.icon-btn) svg {
+    width: 24px;
+    height: 24px;
+}
+
+.postpageCard :global(.comment-section) {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border-color);
+}
+
+.postpageCard :global(.comment-section)::before {
+    content: "Comments";
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.errorMessage {
+    color: var(--error);
+    text-align: center;
+    padding: 16px;
+}

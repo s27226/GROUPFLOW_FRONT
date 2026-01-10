@@ -1,0 +1,161 @@
+
+.chatboxTabContent {
+    width: 100%;
+    margin-right: 335px;
+}
+
+.chatboxAll {
+    max-width: 800px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.chatboxContainer {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    color: var(--text-primary);
+    max-width: 100%;
+    width: 100%;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-soft);
+    font-family: var(--font-family), serif;
+    overflow-x: hidden;
+}
+
+.chatboxTitle {
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    font-weight: 600;
+}
+
+.chatboxSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 40px;
+    min-width: 120px;
+}
+
+.chatboxSidebarBtn {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.chatboxSidebarBtn.active {
+    background: #e7e9ea;
+    font-weight: 500;
+}
+
+.chatboxContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 40px;
+    overflow-x: hidden;
+}
+
+.chatboxMessagesArea {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chatboxMessageRow {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.self {
+    justify-content: flex-end;
+}
+
+.chatboxAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chatboxMessageContent {
+    max-width: 70%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.chatboxUsername {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+    margin-left: 4px;
+}
+
+.chatboxMessageBubble {
+    background-color: var(--bg-accent);
+    border-radius: 18px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.chatboxSelfBubble {
+    background-color: var(--accent);
+    color: white;
+}
+
+
+.chatboxInputArea {
+    display: flex;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    gap: 8px;
+}
+
+.chatboxInputArea input {
+    flex: 1;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 8px 12px;
+    outline: none;
+    min-width: 0;
+}
+
+.chatboxInputArea button {
+    background-color: var(--accent);
+    border: none;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.chatboxInputArea button:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+}
+
+.chatboxInputArea button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}

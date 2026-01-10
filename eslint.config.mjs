@@ -1,24 +1,19 @@
 import js from "@eslint/js";
 import unusedImports from "eslint-plugin-unused-imports";
-import babelEslint from "@babel/eslint-parser";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import globals from "globals";
 import prettier from "eslint-plugin-prettier";
+import tseslint from "typescript-eslint";
 
-export default [
+export default tseslint.config(
     js.configs.recommended,
+    ...tseslint.configs.recommended,
     {
-        files: ["**/*.{js,jsx}"],
+        files: ["**/*.{js,jsx,ts,tsx}"],
         languageOptions: {
-            parser: babelEslint,
+            parser: tseslint.parser,
             parserOptions: {
-                requireConfigFile: false,
-                babelOptions: {
-                    presets: [
-                        ["@babel/preset-react", { runtime: "automatic" }]
-                    ],
-                },
                 ecmaVersion: "latest",
                 sourceType: "module",
                 ecmaFeatures: {
@@ -36,6 +31,7 @@ export default [
             react: reactPlugin,
             "react-hooks": reactHooksPlugin,
             prettier: prettier,
+            "@typescript-eslint": tseslint.plugin,
         },
         settings: {
             react: {
@@ -53,8 +49,9 @@ export default [
             "react-hooks/rules-of-hooks": "error",
             "react-hooks/exhaustive-deps": "warn",
 
-            "no-undef": "error",
+            "no-undef": "off", // TypeScript handles this
             "no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars": "off",
 
             "unused-imports/no-unused-imports": "error",
             "unused-imports/no-unused-vars": [
@@ -67,6 +64,15 @@ export default [
                     ignoreRestSiblings: true,
                 },
             ],
+
+            // TypeScript-specific rules
+            "@typescript-eslint/no-explicit-any": "warn",
+            "@typescript-eslint/explicit-function-return-type": "off",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "@typescript-eslint/no-non-null-assertion": "warn",
         },
     },
-];
+    {
+        ignores: ["build/**", "dist/**", "node_modules/**"],
+    }
+);

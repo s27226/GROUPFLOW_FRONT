@@ -1,0 +1,181 @@
+/* UserSearchFilters Component Styles */
+.searchSection {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.findFriendsSearch {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+.findFriendsInput {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+    font-family: var(--font-family);
+    min-width: 0;
+}
+
+.findFriendsInput:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.findFriendsInput::placeholder {
+    color: var(--text-secondary);
+}
+
+.findFriendsBtn {
+    padding: 0.75rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.findFriendsBtn:hover {
+    opacity: 0.9;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.filterGroup h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.filterInput {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.filterInput input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+}
+
+.filterInput input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.filterInput input::placeholder {
+    color: var(--text-secondary);
+}
+
+.addFilterBtn {
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.addFilterBtn:hover {
+    opacity: 0.9;
+}
+
+.selectedFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filterTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--font-family);
+}
+
+.filterTag button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.filterTag button:hover {
+    opacity: 1;
+}
+
+.skillTag {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.interestTag {
+    background-color: #10b981;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+}

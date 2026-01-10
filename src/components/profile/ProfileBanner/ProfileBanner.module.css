@@ -1,0 +1,23 @@
+/* ProfileBanner Component Styles */
+.profileBanner {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+    overflow: hidden;
+}
+
+.profileBanner img {
+    width: 900px;
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    color: transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.profileBanner img.loaded,
+.loaded {
+    opacity: 1;
+}

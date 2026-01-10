@@ -1,0 +1,78 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { Layout } from "../../../components/layout";
+import { Post } from "../../../components/feed";
+import SkeletonPost from "../../../components/ui/SkeletonPost";
+import { ArrowLeft } from "lucide-react";
+import { usePost } from "../../../hooks";
+import styles from "./PostPage.module.css";
+
+export default function PostPage() {
+    const { postId } = useParams();
+    const navigate = useNavigate();
+    const { post, loading, error } = usePost(postId ?? "");
+
+    return (
+        <Layout variant="compact" showTrending={false}>
+            <div className={styles.postpageWrapper}>
+                <button className={styles.postpageBackBtn} onClick={() => navigate(-1)}>
+                    <ArrowLeft size={20} />
+                    <span>Back</span>
+                </button>
+
+                <div className={styles.postpageCard}>
+                    {loading ? (
+                        <SkeletonPost count={1} />
+                    ) : error ? (
+                        <p className={styles.errorMessage}>{error}</p>
+                    ) : post ? (
+                        <Post
+                            id={String(post.id)}
+                            author={post.author}
+                            authorId={String(post.authorId ?? '')}
+                            authorProfilePic={post.authorProfilePic}
+                            time={post.time ?? ''}
+                            content={post.content ?? ''}
+                            image={post.image}
+                            comments={(post.comments ?? []).map((c) => ({
+                                id: String(c.id),
+                                user: c.user,
+                                userId: String(c.userId),
+                                profilePic: c.profilePic,
+                                time: c.time,
+                                text: c.text,
+                                likes: (c.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName })),
+                                liked: c.liked,
+                                menuOpen: c.menuOpen,
+                                replies: (c.replies ?? []).map((r) => ({
+                                    id: String(r.id),
+                                    user: r.user,
+                                    userId: String(r.userId),
+                                    profilePic: r.profilePic,
+                                    time: r.time,
+                                    text: r.text,
+                                    likes: (r.likes ?? []).map((rl) => ({ userId: String(rl.userId), userName: rl.userName })),
+                                    liked: r.liked,
+                                    menuOpen: r.menuOpen,
+                                    replies: []
+                                }))
+                            }))}
+                            likes={(post.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName }))}
+                            saved={post.saved}
+                            hidden={post.hidden}
+                            sharedPost={post.sharedPost ? {
+                                id: String(post.sharedPost.id),
+                                author: post.sharedPost.author,
+                                authorId: post.sharedPost.authorId ? String(post.sharedPost.authorId) : undefined,
+                                authorProfilePic: post.sharedPost.authorProfilePic,
+                                time: post.sharedPost.time,
+                                content: post.sharedPost.content ?? '',
+                                image: post.sharedPost.image
+                            } : null}
+                            isFullView={true}
+                        />
+                    ) : null}
+                </div>
+            </div>
+        </Layout>
+    );
+}

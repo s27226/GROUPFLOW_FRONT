@@ -1,0 +1,204 @@
+.authContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-main, #000);
+    color: var(--text-primary, #fff);
+    font-family: var(--font-family), serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.authLeft {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 480px;
+    padding-right: 40px;
+}
+
+.authRight {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.authTitle {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary, #fff);
+}
+
+.authDesc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary, #aaa);
+}
+
+.loginError {
+    color: #ff4c4c;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: center;
+}
+
+.loginSuccess {
+    color: #4cff4c;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family), serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.formCard {
+    background-color: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-hard);
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formCardWide {
+    composes: formCard;
+    padding: 3rem 2.5rem;
+    width: 380px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.formCard input,
+.formCardWide input {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 9999px;
+    border: none;
+    outline: none;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.formCard input:focus,
+.formCardWide input:focus {
+    background-color: var(--bg-accent);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.pillBtn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.25s ease-in-out;
+}
+
+.pillBtnLogin {
+    composes: pillBtn;
+    background-color: var(--bg-card);
+    color: var(--accent);
+}
+
+.pillBtnLogin:hover {
+    background-color: var(--bg-accent);
+    box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.pillBtnRegister {
+    composes: pillBtn;
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.pillBtnRegister:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+    box-shadow: 0 4px 12px rgba(30, 144, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.socialLogin {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.socialIcon {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+
+.socialImg {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.socialLoginCircles {
+    display: flex;
+    gap: 20px;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.circleBtn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #2f3336;
+    background-color: #16181c;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.circleBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.circleBtn img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.circleBtnGoogle {
+    composes: circleBtn;
+    background-color: white;
+}
+
+.circleBtnFacebook {
+    composes: circleBtn;
+    background-color: #0866FF;
+}
+

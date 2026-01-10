@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "Test Project",
+    "description": "A test project for demonstration",
+    "imageUrl": null,
+    "bannerUrl": null,
+    "isPublic": true,
+    "owner": {
+      "id": "1",
+      "nickname": "testuser",
+      "name": "Test",
+      "surname": "User",
+      "profilePic": null
+    },
+    "collaborators": [],
+    "skills": [
+      { "id": 1, "skillName": "React" },
+      { "id": 2, "skillName": "TypeScript" }
+    ],
+    "interests": [
+      { "id": 1, "interestName": "Web Development" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Collaborative Project",
+    "description": "A project with multiple collaborators",
+    "imageUrl": "https://picsum.photos/200",
+    "bannerUrl": "https://picsum.photos/900/200",
+    "isPublic": false,
+    "owner": {
+      "id": "1",
+      "nickname": "testuser",
+      "name": "Test",
+      "surname": "User",
+      "profilePic": null
+    },
+    "collaborators": [
+      {
+        "user": {
+          "id": "2",
+          "nickname": "collaborator",
+          "name": "Collab",
+          "surname": "User",
+          "profilePic": null
+        },
+        "role": "Developer"
+      }
+    ],
+    "skills": [],
+    "interests": []
+  }
+]

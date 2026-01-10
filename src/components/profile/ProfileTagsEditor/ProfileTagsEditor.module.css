@@ -1,0 +1,226 @@
+.profileTagsEditor {
+    max-width: 800px;
+    margin: 64px auto;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.profileTagsEditor h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+}
+
+.tagsDescription {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.tagSection {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-main);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.tagSection h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.sectionHint {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.tagInputGroup {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.tagInputGroup input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.tagInputGroup input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.tagInputGroup input::placeholder {
+    color: var(--text-secondary);
+}
+
+.addTagBtn {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    font-family: var(--font-family);
+}
+
+.addTagBtn:hover {
+    opacity: 0.9;
+}
+
+.tagsDisplay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 50px;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.tagItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    animation: tagAppear 0.3s ease;
+}
+
+@keyframes tagAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tagItem span {
+    line-height: 1;
+}
+
+.tagItem.skillTag {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(29, 155, 240, 0.3);
+}
+
+.tagItem.interestTag {
+    background: rgba(160, 70, 200, 0.15);
+    color: #a046c8;
+    border: 1px solid rgba(160, 70, 200, 0.3);
+}
+
+[data-theme="light"] .tagItem.skillTag {
+    background: rgba(29, 155, 240, 0.1);
+    color: #0077ff;
+}
+
+[data-theme="light"] .tagItem.interestTag {
+    background: rgba(160, 70, 200, 0.1);
+    color: #8b00d4;
+}
+
+.removeTagBtn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.3rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.removeTagBtn:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+.noTags {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+    padding: 0.5rem;
+    text-align: center;
+    width: 100%;
+}
+
+.tagsSummary {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-accent);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+}
+
+.tagsSummary p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.tagsSummary strong {
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .profileTagsEditor {
+        padding: 1rem;
+    }
+
+    .tagInputGroup {
+        flex-direction: column;
+    }
+
+    .addTagBtn {
+        width: 100%;
+    }
+
+    .profileTagsEditor h2 {
+        font-size: 1.5rem;
+    }
+
+    .tagSection {
+        padding: 0.75rem;
+    }
+}
+
+.profileTagsEditor > div:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}

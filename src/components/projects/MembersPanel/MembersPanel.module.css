@@ -1,0 +1,190 @@
+.projectMembersPanel {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    width: 430px;
+    color: var(--text-primary);
+    font-family: var(--font-family), serif;
+    margin-top: 0;
+    margin-left: 50px;
+}
+
+.projectProfileLinkPanel {
+    margin-bottom: 16px;
+}
+
+.viewProfileBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1d9bf0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.viewProfileBtn:hover {
+    background-color: #1a8cd8;
+}
+
+.membersList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+.memberHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.memberAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.memberItem {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.projectMembersPanel h3 {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.projectMembersPanel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.projectMembersPanel li {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.projectMembersPanel li:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.memberItem {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.memberItem:hover {
+    background-color: var(--bg-hover);
+}
+
+.memberName {
+    font-weight: 500;
+}
+
+.memberInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.memberRole {
+    font-size: 0.75rem;
+    color: #1d9bf0;
+    font-weight: 500;
+}
+
+.statusText {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+.memberItem.available .statusDot {
+    background-color: #22c55e;
+}
+
+.memberItem.away .statusDot {
+    background-color: #facc15;
+}
+
+.memberItem.offline .statusDot {
+    background-color: #ef4444;
+}
+
+.memberItem span:first-child {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+.memberItem {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-secondary);
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    cursor: pointer;
+    position: relative; /* Ensures that the remove button is positioned relative to this element */
+}
+
+.removeMemberBtn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.removeMemberBtn:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.removeMemberBtn:active {
+    transform: scale(0.95);
+}

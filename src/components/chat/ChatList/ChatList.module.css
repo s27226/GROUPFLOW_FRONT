@@ -1,0 +1,64 @@
+/* ChatList Component Styles */
+.chatList {
+    width: 250px;
+    background-color: var(--bg-accent);
+    border-right: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+.chatList h3 {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.textCenter {
+    text-align: center;
+}
+
+.chatList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chatList li {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.chatList li:hover {
+    background-color: var(--accent);
+}
+
+.active {
+    background-color: var(--accent);
+}
+
+.chatUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chatUserAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.chatStatus {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.online {
+    background-color: #3ba55d;
+}
+
+.offline {
+    background-color: #808080;
+}

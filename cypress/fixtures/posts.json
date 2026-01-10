@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "content": "This is a test post with some content",
+    "title": "Test Post",
+    "created": "2025-01-10T10:00:00Z",
+    "imageUrl": null,
+    "user": {
+      "id": "1",
+      "nickname": "testuser",
+      "name": "Test",
+      "surname": "User",
+      "profilePic": null
+    },
+    "likes": [],
+    "comments": []
+  },
+  {
+    "id": 2,
+    "content": "Another post with an image",
+    "title": "Image Post",
+    "created": "2025-01-10T12:00:00Z",
+    "imageUrl": "https://picsum.photos/400/300",
+    "user": {
+      "id": "1",
+      "nickname": "testuser",
+      "name": "Test",
+      "surname": "User",
+      "profilePic": null
+    },
+    "likes": [
+      { "userId": "2" }
+    ],
+    "comments": [
+      {
+        "id": 1,
+        "content": "Great post!",
+        "user": { "id": "2", "nickname": "commenter" }
+      }
+    ]
+  }
+]

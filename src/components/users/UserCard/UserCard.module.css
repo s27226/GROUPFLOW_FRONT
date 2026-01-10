@@ -1,0 +1,143 @@
+/* UserCard Component Styles */
+.userCard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.userCard:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+}
+
+.userCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.userAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userInfo h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.userName {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.matchScore {
+    margin: 0.25rem 0 0 0;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.userTags {
+    margin-bottom: 0.75rem;
+}
+
+.userTags h4 {
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.skillTag {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(29, 155, 240, 0.3);
+}
+
+.interestTag {
+    background: rgba(160, 70, 200, 0.15);
+    color: #a046c8;
+    border: 1px solid rgba(160, 70, 200, 0.3);
+}
+
+:global([data-theme="light"]) .skillTag {
+    background: rgba(29, 155, 240, 0.1);
+    color: #0077ff;
+}
+
+:global([data-theme="light"]) .interestTag {
+    background: rgba(160, 70, 200, 0.1);
+    color: #8b00d4;
+}
+
+.sendRequestBtn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+    margin-top: 10px;
+}
+
+.sendRequestBtn:hover {
+    opacity: 0.9;
+}
+
+.sendRequestBtn.requestSent,
+.sendRequestBtn.friends {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    cursor: default;
+    opacity: 0.7;
+}
+
+.sendRequestBtn.requestSent:hover,
+.sendRequestBtn.friends:hover {
+    opacity: 0.7;
+}
+
+.sendRequestBtn:disabled {
+    cursor: not-allowed;
+}
+
+.matchDetails {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-accent);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+}
+
+.matchDetails small {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
