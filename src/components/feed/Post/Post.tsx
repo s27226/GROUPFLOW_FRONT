@@ -130,7 +130,7 @@ export default function Post({
                     };
                 }
                 const response = await makeRequest<FriendshipResponse>(GRAPHQL_QUERIES.GET_FRIENDSHIP_STATUS, {
-                    friendId: authorId
+                    friendId: parseInt(authorId, 10)
                 });
 
                 if (!response.errors && response.data?.friendship?.friendshipstatus) {
@@ -156,7 +156,7 @@ export default function Post({
 
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.BLOCK_USER, {
-                userIdToBlock: authorId
+                userIdToBlock: parseInt(authorId, 10)
             });
 
             if (!response.errors) {
