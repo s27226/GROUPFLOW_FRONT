@@ -1,0 +1,442 @@
+.usersContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    margin-top: var(--navbar-height);
+}
+
+.usersContainer h1 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+}
+
+.usersContainer .tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.usersContainer .tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-family: var(--font-family);
+}
+
+.usersContainer .tab:hover {
+    color: var(--text-primary);
+}
+
+.usersContainer .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+
+.searchSection, .suggestedSection {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.findFriendsSearch {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+.findFriendsInput {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+    font-family: var(--font-family);
+    min-width: 0;
+}
+
+.findFriendsInput:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.findFriendsInput::placeholder {
+    color: var(--text-secondary);
+}
+
+.findFriendsBtn {
+    padding: 0.75rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.findFriendsBtn:hover {
+    opacity: 0.9;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.filterGroup h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.filterInput {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.filterInput input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+}
+
+.filterInput input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.filterInput input::placeholder {
+    color: var(--text-secondary);
+}
+
+.addFilterBtn {
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.addFilterBtn:hover {
+    opacity: 0.9;
+}
+
+.selectedFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filterTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--font-family);
+}
+
+.filterTag button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.filterTag button:hover {
+    opacity: 1;
+}
+
+.results {
+    margin-top: 1rem;
+}
+
+.userCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.userCard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.userCard:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+}
+
+.userCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.userAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userInfo h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.userName {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.projectDescription {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.projectStats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.matchScore {
+    margin: 0.25rem 0 0 0;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.userTags {
+    margin-bottom: 0.75rem;
+}
+
+.userTags h4 {
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.skillTag {
+    background: rgba(29, 155, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(29, 155, 240, 0.3);
+}
+
+.interestTag {
+    background: rgba(160, 70, 200, 0.15);
+    color: #a046c8;
+    border: 1px solid rgba(160, 70, 200, 0.3);
+}
+
+[data-theme="light"] .skillTag {
+    background: rgba(29, 155, 240, 0.1);
+    color: #0077ff;
+}
+
+[data-theme="light"] .interestTag {
+    background: rgba(160, 70, 200, 0.1);
+    color: #8b00d4;
+}
+
+.sendRequestBtn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: var(--font-family);
+    margin-top: 10px;
+}
+
+.sendRequestBtn:hover {
+    opacity: 0.9;
+}
+
+.sendRequestBtn.requestSent, .sendRequestBtn.friends {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    cursor: default;
+    opacity: 0.7;
+}
+
+.sendRequestBtn.requestSent:hover, .sendRequestBtn.friends:hover {
+    opacity: 0.7;
+}
+
+.sendRequestBtn:disabled {
+    cursor: not-allowed;
+}
+
+.noResults {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.suggestedDescription {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-align: center;
+    background: var(--bg-accent);
+    border-radius: 8px;
+}
+
+.matchDetails {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: var(--bg-accent);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+}
+
+.matchDetails small {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .usersContainer {
+        padding: 0.75rem;
+    }
+
+    .usersContainer h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+
+    .userCards {
+        grid-template-columns: 1fr;
+    }
+
+    .searchBar {
+        flex-direction: column;
+    }
+
+    .searchBtn {
+        width: 100%;
+    }
+}
+
+/* Old styles for backward compatibility */
+.userRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-secondary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.addBtn {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.addBtn:hover {
+    background: var(--bg-hover-strong);
+}

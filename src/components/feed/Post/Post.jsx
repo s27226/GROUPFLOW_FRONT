@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "../../ui/LazyImage";
-import "./Post.css";
+import styles from "./Post.module.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
-import { useClickOutside } from "../../../hooks/useClickOutside";
-import { useAuthenticatedRequest } from "../../../hooks/useAuthenticatedRequest";
+import { useClickOutside, useAuthenticatedRequest, usePostInteractions } from "../../../hooks";
 import { GRAPHQL_MUTATIONS, GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useAuth } from "../../../context/AuthContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
-import { usePostInteractions } from "../../../hooks/usePostInteractions";
 
 export default function Post({
     id,
@@ -41,8 +39,7 @@ export default function Post({
         unlikePost,
         addComment,
         savePost: savePostMutation,
-        unsavePost: unsavePostMutation,
-        canModifyPost
+        unsavePost: unsavePostMutation
     } = usePostInteractions();
     
     const [likes, setLikes] = useState(initialLikes || []);
@@ -130,13 +127,15 @@ export default function Post({
     const handleLikeToggle = async () => {
         try {
             if (liked) {
-                await unlikePost(id, (updatedLikes) => setLikes(updatedLikes));
+                await unlikePost(id);
+                setLikes(prev => prev.filter(like => like.userId !== user?.id));
                 setLiked(false);
             } else {
-                await likePost(id, (newLike) => {
-                    setLikes([...likes, newLike]);
-                    setLiked(true);
-                });
+                const newLike = await likePost(id);
+                if (newLike) {
+                    setLikes(prev => [...prev, newLike]);
+                }
+                setLiked(true);
             }
         } catch (error) {
             console.error("Error toggling like:", error);
@@ -238,12 +237,12 @@ export default function Post({
     };
 
     return (
-        <div className="post-card">
-            <div className="post-header">
+        <div className={styles.postCard}>
+            <div className={styles.postHeader}>
                 <img
                     src={authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
                     alt={author}
-                    className="post-avatar"
+                    className={styles.postAvatar}
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
                         e.stopPropagation();
@@ -251,9 +250,9 @@ export default function Post({
                     }}
                 />
 
-                <div className="author-time">
+                <div className={styles.authorTime}>
                     <span
-                        className="post-author"
+                        className={styles.postAuthor}
                         style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -262,16 +261,16 @@ export default function Post({
                     >
                         {author}
                     </span>
-                    <span className="post-time">· {time}</span>
+                    <span className={styles.postTime}>· {time}</span>
                 </div>
 
-                <div className="post-dots" ref={menuRef}>
+                <div className={styles.postDots} ref={menuRef}>
                     <button onClick={() => setMenuOpen(!menuOpen)}>
                         <MoreVertical size={20} />
                     </button>
 
                     {menuOpen && (
-                        <div className="post-dropdown-menu">
+                        <div className={styles.postDropdownMenu}>
                             <button onClick={handleSavePost}>
                                 {saved ? "Unsave Post" : "Save Post"}
                             </button>
@@ -292,26 +291,26 @@ export default function Post({
             </div>
 
             <div
-                className="post-content"
+                className={styles.postContent}
                 style={{ cursor: isFullView ? "default" : "pointer" }}
                 onClick={() => !isFullView && navigate(`/post/${id}`)}
             >
                 <p>{sanitizeText(content)}</p>
                 {image && (
-                    <LazyImage src={image} alt="post" className="post-image" aspectRatio={16 / 9} />
+                    <LazyImage src={image} alt="post" className={styles.postImage} aspectRatio={16 / 9} />
                 )}
 
                 {sharedPost && (
-                    <div className="post-shared-preview">
-                        <div className="post-shared-header">
+                    <div className={styles.postSharedPreview}>
+                        <div className={styles.postSharedHeader}>
                             <span>Shared post from {sharedPost.author}</span>
                         </div>
-                        <div className="post-shared-content">
-                            <div className="post-shared-info">
+                        <div className={styles.postSharedContent}>
+                            <div className={styles.postSharedInfo}>
                                 <img
                                     src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
                                     alt={sharedPost.author}
-                                    className="post-shared-avatar"
+                                    className={styles.postSharedAvatar}
                                 />
                                 <div>
                                     <strong
@@ -327,18 +326,18 @@ export default function Post({
                                     <span> · {sharedPost.time}</span>
                                 </div>
                             </div>
-                            <p className="post-shared-text">{sanitizeText(sharedPost.content)}</p>
+                            <p className={styles.postSharedText}>{sanitizeText(sharedPost.content)}</p>
                             {sharedPost.image && (
                                 <LazyImage
                                     src={sharedPost.image}
                                     alt="shared"
-                                    className="post-shared-image"
+                                    className={styles.postSharedImage}
                                     aspectRatio={16 / 9}
                                 />
                             )}
                             <a
                                 href={`/post/${sharedPost.id}`}
-                                className="post-shared-link"
+                                className={styles.postSharedLink}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -352,9 +351,9 @@ export default function Post({
                 )}
             </div>
 
-            <div className="post-actions">
+            <div className={styles.postActions}>
                 <button
-                    className="icon-btn"
+                    className={styles.iconBtn}
                     onClick={handleLikeToggle}
                 >
                     <Heart
@@ -366,7 +365,7 @@ export default function Post({
                 </button>
 
                 <button
-                    className="icon-btn"
+                    className={styles.iconBtn}
                     onClick={() => !isFullView && setShowComments(!showComments)}
                     style={{ cursor: isFullView ? "default" : "pointer" }}
                 >
@@ -374,18 +373,18 @@ export default function Post({
                     <span>{countComments(comments)}</span>
                 </button>
 
-                <button className="icon-btn" onClick={handleShare}>
+                <button className={styles.iconBtn} onClick={handleShare}>
                     <Share2 size={20} />
                 </button>
             </div>
 
             {showComments && (
-                <div className="comment-section">
-                    <div className="comment-input-row">
+                <div className={styles.commentSection}>
+                    <div className={styles.commentInputRow}>
                         <img
                             src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                             alt="You"
-                            className="comment-avatar"
+                            className={styles.commentAvatar}
                         />
                         <input
                             type="text"
@@ -394,7 +393,7 @@ export default function Post({
                             onChange={(e) => setCommentInput(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && submitComment()}
                         />
-                        <button className="send-comment" onClick={submitComment}>
+                        <button className={styles.sendComment} onClick={submitComment}>
                             Post
                         </button>
                     </div>
@@ -420,8 +419,8 @@ export default function Post({
             )}
 
             {showReportDialog && (
-                <div className="report-dialog-overlay" onClick={() => setShowReportDialog(false)}>
-                    <div className="report-dialog" onClick={(e) => e.stopPropagation()}>
+                <div className={styles.reportDialogOverlay} onClick={() => setShowReportDialog(false)}>
+                    <div className={styles.reportDialog} onClick={(e) => e.stopPropagation()}>
                         <h3>Report Post</h3>
                         <p>Please tell us why you're reporting this post:</p>
                         <textarea
@@ -430,9 +429,9 @@ export default function Post({
                             placeholder="Enter your reason here..."
                             rows={4}
                         />
-                        <div className="report-dialog-actions">
+                        <div className={styles.reportDialogActions}>
                             <button 
-                                className="btn-cancel" 
+                                className={styles.btnCancel} 
                                 onClick={() => {
                                     setShowReportDialog(false);
                                     setReportReason("");
@@ -440,7 +439,7 @@ export default function Post({
                             >
                                 Cancel
                             </button>
-                            <button className="btn-report" onClick={handleReportPost}>
+                            <button className={styles.btnReport} onClick={handleReportPost}>
                                 Submit Report
                             </button>
                         </div>
@@ -463,8 +462,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
         likeComment,
         unlikeComment,
         addComment: replyToComment,
-        deleteComment,
-        canModifyComment
+        deleteComment
     } = usePostInteractions();
 
     const [replyOpen, setReplyOpen] = useState(false);
@@ -574,32 +572,32 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
     };
 
     return (
-        <div className="comment" style={{ marginLeft: `${leftMargin}px` }}>
-            <div className="comment-header">
+        <div className={styles.comment} style={{ marginLeft: `${leftMargin}px` }}>
+            <div className={styles.commentHeader}>
                 <img
                     src={comment.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${comment.user}`}
                     alt={comment.user}
-                    className="comment-avatar"
+                    className={styles.commentAvatar}
                 />
 
-                <div className="comment-info">
+                <div className={styles.commentInfo}>
                     <span 
-                        className="comment-user"
+                        className={styles.commentUser}
                         style={{ cursor: "pointer" }}
                         onClick={() => comment.userId && navigate(`/profile/${comment.userId}`)}
                     >
                         {comment.user}
                     </span>
-                    <span className="comment-time">· {comment.time}</span>
+                    <span className={styles.commentTime}>· {comment.time}</span>
                 </div>
 
-                <div className="comment-dots" ref={menuRef}>
+                <div className={styles.commentDots} ref={menuRef}>
                     <button onClick={toggleMenu}>
                         <MoreVertical size={16} />
                     </button>
 
                     {menuOpen && (
-                        <div className="comment-dropdown-menu">
+                        <div className={styles.commentDropdownMenu}>
                             <button onClick={confirmDelete}>Delete</button>
                             <button onClick={() => setMenuOpen(false)}>Report</button>
                         </div>
@@ -607,24 +605,24 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
                 </div>
             </div>
 
-            <p className="comment-text">{sanitizeText(comment.text)}</p>
+            <p className={styles.commentText}>{sanitizeText(comment.text)}</p>
 
             {showDeleteConfirm && (
-                <div className="comment-delete-confirm">
+                <div className={styles.commentDeleteConfirm}>
                     <p>Delete this comment? All replies will be deleted too.</p>
-                    <div className="comment-delete-actions">
-                        <button className="btn-cancel" onClick={() => setShowDeleteConfirm(false)}>
+                    <div className={styles.commentDeleteActions}>
+                        <button className={styles.btnCancel} onClick={() => setShowDeleteConfirm(false)}>
                             Cancel
                         </button>
-                        <button className="btn-delete" onClick={handleDeleteComment}>
+                        <button className={styles.btnDelete} onClick={handleDeleteComment}>
                             Delete
                         </button>
                     </div>
                 </div>
             )}
 
-            <div className="comment-actions">
-                <button className="icon-btn" onClick={toggleLike}>
+            <div className={styles.commentActions}>
+                <button className={styles.iconBtn} onClick={toggleLike}>
                     <Heart
                         size={16}
                         fill={liked ? "var(--accent)" : "none"}
@@ -633,23 +631,23 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
                     <span>{Array.isArray(likes) ? likes.length : 0}</span>
                 </button>
 
-                <button className="reply-btn" onClick={() => setReplyOpen(!replyOpen)}>
+                <button className={styles.replyBtn} onClick={() => setReplyOpen(!replyOpen)}>
                     Reply
                 </button>
 
                 {(comment.replies?.length || 0) > 0 && (
-                    <button className="reply-btn" onClick={() => setCollapsed(!collapsed)}>
+                    <button className={styles.replyBtn} onClick={() => setCollapsed(!collapsed)}>
                         {collapsed ? `View replies (${comment.replies.length})` : "Hide replies"}
                     </button>
                 )}
             </div>
 
             {replyOpen && (
-                <div className="reply-input-row">
+                <div className={styles.replyInputRow}>
                     <img
                         src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                         alt="You"
-                        className="comment-avatar"
+                        className={styles.commentAvatar}
                     />
                     <input
                         type="text"
@@ -658,14 +656,14 @@ function Comment({ comment, update, depth = 0, postId, onDelete }) {
                         onChange={(e) => setReplyText(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && submitReply()}
                     />
-                    <button className="send-comment" onClick={submitReply}>
+                    <button className={styles.sendComment} onClick={submitReply}>
                         Reply
                     </button>
                 </div>
             )}
 
             {!collapsed && comment.replies?.length > 0 && (
-                <div className="reply-list">
+                <div className={styles.replyList}>
                     {comment.replies.map((reply, i) => (
                         <Comment
                             key={reply.id || i}

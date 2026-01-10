@@ -1,0 +1,187 @@
+.terminsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-primary);
+    background-color: var(--bg-main);
+    min-height:calc(100vh - 500px) ;
+    font-family: var(--font-family), serif;
+
+}
+
+.terminsTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.calendarSection {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-soft);
+}
+
+.customCalendar {
+    /* Applied to the calendar component */
+}
+
+.eventDot {
+    color: #22c55e;
+    font-size: 8px;
+    line-height: 1;
+    text-align: center;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Global styles for react-calendar (third-party) */
+:global(.react-calendar) {
+    width: 320px;
+    background-color: transparent;
+    border: none;
+    color: var(--text-primary);
+}
+
+:global(.react-calendar__tile) {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 8px;
+}
+
+:global(.react-calendar__tile):hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+:global(.react-calendar__navigation__label) {
+    color: var(--text-primary);
+}
+:global(.react-calendar__navigation__arrow) {
+    color: var(--text-primary);
+}
+
+:global(.react-calendar__navigation button) {
+    color: var(--text-primary);
+    background: transparent;
+    font-size: 16px;
+}
+
+:global(.react-calendar__navigation button:enabled:hover),
+:global(.react-calendar__navigation button:enabled:focus) {
+    background-color: var(--bg-hover);
+}
+
+:global(.react-calendar__navigation button:disabled) {
+    background-color: transparent;
+}
+
+:global(.react-calendar__tile--now) {
+    background-color: #2563eb;
+    color: white;
+}
+
+:global(.react-calendar__tile--active) {
+    background-color: #22c55e;
+    color: white;
+}
+
+:global(.react-calendar__tile--active) .eventDot {
+    color: white;
+}
+
+.eventPanel {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    width: 360px;
+    box-shadow: var(--shadow-soft);
+}
+
+.highlight {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.eventList {
+    margin: 10px 0;
+}
+
+.eventItem {
+    background-color: var(--bg-main);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.noEvents {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.addEvent {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.addEvent input {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    outline: none;
+}
+
+.addEvent button {
+    background-color: var(--accent);
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.addEvent button:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+}
+
+.eventContent {
+    flex: 1;
+}
+
+.deleteEventBtn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.deleteEventBtn:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.deleteEventBtn:active {
+    transform: scale(0.95);
+}

@@ -8,12 +8,11 @@ import {
     FaChevronDown,
     FaChevronUp
 } from "react-icons/fa";
-import "./Sidebar.css";
+import styles from "./Sidebar.module.css";
 import { useNavigate, Link } from "react-router-dom";
 import { InvitationContext } from "../../../context/InvitationContext";
 import { FcInvite } from "react-icons/fc";
-import { useFriends } from "../../../hooks/useFriends";
-import { useMyProjects } from "../../../hooks/useProjects";
+import { useFriends, useMyProjects } from "../../../hooks";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState(true);
@@ -56,27 +55,27 @@ export default function Sidebar() {
 
     return (
         <>
-            <div className="sidebar-toggle" onClick={toggleSidebar}>
+            <div className={styles.sidebarToggle} onClick={toggleSidebar}>
                 <FaBars />
             </div>
 
-            <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
+            <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
                 <ul>
                     <li onClick={handleProjectsToggle}>
-                        <FaProjectDiagram className="icon" />
+                        <FaProjectDiagram className={styles.icon} />
                         {isOpen && <span>Projects</span>}
                         {isOpen &&
                             (projectsOpen ? (
-                                <FaChevronUp className="chevron" />
+                                <FaChevronUp className={styles.chevron} />
                             ) : (
-                                <FaChevronDown className="chevron" />
+                                <FaChevronDown className={styles.chevron} />
                             ))}
                     </li>
                     {projectsOpen && isOpen && (
-                        <ul className="sublist">
+                        <ul className={styles.sublist}>
                             <li>
                                 <button
-                                    className="Friend-button"
+                                    className={styles.friendButton}
                                     onClick={() => {
                                         localStorage.removeItem("projectSearchQuery");
                                         navigate("/projects");
@@ -87,7 +86,7 @@ export default function Sidebar() {
                             </li>
                             <li>
                                 <button
-                                    className="Friend-button"
+                                    className={styles.friendButton}
                                     onClick={() => {
                                         navigate("/myprojects");
                                     }}
@@ -97,7 +96,7 @@ export default function Sidebar() {
                             </li>
                             <li>
                                 <button
-                                    className="Friend-button"
+                                    className={styles.friendButton}
                                     onClick={() => {
                                         navigate("/creategroup");
                                     }}
@@ -109,20 +108,20 @@ export default function Sidebar() {
                     )}
 
                     <li onClick={handleFriendsToggle}>
-                        <FaUserFriends className="icon" />
+                        <FaUserFriends className={styles.icon} />
                         {isOpen && <span>Friends</span>}
                         {isOpen &&
                             (friendsOpen ? (
-                                <FaChevronUp className="chevron" />
+                                <FaChevronUp className={styles.chevron} />
                             ) : (
-                                <FaChevronDown className="chevron" />
+                                <FaChevronDown className={styles.chevron} />
                             ))}
                     </li>
                     {friendsOpen && isOpen && (
-                        <ul className="sublist">
+                        <ul className={styles.sublist}>
                             <li>
                                 <button
-                                    className="Friend-button"
+                                    className={styles.friendButton}
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/findfriends");
@@ -133,7 +132,7 @@ export default function Sidebar() {
                             </li>
                             <li>
                                 <button
-                                    className="Friend-button"
+                                    className={styles.friendButton}
                                     onClick={() => {
                                         localStorage.removeItem("searchQuery");
                                         navigate("/friendslist");
@@ -146,19 +145,19 @@ export default function Sidebar() {
                     )}
 
                     <li onClick={() => navigate("/chats")}>
-                        <FaComments className="icon" />
+                        <FaComments className={styles.icon} />
                         {isOpen && <span>Chats</span>}
                     </li>
                     <li onClick={() => navigate("/Saved")}>
-                        <FaBookmark className="icon" />
+                        <FaBookmark className={styles.icon} />
                         {isOpen && <span>Saved</span>}
                     </li>
                     <li>
-                        <FcInvite className="icon" />
+                        <FcInvite className={styles.icon} />
                         {isOpen && (
-                            <Link to="/invitations" className="menu-item">
+                            <Link to="/invitations" className={styles.menuItem}>
                                 Invitations
-                                {invitationsCount > 0 && <span className="notification-dot"></span>}
+                                {invitationsCount > 0 && <span className={styles.notificationDot}></span>}
                             </Link>
                         )}
                     </li>

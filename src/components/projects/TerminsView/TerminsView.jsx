@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "./TerminsView.css";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import styles from "./TerminsView.module.css";
+import { useGraphQL } from "../../../hooks";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 
 const TerminsView = ({ projectId, project }) => {
@@ -128,50 +128,50 @@ const TerminsView = ({ projectId, project }) => {
 
     if (loading) {
         return (
-            <div className="termins-container">
-                <h2 className="termins-title">🗓 Terminarz projektu</h2>
+            <div className={styles.terminsContainer}>
+                <h2 className={styles.terminsTitle}>🗓 Terminarz projektu</h2>
                 <p>Loading events...</p>
             </div>
         );
     }
 
     return (
-        <div className="termins-container">
-            <h2 className="termins-title">🗓 Terminarz projektu</h2>
+        <div className={styles.terminsContainer}>
+            <h2 className={styles.terminsTitle}>🗓 Terminarz projektu</h2>
 
-            <div className="calendar-section">
+            <div className={styles.calendarSection}>
                 <Calendar
                     onClickDay={handleDayClick}
                     value={selectedDate}
-                    className="custom-calendar"
+                    className={styles.customCalendar}
                     tileContent={({ date }) => {
                         const hasEvent = events.some(
                             (ev) => ev.eventDate.toDateString() === date.toDateString()
                         );
-                        return hasEvent ? <div className="event-dot">•</div> : null;
+                        return hasEvent ? <div className={styles.eventDot}>•</div> : null;
                     }}
                 />
             </div>
 
-            <div className="event-panel">
+            <div className={styles.eventPanel}>
                 <h3>
                     Wydarzenia w dniu{" "}
-                    <span className="highlight">{selectedDate.toLocaleDateString()}</span>
+                    <span className={styles.highlight}>{selectedDate.toLocaleDateString()}</span>
                 </h3>
 
-                <div className="event-list">
+                <div className={styles.eventList}>
                     {selectedDateEvents.length === 0 ? (
-                        <p className="no-events">Brak wydarzeń.</p>
+                        <p className={styles.noEvents}>Brak wydarzeń.</p>
                     ) : (
                         selectedDateEvents.map((ev) => (
-                            <div key={ev.id} className="event-item">
-                                <div className="event-content">
+                            <div key={ev.id} className={styles.eventItem}>
+                                <div className={styles.eventContent}>
                                     <strong>{ev.time || "All day"}</strong> — {ev.title}
                                     {ev.description && <p>{ev.description}</p>}
                                 </div>
                                 {canDeleteEvent(ev) && (
                                     <button
-                                        className="delete-event-btn"
+                                        className={styles.deleteEventBtn}
                                         onClick={() => handleDeleteEvent(ev.id)}
                                         title="Delete event"
                                     >
@@ -183,7 +183,7 @@ const TerminsView = ({ projectId, project }) => {
                     )}
                 </div>
 
-                <div className="add-event">
+                <div className={styles.addEvent}>
                     <h4>Dodaj wydarzenie</h4>
                     <input
                         type="text"

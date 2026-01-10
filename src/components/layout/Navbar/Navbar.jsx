@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Bell, MessageCircle } from "lucide-react";
-import "./Navbar.css";
+import styles from "./Navbar.module.css";
 import defaultPfp from "../../../images/default-pfp.png";
 import logo from "../../../images/logo.png";
 import { useAuth } from "../../../context/AuthContext";
@@ -11,9 +11,7 @@ import NotificationItem from "./NotificationItem";
 import MessagePreview from "./MessagePreview";
 import SearchDropdown from "./SearchDropdown";
 import PrivateChat from "../../chat/PrivateChat";
-import { useClickOutside } from "../../../hooks/useClickOutside";
-import { useGraphQL } from "../../../hooks/useGraphQL";
-import { useFriends } from "../../../hooks/useFriends";
+import { useClickOutside, useGraphQL, useFriends } from "../../../hooks";
 
 function Navbar() {
     const { logout, user, updateUser, isAuthenticated, isModerator } = useAuth();
@@ -130,17 +128,17 @@ function Navbar() {
     }));
 
     return (
-        <nav className="navbar">
+        <nav className={styles.navbar}>
             <div
-                className="navbar-logo"
+                className={styles.navbarLogo}
                 onClick={() => navigate("/")}
                 style={{ cursor: "pointer" }}
             >
-                <img src={logo} alt="Logo" className="logo-img" />
-                <span className="logo-text">GroupFlow</span>
+                <img src={logo} alt="Logo" className={styles.logoImg} />
+                <span className={styles.logoText}>GroupFlow</span>
             </div>
 
-            <div className="search-bar-container">
+            <div className={styles.searchBarContainer}>
                 <form
                     ref={searchRef}
                     onSubmit={(e) => {
@@ -148,8 +146,8 @@ function Navbar() {
                         // Just keep the dropdown open, user can click on results or links
                     }}
                 >
-                    <div className="search-bar">
-                        <FaSearch className="search-icon" />
+                    <div className={styles.searchBar}>
+                        <FaSearch className={styles.searchIcon} />
                         <input
                             type="text"
                             placeholder="Search projects and people..."
@@ -183,9 +181,9 @@ function Navbar() {
                 </form>
             </div>
 
-            <div className="navbar-right" ref={menuRef}>
+            <div className={styles.navbarRight} ref={menuRef}>
                 <div
-                    className="icon-wrapper spaced"
+                    className={`${styles.iconWrapper} ${styles.spaced}`}
                     onClick={() => {
                         setNotifOpen(!notifOpen);
                         setMsgOpen(false);
@@ -195,9 +193,9 @@ function Navbar() {
                     <Bell size={24} />
 
                     {notifOpen && (
-                        <div className="dropdown-menu large">
+                        <div className={`${styles.dropdownMenu} ${styles.large}`}>
                             <h4>Notifications</h4>
-                            <div className="dropdown-scroll">
+                            <div className={styles.dropdownScroll}>
                                 {loadingNotifications ? (
                                     <p>Loading notifications...</p>
                                 ) : notifications.length === 0 ? (
@@ -216,7 +214,7 @@ function Navbar() {
                 </div>
 
                 <div
-                    className="icon-wrapper spaced"
+                    className={`${styles.iconWrapper} ${styles.spaced}`}
                     onClick={() => {
                         setMsgOpen(!msgOpen);
                         setNotifOpen(false);
@@ -226,11 +224,11 @@ function Navbar() {
                     <MessageCircle size={24} />
 
                     {msgOpen && (
-                        <div className="dropdown-menu large">
+                        <div className={`${styles.dropdownMenu} ${styles.large}`}>
                             <h4 onClick={() => navigate("/chats")} style={{ cursor: "pointer" }}>
                                 Messages
                             </h4>
-                            <div className="dropdown-scroll">
+                            <div className={styles.dropdownScroll}>
                                 {messages.length === 0 ? (
                                     <p>No messages.</p>
                                 ) : (
@@ -251,7 +249,7 @@ function Navbar() {
                 </div>
 
                 <div
-                    className="user-info-wrapper"
+                    className={styles.userInfoWrapper}
                     onClick={() => {
                         setMenuOpen(!menuOpen);
                         setNotifOpen(false);
@@ -261,16 +259,16 @@ function Navbar() {
                     <img 
                         src={user?.profilePic || defaultPfp} 
                         alt="User" 
-                        className="user-pfp" 
+                        className={styles.userPfp} 
                     />
-                    {user && !loadingUser && <span className="user-nickname">{user.nickname}</span>}
+                    {user && !loadingUser && <span className={styles.userNickname}>{user.nickname}</span>}
                 </div>
 
                 {menuOpen && (
-                    <div className="dropdown-menu">
+                    <div className={styles.dropdownMenu}>
                         {user && (
                             <>
-                                <div className="dropdown-user-info">
+                                <div className={styles.dropdownUserInfo}>
                                     <strong>
                                         {user.name} {user.surname}
                                     </strong>
@@ -309,7 +307,7 @@ function Navbar() {
                         </button>
                         <hr />
                         <button
-                            className="logout"
+                            className={styles.logout}
                             onClick={() => {
                                 logout();
                                 navigate("/login");

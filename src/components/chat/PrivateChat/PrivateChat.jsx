@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useChat } from "../../../hooks/useChat";
+import { useChat } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
-import "./PrivateChat.css";
+import styles from "./PrivateChat.module.css";
 
 export default function PrivateChat({ user, currentUserId, onClose, onExpand }) {
     const navigate = useNavigate();
@@ -11,17 +11,17 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }) 
     );
 
     return (
-        <div className="priv-chat-window">
-            <div className="priv-chat-header">
+        <div className={styles.privChatWindow}>
+            <div className={styles.privChatHeader}>
                 <span onClick={() => navigate(`/profile/${user.id}`)} style={{ cursor: "pointer" }}>
                     {user.name}
                 </span>
-                <div className="priv-chat-header-actions">
+                <div className={styles.privChatHeaderActions}>
                     {onExpand && (
                         <button
                             onClick={onExpand}
                             title="Open in full screen"
-                            className="priv-chat-expand-btn"
+                            className={styles.privChatExpandBtn}
                         >
                             ⛶
                         </button>
@@ -32,26 +32,26 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }) 
                 </div>
             </div>
 
-            <div className="priv-chat-body">
+            <div className={styles.privChatBody}>
                 {loading ? (
-                    <p className="priv-chat-loading">Loading messages...</p>
+                    <p className={styles.privChatLoading}>Loading messages...</p>
                 ) : messages.length === 0 ? (
-                    <p className="priv-chat-no-messages">
+                    <p className={styles.privChatNoMessages}>
                         No messages yet. Start the conversation!
                     </p>
                 ) : (
                     messages.map((msg) => (
-                        <div key={msg.id} className={`priv-chat-message-wrapper ${msg.from === "me" ? "me" : "them"}`}>
+                        <div key={msg.id} className={`${styles.privChatMessageWrapper} ${msg.from === "me" ? styles.me : styles.them}`}>
                             {msg.from !== "me" && msg.sender?.profilePic && (
                                 <img 
                                     src={msg.sender.profilePic} 
                                     alt={msg.sender.nickname}
-                                    className="priv-chat-message-avatar"
+                                    className={styles.privChatMessageAvatar}
                                     style={{ width: 24, height: 24, borderRadius: "50%", marginRight: 8 }}
                                 />
                             )}
                             <div
-                                className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
+                                className={`${styles.privChatBubble} ${msg.from === "me" ? styles.me : styles.them}`}
                             >
                                 {sanitizeText(msg.text)}
                             </div>
@@ -60,7 +60,7 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }) 
                 )}
             </div>
 
-            <div className="priv-chat-input-area">
+            <div className={styles.privChatInputArea}>
                 <input
                     type="text"
                     placeholder="Type a message..."

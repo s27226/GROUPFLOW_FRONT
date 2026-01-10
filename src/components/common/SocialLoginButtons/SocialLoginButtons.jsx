@@ -1,4 +1,4 @@
-import "../../../styles/auth.css";
+import { authStyles } from "../../layout";
 import googleLogo from "../../../images/google-logo.png";
 import facebookLogo from "../../../images/facebook-logo.png";
 
@@ -8,23 +8,23 @@ import facebookLogo from "../../../images/facebook-logo.png";
  */
 export default function SocialLoginButtons({ onGoogleClick, onFacebookClick }) {
     return (
-        <div className="social-login-circles">
-            <button className="circle-btn google" onClick={onGoogleClick} title="Login with Google">
+        <div className={authStyles.socialLoginCircles}>
+            <button className={authStyles.circleBtnGoogle} onClick={onGoogleClick} title="Login with Google">
                 <img
                     src={googleLogo}
                     alt="Google"
-                    className="social-img"
+                    className={authStyles.socialImg}
                 />
             </button>
             <button
-                className="circle-btn facebook"
+                className={authStyles.circleBtnFacebook}
                 onClick={onFacebookClick}
                 title="Login with Facebook"
             >
                 <img
                     src={facebookLogo}
                     alt="Facebook"
-                    className="social-img"
+                    className={authStyles.socialImg}
                 />
             </button>
         </div>

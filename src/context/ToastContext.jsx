@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
 import Toast from '../components/ui/Toast';
+import styles from '../components/ui/Toast/Toast.module.css';
 
 const ToastContext = createContext();
 
@@ -26,7 +27,7 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="toast-container">
+      <div className={styles.toastContainer}>
         {toasts.map(toast => (
           <Toast
             key={toast.id}

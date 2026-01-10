@@ -1,4 +1,4 @@
-import "./NotificationItem.css";
+import styles from "./NotificationItem.module.css";
 import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { sanitizeText } from "../../../utils/sanitize";
@@ -32,8 +32,8 @@ export default function NotificationItem({ notification }) {
     const navigate = useNavigate();
     
     return (
-        <div className={`notif-item ${!isRead ? "unread" : ""}`} onClick={() => navigate("/profile/" + actorUser?.id)}>
-            <div className="notif-icon">
+        <div className={`${styles.notifItem} ${!isRead ? styles.unread : ""}`} onClick={() => navigate("/profile/" + actorUser?.id)}>
+            <div className={styles.notifIcon}>
                 {actorUser?.profilePic ? (
                     <img 
                         src={actorUser.profilePic} 
@@ -44,9 +44,9 @@ export default function NotificationItem({ notification }) {
                     <Bell size={18} />
                 )}
             </div>
-            <div className="notif-info">
-                <p className="notif-text">{sanitizeText(message)}</p>
-                <span className="notif-time">{timeAgo(createdAt)}</span>
+            <div className={styles.notifInfo}>
+                <p className={styles.notifText}>{sanitizeText(message)}</p>
+                <span className={styles.notifTime}>{timeAgo(createdAt)}</span>
             </div>
         </div>
     );

@@ -1,0 +1,292 @@
+.profileLayout {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    margin-top: 0;
+    font-family: var(--font-family), serif;
+}
+
+.profileContent {
+    display: flex;
+    margin-top: var(--navbar-height);
+}
+
+.profileMain {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+}
+
+.profileBanner {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+    overflow: hidden;
+}
+
+.profileBanner img {
+    width: 900px;
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    color: transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.profileBanner img.loaded {
+    opacity: 1;
+}
+
+.profileHeader {
+    display: flex;
+    align-items: flex-start;
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: -40px;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: var(--shadow-soft);
+    z-index: 2;
+}
+
+.profilePfp {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--bg-main);
+    object-fit: cover;
+}
+
+.username {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.editBtn {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+}
+
+.editBtn:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+}
+
+.profileBody {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.profileLeft {
+    flex: 0 0 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.profileRight {
+    flex: 1;
+}
+
+.aboutMe {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.ownedProjects {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.projectsScroll {
+    display: flex;
+    gap: 12px;
+    max-height: 140px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+
+.projectsScroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.projectsScroll::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 8px;
+}
+
+.projectCard {
+    flex: 0 0 auto;
+    width: 120px;
+    background-color: var(--bg-accent);
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    padding: 8px;
+}
+
+.projectCard img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.projectCard p {
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+.clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profilePosts {
+    width: 100%;
+    max-width: 900px;
+}
+
+.profilePosts h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.feedContainer {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+
+.profileMembersScroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0;
+}
+
+.profileMembersScroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.profileMembersScroll::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 8px;
+}
+
+.profileMemberCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100px;
+    background-color: var(--bg-accent);
+    border-radius: 12px;
+    padding: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.profileMemberCard:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-soft);
+}
+
+.profileMemberPfp {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.profileMemberName {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+.profileMemberRole {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.profileMembersScroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0;
+}
+
+.projectCard.clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.projectCard.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.createPostBtn {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 999;
+}
+
+.createPostBtn:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, black);
+    transform: scale(1.07);
+}
+
+.inviteBtn { background-color: #1d9bf0; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: background-color 0.2s; } .inviteBtn:hover { background-color: #1a8cd8; } .modalOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; } .modalContent { background-color: var(--bg-secondary); padding: 24px; border-radius: 12px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; } .modalContent h3 { margin-top: 0; margin-bottom: 20px; } .projectList { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; } .projectInviteItem { display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: var(--bg-main); border-radius: 8px; gap: 12px; } .projectInviteItem div { flex: 1; } .projectInviteItem strong { display: block; margin-bottom: 4px; } .projectInviteItem p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); } .projectInviteItem button { background-color: #1d9bf0; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; white-space: nowrap; } .projectInviteItem button:hover { background-color: #1a8cd8; } .projectInviteItem button:disabled { background-color: #555; cursor: not-allowed; } .closeModalBtn { width: 100%; padding: 10px; background-color: #666; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; } .closeModalBtn:hover { background-color: #555; }

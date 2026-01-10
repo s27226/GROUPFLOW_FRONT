@@ -1,16 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 import Post from "../Post";
 import SkeletonPost from "../../ui/SkeletonPost";
-import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import { usePosts } from "../../../hooks/usePosts";
-import { useGraphQL } from "../../../hooks/useGraphQL";
-import { useToast } from "../../../context/ToastContext";
+import { GRAPHQL_QUERIES } from "../../../queries/graphql";
+import { usePosts, useGraphQL } from "../../../hooks";
+import styles from "./Feed.module.css";
 
 export default function Feed() {
     const { posts, loading, error } = usePosts();
     const [savedPostIds, setSavedPostIds] = useState(new Set());
     const { executeQuery } = useGraphQL();
-    const { showToast } = useToast();
 
     const fetchSavedPosts = useCallback(async () => {
         try {
@@ -27,36 +25,26 @@ export default function Feed() {
         fetchSavedPosts();
     }, [fetchSavedPosts]);
 
-    const handleSavePost = async (postId) => {
-        const isSaved = savedPostIds.has(postId);
-
-        try {
-            const mutation = isSaved ? GRAPHQL_MUTATIONS.UNSAVE_POST : GRAPHQL_MUTATIONS.SAVE_POST;
-
-            await executeQuery(mutation, { postId });
-
-            // Update local state
-            setSavedPostIds((prev) => {
-                const newSet = new Set(prev);
-                if (isSaved) {
-                    newSet.delete(postId);
-                } else {
-                    newSet.add(postId);
-                }
-                return newSet;
-            });
-        } catch (err) {
-            console.error("Error toggling save status:", err);
-            showToast("Failed to update save status. Please try again.", "error");
-        }
+    // This is called AFTER Post.jsx handles the mutation
+    // Just update the local saved state tracking
+    const handleSavePost = (postId) => {
+        setSavedPostIds((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(postId)) {
+                newSet.delete(postId);
+            } else {
+                newSet.add(postId);
+            }
+            return newSet;
+        });
     };
 
     return (
-        <div className="feed-container">
+        <div className={styles.feedContainer}>
             {loading ? (
                 <SkeletonPost count={3} />
             ) : error ? (
-                <p className="error-message">{error}</p>
+                <p className={styles.errorMessage}>{error}</p>
             ) : posts?.length === 0 ? (
                 <p>No posts available. Be the first to create one!</p>
             ) : (

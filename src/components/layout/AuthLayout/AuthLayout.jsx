@@ -1,14 +1,14 @@
-import "../../../styles/auth.css";
+import styles from "./AuthLayout.module.css";
 
 /**
  * Shared authentication layout component for login and registration pages
  */
 export default function AuthLayout({ children }) {
     return (
-        <div className="auth-container">
-            <div className="auth-left">
-                <h1 className="auth-title">Welcome to the App</h1>
-                <p className="auth-desc">
+        <div className={styles.authContainer}>
+            <div className={styles.authLeft}>
+                <h1 className={styles.authTitle}>Welcome to the App</h1>
+                <p className={styles.authDesc}>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                     incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                     nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -18,7 +18,10 @@ export default function AuthLayout({ children }) {
                 </p>
             </div>
 
-            <div className="auth-right">{children}</div>
+            <div className={styles.authRight}>{children}</div>
         </div>
     );
 }
+
+// Export styles for use by child components
+export { styles as authStyles };

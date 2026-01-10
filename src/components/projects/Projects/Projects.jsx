@@ -1,21 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import { useMutationQuery } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../ui/LoadingSpinner";
-import "./Projects.css";
+import styles from "./Projects.module.css";
 
 export default function Projects() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState([]);
     const [selectedInterests, setSelectedInterests] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const { executeQuery } = useGraphQL();
     const navigate = useNavigate();
 
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
+
+    const { mutate: searchProjects, loading } = useMutationQuery(
+        GRAPHQL_QUERIES.SEARCH_PROJECTS,
+        {
+            onSuccess: (data) => {
+                const results = data?.project?.searchprojects || [];
+                setSearchResults(results);
+            },
+            onError: (err) => {
+                console.error("Search failed:", err);
+            }
+        }
+    );
+
+    const handleSearchWithQuery = useCallback(async (query) => {
+        const input = {
+            searchTerm: query || null,
+            skills: selectedSkills.length > 0 ? selectedSkills : null,
+            interests: selectedInterests.length > 0 ? selectedInterests : null
+        };
+        await searchProjects({ input });
+    }, [searchProjects, selectedSkills, selectedInterests]);
 
     useEffect(() => {
         // Check if there's a search query from the navbar
@@ -29,26 +49,7 @@ export default function Projects() {
                 handleSearchWithQuery(storedQuery);
             }, 100);
         }
-    }, []);
-
-    const handleSearchWithQuery = async (query) => {
-        setLoading(true);
-        try {
-            const input = {
-                searchTerm: query || null,
-                skills: selectedSkills.length > 0 ? selectedSkills : null,
-                interests: selectedInterests.length > 0 ? selectedInterests : null
-            };
-
-            const data = await executeQuery(GRAPHQL_QUERIES.SEARCH_PROJECTS, { input });
-            const results = data?.project?.searchprojects || [];
-            setSearchResults(results);
-        } catch (err) {
-            console.error("Search failed:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [handleSearchWithQuery]);
 
     const handleSearch = async () => {
         await handleSearchWithQuery(searchTerm);
@@ -78,32 +79,32 @@ export default function Projects() {
 
     const renderProjectCard = (project) => {
         return (
-            <div key={project.id} className="user-card">
+            <div key={project.id} className={styles.userCard}>
                 <div 
-                    className="user-card-header"
+                    className={styles.userCardHeader}
                     onClick={() => navigate(`/project/${project.id}`)}
                     style={{ cursor: "pointer" }}
                 >
                     <img
                         src={project.imageUrl || `https://picsum.photos/80?random=${project.id}`}
                         alt={project.name}
-                        className="user-avatar"
+                        className={styles.userAvatar}
                     />
-                    <div className="user-info">
+                    <div className={styles.userInfo}>
                         <h3>{project.name}</h3>
-                        <p className="user-name">
+                        <p className={styles.userName}>
                             by {project.owner.nickname || project.owner.name}
                         </p>
-                        <p className="project-description">{project.description}</p>
+                        <p className={styles.projectDescription}>{project.description}</p>
                     </div>
                 </div>
 
                 {project.skills && project.skills.length > 0 && (
-                    <div className="user-tags">
+                    <div className={styles.userTags}>
                         <h4>Skills:</h4>
-                        <div className="tags-list">
+                        <div className={styles.tagsList}>
                             {project.skills.map((skill) => (
-                                <span key={skill.id} className="tag skill-tag">
+                                <span key={skill.id} className={`${styles.tag} ${styles.skillTag}`}>
                                     {skill.skillName}
                                 </span>
                             ))}
@@ -112,11 +113,11 @@ export default function Projects() {
                 )}
 
                 {project.interests && project.interests.length > 0 && (
-                    <div className="user-tags">
+                    <div className={styles.userTags}>
                         <h4>Interests:</h4>
-                        <div className="tags-list">
+                        <div className={styles.tagsList}>
                             {project.interests.map((interest) => (
-                                <span key={interest.id} className="tag interest-tag">
+                                <span key={interest.id} className={`${styles.tag} ${styles.interestTag}`}>
                                     {interest.interestName}
                                 </span>
                             ))}
@@ -124,7 +125,7 @@ export default function Projects() {
                     </div>
                 )}
 
-                <div className="project-stats">
+                <div className={styles.projectStats}>
                     <span>👁️ {project.views?.length || 0} views</span>
                     <span> ❤️ {project.likes?.length || 0} likes</span>
                 </div>
@@ -133,28 +134,28 @@ export default function Projects() {
     };
 
     return (
-        <div className="users-container">
+        <div className={styles.usersContainer}>
             <h1>Find Projects</h1>
 
-            <div className="search-section">
-                <div className="find-friends-search">
+            <div className={styles.searchSection}>
+                <div className={styles.findFriendsSearch}>
                     <input
                         type="text"
                         placeholder="Search by project name or description..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                        className="find-friends-input"
+                        className={styles.findFriendsInput}
                     />
-                    <button onClick={handleSearch} className="find-friends-btn">
+                    <button onClick={handleSearch} className={styles.findFriendsBtn}>
                         Search
                     </button>
                 </div>
 
-                <div className="filters">
-                    <div className="filter-group">
+                <div className={styles.filters}>
+                    <div className={styles.filterGroup}>
                         <h3>Filter by Skills</h3>
-                        <div className="filter-input">
+                        <div className={styles.filterInput}>
                             <input
                                 type="text"
                                 placeholder="Add skill..."
@@ -162,13 +163,13 @@ export default function Projects() {
                                 onChange={(e) => setSkillInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && addSkillFilter()}
                             />
-                            <button onClick={addSkillFilter} className="add-filter-btn">
+                            <button onClick={addSkillFilter} className={styles.addFilterBtn}>
                                 +
                             </button>
                         </div>
-                        <div className="selected-filters">
+                        <div className={styles.selectedFilters}>
                             {selectedSkills.map((skill) => (
-                                <span key={skill} className="filter-tag skill-tag">
+                                <span key={skill} className={`${styles.filterTag} ${styles.skillTag}`}>
                                     {skill}
                                     <button onClick={() => removeSkillFilter(skill)}>×</button>
                                 </span>
@@ -176,9 +177,9 @@ export default function Projects() {
                         </div>
                     </div>
 
-                    <div className="filter-group">
+                    <div className={styles.filterGroup}>
                         <h3>Filter by Interests</h3>
-                        <div className="filter-input">
+                        <div className={styles.filterInput}>
                             <input
                                 type="text"
                                 placeholder="Add interest..."
@@ -186,13 +187,13 @@ export default function Projects() {
                                 onChange={(e) => setInterestInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && addInterestFilter()}
                             />
-                            <button onClick={addInterestFilter} className="add-filter-btn">
+                            <button onClick={addInterestFilter} className={styles.addFilterBtn}>
                                 +
                             </button>
                         </div>
-                        <div className="selected-filters">
+                        <div className={styles.selectedFilters}>
                             {selectedInterests.map((interest) => (
-                                <span key={interest} className="filter-tag interest-tag">
+                                <span key={interest} className={`${styles.filterTag} ${styles.interestTag}`}>
                                     {interest}
                                     <button onClick={() => removeInterestFilter(interest)}>
                                         ×
@@ -203,15 +204,15 @@ export default function Projects() {
                     </div>
                 </div>
 
-                <div className="results">
+                <div className={styles.results}>
                     {loading ? (
                         <LoadingSpinner />
                     ) : searchResults.length > 0 ? (
-                        <div className="user-cards">
+                        <div className={styles.userCards}>
                             {searchResults.map((project) => renderProjectCard(project))}
                         </div>
                     ) : (
-                        <p className="no-results">
+                        <p className={styles.noResults}>
                             {searchTerm ||
                             selectedSkills.length > 0 ||
                             selectedInterests.length > 0

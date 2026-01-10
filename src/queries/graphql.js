@@ -1495,10 +1495,6 @@ export const GRAPHQL_MUTATIONS = {
           eventDate
           time
           createdById
-          createdBy {
-            id
-            nickname
-          }
         }
       }
     }

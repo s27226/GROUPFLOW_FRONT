@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { useModerationUsers } from '../../../hooks/useModeration';
+import { useModerationUsers } from '../../../hooks';
 import UserManagement from '../UserManagement';
-import './ModerationPanel.css';
+import styles from './ModerationPanel.module.css';
 
 const ModerationPanel = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -29,64 +29,64 @@ const ModerationPanel = () => {
   };
 
   return (
-    <div className="modpanel-container">
-      <div className="modpanel-header">
-        <div className="modpanel-title-section">
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.titleSection}>
           <h1>User Moderation</h1>
-          <p className="modpanel-subtitle">Manage users, bans, suspensions, and roles</p>
+          <p className={styles.subtitle}>Manage users, bans, suspensions, and roles</p>
         </div>
-        <button onClick={handleRefresh} className="modpanel-refresh-btn">
+        <button onClick={handleRefresh} className={styles.refreshBtn}>
           Refresh
         </button>
       </div>
 
-      <div className="modpanel-controls">
-        <div className="modpanel-tabs">
+      <div className={styles.controls}>
+        <div className={styles.tabs}>
           <button
-            className={`modpanel-tab ${activeTab === 'all' ? 'modpanel-tab-active' : ''}`}
+            className={`${styles.tab} ${activeTab === 'all' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('all')}
           >
             All Users
           </button>
           <button
-            className={`modpanel-tab ${activeTab === 'banned' ? 'modpanel-tab-active' : ''}`}
+            className={`${styles.tab} ${activeTab === 'banned' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('banned')}
           >
             Banned
           </button>
           <button
-            className={`modpanel-tab ${activeTab === 'suspended' ? 'modpanel-tab-active' : ''}`}
+            className={`${styles.tab} ${activeTab === 'suspended' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('suspended')}
           >
             Suspended
           </button>
         </div>
 
-        <div className="modpanel-search">
+        <div className={styles.search}>
           <input
             type="text"
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="modpanel-search-input"
+            className={styles.searchInput}
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="modpanel-loading">
-          <div className="modpanel-spinner"></div>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
           <p>Loading users...</p>
         </div>
       ) : filteredUsers.length === 0 ? (
-        <div className="modpanel-empty">
-          <div className="modpanel-empty-icon">👥</div>
+        <div className={styles.empty}>
+          <div className={styles.emptyIcon}>👥</div>
           <h2>No users found</h2>
           <p>{searchTerm ? 'Try adjusting your search' : 'No users match the current filter'}</p>
         </div>
       ) : (
         <>
-          <div className="modpanel-count">
+          <div className={styles.count}>
             Showing {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''}
           </div>
           <UserManagement users={filteredUsers} onRefresh={handleRefresh} />

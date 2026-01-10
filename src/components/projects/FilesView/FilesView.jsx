@@ -1,57 +1,42 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { FileText, Download, Trash2, Upload, X } from "lucide-react";
-import { useBlobUpload } from "../../../hooks/useBlobUpload";
+import { useBlobUpload, useFetch } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
 import { useAuth } from "../../../context/AuthContext";
 import ConfirmDialog from "../../ui/ConfirmDialog";
-import "./FilesView.css";
+import styles from "./FilesView.module.css";
 
 const FilesView = ({ projectId, isOwner, isCollaborator }) => {
-    const [files, setFiles] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [uploading, setUploading] = useState(false);
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState({ show: false, fileId: null, fileName: "", uploadedByUserId: null });
-    const { getProjectFiles, uploadBlob, deleteBlob } = useBlobUpload();
+    const { getProjectFiles, uploadBlob, deleteBlob, uploading } = useBlobUpload();
     const { showToast } = useToast();
     const { user } = useAuth();
 
-    const canUpload = isOwner || isCollaborator;
-
     const fetchFiles = useCallback(async () => {
-        if (!projectId) return;
-        
-        setLoading(true);
-        try {
-            const projectFiles = await getProjectFiles(parseInt(projectId));
-            setFiles(projectFiles);
-        } catch (error) {
-            console.error("Failed to fetch files:", error);
-            showToast("Failed to load project files", "error");
-        } finally {
-            setLoading(false);
-        }
+        if (!projectId) return [];
+        return getProjectFiles(parseInt(projectId));
     }, [projectId, getProjectFiles]);
 
-    useEffect(() => {
-        fetchFiles();
-    }, [fetchFiles]);
+    const { data: files, loading, refetch } = useFetch(fetchFiles, {
+        skip: !projectId,
+        initialData: []
+    });
+
+    const canUpload = isOwner || isCollaborator;
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        setUploading(true);
         try {
-            const blobData = await uploadBlob(file, "ProjectFile", parseInt(projectId));
+            await uploadBlob(file, "ProjectFile", parseInt(projectId));
             showToast("File uploaded successfully", "success");
-            fetchFiles();
+            refetch();
             setShowUploadDialog(false);
         } catch (error) {
             console.error("Upload error:", error);
             showToast(error.message || "Failed to upload file", "error");
-        } finally {
-            setUploading(false);
         }
     };
 
@@ -71,7 +56,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
         try {
             await deleteBlob(fileId);
             showToast("File deleted successfully", "success");
-            fetchFiles();
+            refetch();
         } catch (error) {
             console.error("Delete error:", error);
             showToast("Failed to delete file", "error");
@@ -79,15 +64,10 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
     };
 
     const handleFileDownload = async (file) => {
-        try {
-            if (file.url) {
-                window.open(file.url, '_blank');
-            } else {
-                showToast("File URL not available", "error");
-            }
-        } catch (error) {
-            console.error("Download error:", error);
-            showToast("Failed to download file", "error");
+        if (file.url) {
+            window.open(file.url, '_blank');
+        } else {
+            showToast("File URL not available", "error");
         }
     };
 
@@ -110,7 +90,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
 
     if (loading) {
         return (
-            <div className="files-view">
+            <div className={styles.filesView}>
                 <h2>Project Files</h2>
                 <p>Loading files...</p>
             </div>
@@ -118,12 +98,12 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
     }
 
     return (
-        <div className="files-view">
-            <div className="files-header">
+        <div className={styles.filesView}>
+            <div className={styles.filesHeader}>
                 <h2>Project Files</h2>
                 {canUpload && (
                     <button 
-                        className="upload-file-btn"
+                        className={styles.uploadFileBtn}
                         onClick={() => setShowUploadDialog(true)}
                     >
                         <Upload size={18} />
@@ -133,25 +113,25 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
             </div>
 
             {showUploadDialog && (
-                <div className="upload-dialog-overlay" onClick={() => setShowUploadDialog(false)}>
-                    <div className="upload-dialog" onClick={(e) => e.stopPropagation()}>
-                        <div className="upload-dialog-header">
+                <div className={styles.uploadDialogOverlay} onClick={() => setShowUploadDialog(false)}>
+                    <div className={styles.uploadDialog} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.uploadDialogHeader}>
                             <h3>Upload File</h3>
                             <button 
-                                className="close-dialog-btn"
+                                className={styles.closeDialogBtn}
                                 onClick={() => setShowUploadDialog(false)}
                             >
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="upload-dialog-body">
+                        <div className={styles.uploadDialogBody}>
                             <input
                                 type="file"
                                 onChange={handleFileUpload}
                                 disabled={uploading}
-                                className="file-input"
+                                className={styles.fileInput}
                             />
-                            <p className="upload-hint">Maximum file size: 25 MB</p>
+                            <p className={styles.uploadHint}>Maximum file size: 25 MB</p>
                             {uploading && <p>Uploading...</p>}
                         </div>
                     </div>
@@ -159,28 +139,28 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
             )}
 
             {files.length === 0 ? (
-                <p className="no-files-message">
+                <p className={styles.noFilesMessage}>
                     No files uploaded yet. 
                     {canUpload && " Click 'Upload File' to add files to this project."}
                 </p>
             ) : (
-                <ul className="files-list">
+                <ul className={styles.filesList}>
                     {files.map((file) => (
-                        <li key={file.id} className="file-item">
-                            <div className="file-info">
-                                <span className="file-icon">{getFileIcon(file.contentType)}</span>
-                                <div className="file-details">
-                                    <span className="file-name">{file.fileName}</span>
-                                    <span className="file-meta">
+                        <li key={file.id} className={styles.fileItem}>
+                            <div className={styles.fileInfo}>
+                                <span className={styles.fileIcon}>{getFileIcon(file.contentType)}</span>
+                                <div className={styles.fileDetails}>
+                                    <span className={styles.fileName}>{file.fileName}</span>
+                                    <span className={styles.fileMeta}>
                                         {formatFileSize(file.fileSize)} • 
                                         Uploaded by {file.uploadedBy.nickname} • 
                                         {new Date(file.uploadedAt).toLocaleDateString()}
                                     </span>
                                 </div>
                             </div>
-                            <div className="file-actions">
+                            <div className={styles.fileActions}>
                                 <button
-                                    className="file-action-btn"
+                                    className={styles.fileActionBtn}
                                     onClick={() => handleFileDownload(file)}
                                     title="Download"
                                 >
@@ -188,7 +168,7 @@ const FilesView = ({ projectId, isOwner, isCollaborator }) => {
                                 </button>
                                 {(isOwner || file.uploadedBy.id === user?.id) && (
                                     <button
-                                        className="file-action-btn delete"
+                                        className={`${styles.fileActionBtn} ${styles.delete}`}
                                         onClick={() => handleFileDelete(file.id, file.fileName, file.uploadedBy.id)}
                                         title="Delete"
                                     >

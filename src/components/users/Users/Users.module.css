@@ -1,0 +1,288 @@
+/* Users Container Component Styles */
+.usersContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    margin-top: var(--navbar-height);
+}
+
+.usersContainer h1 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-family: var(--font-family);
+}
+
+.tab:hover {
+    color: var(--text-primary);
+}
+
+.tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+
+.searchSection,
+.suggestedSection {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.findFriendsSearch {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+.findFriendsInput {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease;
+    font-family: var(--font-family);
+    min-width: 0;
+}
+
+.findFriendsInput:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.findFriendsInput::placeholder {
+    color: var(--text-secondary);
+}
+
+.findFriendsBtn {
+    padding: 0.75rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.findFriendsBtn:hover {
+    opacity: 0.9;
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.filterGroup h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.filterInput {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.filterInput input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+}
+
+.filterInput input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.filterInput input::placeholder {
+    color: var(--text-secondary);
+}
+
+.addFilterBtn {
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+    font-family: var(--font-family);
+}
+
+.addFilterBtn:hover {
+    opacity: 0.9;
+}
+
+.selectedFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filterTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--font-family);
+}
+
+.filterTag button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.filterTag button:hover {
+    opacity: 1;
+}
+
+.results {
+    margin-top: 1rem;
+}
+
+.userCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.noResults {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.suggestedDescription {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-align: center;
+    background: var(--bg-accent);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .usersContainer {
+        padding: 0.75rem;
+    }
+
+    .usersContainer h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0.75rem;
+    }
+
+    .userCards {
+        grid-template-columns: 1fr;
+    }
+
+    .searchBar {
+        flex-direction: column;
+    }
+
+    .searchBtn {
+        width: 100%;
+    }
+}
+
+/* Old styles for backward compatibility */
+.userRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-secondary);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 350px;
+}
+
+.addBtn {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.addBtn:hover {
+    background: var(--bg-hover-strong);
+}

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./UserCard.css";
+import styles from "./UserCard.module.css";
 
 /**
  * Individual user card component for displaying user information
@@ -22,54 +22,54 @@ export default function UserCard({
     const navigate = useNavigate();
 
     let buttonText = "Send Friend Request";
-    let buttonClass = "send-request-btn";
+    let buttonClass = styles.sendRequestBtn;
     let isDisabled = false;
 
     if (isFriend) {
         buttonText = "Already Friends";
-        buttonClass = "send-request-btn friends";
+        buttonClass = `${styles.sendRequestBtn} ${styles.friends}`;
         isDisabled = true;
     } else if (hasPendingRequest) {
         buttonText = "Friend Request Sent";
-        buttonClass = "send-request-btn request-sent";
+        buttonClass = `${styles.sendRequestBtn} ${styles.requestSent}`;
         isDisabled = true;
     }
 
     return (
-        <div className="user-card">
+        <div className={styles.userCard}>
             <div 
-                className="user-card-header"
+                className={styles.userCardHeader}
                 onClick={() => navigate(`/profile/${user.id}`)}
                 style={{ cursor: "pointer" }}
             >
                 <img
                     src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`}
                     alt={user.nickname}
-                    className="user-avatar"
+                    className={styles.userAvatar}
                 />
-                <div className="user-info">
+                <div className={styles.userInfo}>
                     <h3>{user.nickname}</h3>
-                    <p className="user-name">
+                    <p className={styles.userName}>
                         {user.name} {user.surname}
                     </p>
                     {matchScore !== null && (
-                        <p className="match-score">Match: {matchScore.toFixed(0)}%</p>
+                        <p className={styles.matchScore}>Match: {matchScore.toFixed(0)}%</p>
                     )}
                 </div>
             </div>
 
             {matchDetails && (
-                <div className="match-details">
+                <div className={styles.matchDetails}>
                     <small>{matchDetails}</small>
                 </div>
             )}
 
             {user.skills && user.skills.length > 0 && (
-                <div className="user-tags">
+                <div className={styles.userTags}>
                     <h4>Skills:</h4>
-                    <div className="tags-list">
+                    <div className={styles.tagsList}>
                         {user.skills.map((skill) => (
-                            <span key={skill.id} className="tag skill-tag">
+                            <span key={skill.id} className={`${styles.tag} ${styles.skillTag}`}>
                                 {skill.skillName}
                             </span>
                         ))}
@@ -78,11 +78,11 @@ export default function UserCard({
             )}
 
             {user.interests && user.interests.length > 0 && (
-                <div className="user-tags">
+                <div className={styles.userTags}>
                     <h4>Interests:</h4>
-                    <div className="tags-list">
+                    <div className={styles.tagsList}>
                         {user.interests.map((interest) => (
-                            <span key={interest.id} className="tag interest-tag">
+                            <span key={interest.id} className={`${styles.tag} ${styles.interestTag}`}>
                                 {interest.interestName}
                             </span>
                         ))}

@@ -1,5 +1,6 @@
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import UserCard from "../UserCard/UserCard";
+import styles from "./SuggestedUsersList.module.css";
 
 /**
  * Component displaying suggested users based on matching criteria
@@ -17,7 +18,7 @@ export default function SuggestedUsersList({
 
     if (suggestedUsers.length === 0) {
         return (
-            <p className="no-results">
+            <p className={styles.noResults}>
                 No suggestions available. Add skills and interests to your profile to
                 get personalized recommendations!
             </p>
@@ -25,7 +26,7 @@ export default function SuggestedUsersList({
     }
 
     return (
-        <div className="user-cards">
+        <div className={styles.userCards}>
             {suggestedUsers.map(
                 ({ user, matchScore, commonSkills, commonInterests, commonProjects, recentInteractions }) => {
                     const details = [];

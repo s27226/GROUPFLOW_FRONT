@@ -1,5 +1,6 @@
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import UserCard from "../UserCard/UserCard";
+import styles from "./UserSearchResults.module.css";
 
 /**
  * Component displaying search results for users
@@ -18,7 +19,7 @@ export default function UserSearchResults({
 
     if (searchResults.length > 0) {
         return (
-            <div className="user-cards">
+            <div className={styles.userCards}>
                 {searchResults.map((result) => (
                     <UserCard
                         key={result.user.id}
@@ -33,7 +34,7 @@ export default function UserSearchResults({
     }
 
     return (
-        <p className="no-results">
+        <p className={styles.noResults}>
             {hasSearchCriteria
                 ? "No users found matching your criteria."
                 : "Enter search criteria to find friends."}

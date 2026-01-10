@@ -1,125 +1,136 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
 import LoadingSpinner from "../../ui/LoadingSpinner";
-import "./ProfileTagsEditor.css";
+import styles from "./ProfileTagsEditor.module.css";
 
 export default function ProfileTagsEditor() {
-    const [skills, setSkills] = useState([]);
-    const [interests, setInterests] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
-    const { executeQuery, executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
-    const loadTags = useCallback(async () => {
-        setLoading(true);
-        try {
-            const data = await executeQuery(GRAPHQL_QUERIES.GET_MY_TAGS, {});
-            setSkills(data?.userTag?.myskills || []);
-            setInterests(data?.userTag?.myinterests || []);
-        } catch (err) {
-            console.error("Failed to load tags:", err);
-        } finally {
-            setLoading(false);
+    // Load tags with unified query hook - use new API: (query, variables, options)
+    const { data: tagsData, loading, setData: setTagsData } = useQuery(
+        GRAPHQL_QUERIES.GET_MY_TAGS,
+        {},
+        {
+            autoFetch: true,
+            initialData: { skills: [], interests: [] },
+            transform: (data) => ({
+                skills: data?.userTag?.myskills || [],
+                interests: data?.userTag?.myinterests || []
+            })
         }
-    }, [executeQuery]);
+    );
 
-    useEffect(() => {
-        loadTags();
-    }, [loadTags]);
+    const skills = tagsData?.skills || [];
+    const interests = tagsData?.interests || [];
+
+    // Mutation hooks for adding/removing skills and interests
+    const { mutate: addSkillMutation } = useMutationQuery(
+        GRAPHQL_MUTATIONS.ADD_SKILL,
+        {
+            onSuccess: (data) => {
+                if (data?.userTag?.addskill) {
+                    setTagsData(prev => ({
+                        skills: [...(prev?.skills || []), data.userTag.addskill],
+                        interests: prev?.interests || []
+                    }));
+                    setSkillInput("");
+                    showToast("Skill added successfully", "success");
+                }
+            },
+            onError: () => showToast("Failed to add skill", "error")
+        }
+    );
+
+    const { mutate: removeSkillMutation } = useMutationQuery(
+        GRAPHQL_MUTATIONS.REMOVE_SKILL,
+        {
+            onError: () => showToast("Failed to remove skill", "error")
+        }
+    );
+
+    const { mutate: addInterestMutation } = useMutationQuery(
+        GRAPHQL_MUTATIONS.ADD_INTEREST,
+        {
+            onSuccess: (data) => {
+                if (data?.userTag?.addinterest) {
+                    setTagsData(prev => ({
+                        skills: prev?.skills || [],
+                        interests: [...(prev?.interests || []), data.userTag.addinterest]
+                    }));
+                    setInterestInput("");
+                    showToast("Interest added successfully", "success");
+                }
+            },
+            onError: () => showToast("Failed to add interest", "error")
+        }
+    );
+
+    const { mutate: removeInterestMutation } = useMutationQuery(
+        GRAPHQL_MUTATIONS.REMOVE_INTEREST,
+        {
+            onError: () => showToast("Failed to remove interest", "error")
+        }
+    );
 
     const addSkill = async () => {
         if (!skillInput.trim()) return;
-
-        try {
-            const data = await executeMutation(GRAPHQL_MUTATIONS.ADD_SKILL, {
-                input: { skillName: skillInput.trim() }
-            });
-
-            if (data?.userTag?.addskill) {
-                setSkills([...skills, data.userTag.addskill]);
-                setSkillInput("");
-            }
-        } catch (err) {
-            console.error("Failed to add skill:", err);
-            showToast("Failed to add skill", "error");
-        }
+        await addSkillMutation({ input: { skillName: skillInput.trim() } });
     };
 
     const removeSkill = async (skillId) => {
-        try {
-            const success = await executeMutation(GRAPHQL_MUTATIONS.REMOVE_SKILL, {
-                skillId
-            });
-
-            if (success?.userTag?.removeskill) {
-                setSkills(skills.filter((s) => s.id !== skillId));
-            }
-        } catch (err) {
-            console.error("Failed to remove skill:", err);
-            showToast("Failed to remove skill", "error");
+        const result = await removeSkillMutation({ skillId });
+        if (result?.userTag?.removeskill) {
+            setTagsData(prev => ({
+                skills: (prev?.skills || []).filter((s) => s.id !== skillId),
+                interests: prev?.interests || []
+            }));
+            showToast("Skill removed", "success");
         }
     };
 
     const addInterest = async () => {
         if (!interestInput.trim()) return;
-
-        try {
-            const data = await executeMutation(GRAPHQL_MUTATIONS.ADD_INTEREST, {
-                input: { interestName: interestInput.trim() }
-            });
-
-            if (data?.userTag?.addinterest) {
-                setInterests([...interests, data.userTag.addinterest]);
-                setInterestInput("");
-            }
-        } catch (err) {
-            console.error("Failed to add interest:", err);
-            showToast("Failed to add interest", "error");
-        }
+        await addInterestMutation({ input: { interestName: interestInput.trim() } });
     };
 
     const removeInterest = async (interestId) => {
-        try {
-            const success = await executeMutation(GRAPHQL_MUTATIONS.REMOVE_INTEREST, {
-                interestId
-            });
-
-            if (success?.userTag?.removeinterest) {
-                setInterests(interests.filter((i) => i.id !== interestId));
-            }
-        } catch (err) {
-            console.error("Failed to remove interest:", err);
-            showToast("Failed to remove interest", "error");
+        const result = await removeInterestMutation({ interestId });
+        if (result?.userTag?.removeinterest) {
+            setTagsData(prev => ({
+                skills: prev?.skills || [],
+                interests: (prev?.interests || []).filter((i) => i.id !== interestId)
+            }));
+            showToast("Interest removed", "success");
         }
     };
 
     if (loading) {
         return (
-            <div className="profile-tags-editor">
+            <div className={styles.profileTagsEditor}>
                 <LoadingSpinner />
             </div>
         );
     }
 
     return (
-        <div className="profile-tags-editor">
+        <div className={styles.profileTagsEditor}>
             <h2>Your Profile Tags</h2>
-            <p className="tags-description">
+            <p className={styles.tagsDescription}>
                 Add skills and interests to help others find you and get better friend
                 recommendations!
             </p>
 
-            <div className="tag-section">
+            <div className={styles.tagSection}>
                 <h3>Skills</h3>
-                <p className="section-hint">
+                <p className={styles.sectionHint}>
                     Technical abilities, programming languages, tools, etc.
                 </p>
 
-                <div className="tag-input-group">
+                <div className={styles.tagInputGroup}>
                     <input
                         type="text"
                         placeholder="e.g., Python, JavaScript, Machine Learning..."
@@ -127,19 +138,19 @@ export default function ProfileTagsEditor() {
                         onChange={(e) => setSkillInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && addSkill()}
                     />
-                    <button onClick={addSkill} className="add-tag-btn">
+                    <button onClick={addSkill} className={styles.addTagBtn}>
                         Add Skill
                     </button>
                 </div>
 
-                <div className="tags-display">
+                <div className={styles.tagsDisplay}>
                     {skills.length > 0 ? (
                         skills.map((skill) => (
-                            <div key={skill.id} className="tag-item skill-tag">
+                            <div key={skill.id} className={`${styles.tagItem} ${styles.skillTag}`}>
                                 <span>{skill.skillName}</span>
                                 <button
                                     onClick={() => removeSkill(skill.id)}
-                                    className="remove-tag-btn"
+                                    className={styles.removeTagBtn}
                                     title="Remove skill"
                                 >
                                     ×
@@ -147,18 +158,18 @@ export default function ProfileTagsEditor() {
                             </div>
                         ))
                     ) : (
-                        <p className="no-tags">No skills added yet.</p>
+                        <p className={styles.noTags}>No skills added yet.</p>
                     )}
                 </div>
             </div>
 
-            <div className="tag-section">
+            <div className={styles.tagSection}>
                 <h3>Interests</h3>
-                <p className="section-hint">
+                <p className={styles.sectionHint}>
                     Hobbies, topics you're passionate about, activities you enjoy...
                 </p>
 
-                <div className="tag-input-group">
+                <div className={styles.tagInputGroup}>
                     <input
                         type="text"
                         placeholder="e.g., Photography, Gaming, Music..."
@@ -166,19 +177,19 @@ export default function ProfileTagsEditor() {
                         onChange={(e) => setInterestInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && addInterest()}
                     />
-                    <button onClick={addInterest} className="add-tag-btn">
+                    <button onClick={addInterest} className={styles.addTagBtn}>
                         Add Interest
                     </button>
                 </div>
 
-                <div className="tags-display">
+                <div className={styles.tagsDisplay}>
                     {interests.length > 0 ? (
                         interests.map((interest) => (
-                            <div key={interest.id} className="tag-item interest-tag">
+                            <div key={interest.id} className={`${styles.tagItem} ${styles.interestTag}`}>
                                 <span>{interest.interestName}</span>
                                 <button
                                     onClick={() => removeInterest(interest.id)}
-                                    className="remove-tag-btn"
+                                    className={styles.removeTagBtn}
                                     title="Remove interest"
                                 >
                                     ×
@@ -186,12 +197,12 @@ export default function ProfileTagsEditor() {
                             </div>
                         ))
                     ) : (
-                        <p className="no-tags">No interests added yet.</p>
+                        <p className={styles.noTags}>No interests added yet.</p>
                     )}
                 </div>
             </div>
 
-            <div className="tags-summary">
+            <div className={styles.tagsSummary}>
                 <p>
                     <strong>{skills.length}</strong> skill{skills.length !== 1 ? "s" : ""} and{" "}
                     <strong>{interests.length}</strong> interest{interests.length !== 1 ? "s" : ""}{" "}

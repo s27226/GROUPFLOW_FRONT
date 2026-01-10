@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import "./Invitations.css";
+import styles from "./Invitations.module.css";
 import Invitation from "../Invitation";
 import { InvitationContext } from "../../../context/InvitationContext";
-import { useInvitations } from "../../../hooks/useInvitations";
+import { useInvitations } from "../../../hooks";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 export default function Invitations() {
@@ -30,7 +30,7 @@ export default function Invitations() {
 
     if (loading) {
         return (
-            <div className="invitations-container">
+            <div className={styles.invitationsContainer}>
                 <LoadingSpinner />
             </div>
         );
@@ -39,27 +39,27 @@ export default function Invitations() {
     const currentInvitations = activeTab === "friends" ? friendRequests : projectInvitations;
 
     return (
-        <div className="invitations-container">
+        <div className={styles.invitationsContainer}>
             <h1>Invitations</h1>
 
-            <div className="tabs">
+            <div className={styles.tabs}>
                 <button
-                    className={`tab ${activeTab === "friends" ? "active" : ""}`}
+                    className={`${styles.tab} ${activeTab === "friends" ? styles.active : ""}`}
                     onClick={() => setActiveTab("friends")}
                 >
                     Friend Requests ({friendRequests.length})
                 </button>
                 <button
-                    className={`tab ${activeTab === "groups" ? "active" : ""}`}
+                    className={`${styles.tab} ${activeTab === "groups" ? styles.active : ""}`}
                     onClick={() => setActiveTab("groups")}
                 >
                     Group Invitations ({projectInvitations.length})
                 </button>
             </div>
 
-            <div className="invitations-list">
+            <div className={styles.invitationsList}>
                 {currentInvitations.length === 0 ? (
-                    <p className="empty">
+                    <p className={styles.empty}>
                         {activeTab === "friends" ? "No friend requests" : "No group invitations"}
                     </p>
                 ) : (

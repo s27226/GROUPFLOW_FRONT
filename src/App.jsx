@@ -1,33 +1,35 @@
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import MainPage from "./pages/MainPage";
+import {
+    LoginPage,
+    RegisterPage,
+    ResetPasswordPage,
+    MainPage,
+    NewPostPage,
+    PostPage,
+    SavedPage,
+    ProfilePage,
+    ProfileEditPage,
+    ProfileTagsPage,
+    SettingsPage,
+    ChatPage,
+    FriendPage,
+    InvitationsPage,
+    ModerationPage,
+    BlockedUsersPage,
+    ReportedPostsPage,
+    ProjectsPage,
+    MyProjectsPage,
+    CreateGroupPage,
+    ProjectEditFrontPage,
+    ProjectProfilePage,
+    ProjectViewPage as ProjectChatPage,
+    UsersPage
+} from "./pages";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import ProfilePage from "./pages/ProfilePage";
-import SettingsPage from "./pages/SettingsPage";
-import ProfileEditPage from "./pages/ProfileEditPage";
-import ProjectProfilePage from "./pages/ProjectProfilePage";
-import ProjectEditFrontPage from "./pages/ProjectEditFrontPage";
-import ProjectChatPage from "./pages/ProjectViewPage";
-import ProjectsPage from "./pages/ProjectsPage";
 import { PrivateChat } from "./components/chat";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ChatPage from "./pages/ChatPage";
-import CreateGroupPage from "./pages/CreateGroupPage";
-import MyProjectsPage from "./pages/MyProjectsPage";
-import UsersPage from "./pages/UsersPage";
-import FriendPage from "./pages/FriendPage";
 import { useState } from "react";
-import { useInvitationPolling } from "./hooks/useInvitationPolling";
-import InvitationsPage from "./pages/InvitationsPage";
+import { useInvitationPolling } from "./hooks";
 import { InvitationContext } from "./context/InvitationContext";
-import NewPostPage from "./pages/NewPostPage";
-import SavedPage from "./pages/SavedPage";
-import PostPage from "./pages/PostPage";
-import ProfileTagsPage from "./pages/ProfileTagsPage";
-import BlockedUsersPage from "./pages/BlockedUsersPage";
-import ReportedPostsPage from "./pages/ReportedPostsPage";
-import ModerationPage from "./pages/ModerationPage";
 import { ToastProvider } from "./context/ToastContext";
 
 /**

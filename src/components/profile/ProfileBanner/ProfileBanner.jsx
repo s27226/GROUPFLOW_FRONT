@@ -1,10 +1,11 @@
-import { useImageLoaded } from "../../../hooks/useImageLoaded";
+import { useImageLoaded } from "../../../hooks";
+import styles from "./ProfileBanner.module.css";
 
 const ProfileBanner = ({ src, alt = "Banner" }) => {
     const { loaded, handleLoad } = useImageLoaded();
 
     return (
-        <div className="profile-banner">
+        <div className={styles.profileBanner}>
             {!loaded && (
                 <div
                     className="skeleton"
@@ -22,7 +23,7 @@ const ProfileBanner = ({ src, alt = "Banner" }) => {
                 src={src}
                 alt={alt}
                 loading="lazy"
-                className={loaded ? "loaded" : ""}
+                className={loaded ? styles.loaded : ""}
                 onLoad={handleLoad}
             />
         </div>

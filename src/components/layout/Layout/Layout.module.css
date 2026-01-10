@@ -1,0 +1,71 @@
+
+.mainpageLayout {
+    background-color: var(--bg-main, #0f1419);
+    color: var(--text-primary, #e7e9ea);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-family), serif;
+}
+
+.mainpageContent {
+    display: flex;
+    width: 100%;
+    padding-top: 80px;
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+.mainpageFeedTrendingWrapper {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.mainpageFeedWrapper {
+    flex: 1;
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Compact layout variant (maincomp) */
+.maincompLayout {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.maincompContent {
+    display: flex;
+    width: 100%;
+    font-family: var(--font-family), serif;
+    padding-top: 20px;
+    justify-content: center;
+}
+
+.maincompCenterWrapper {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    align-items: flex-start;
+    justify-content: center;
+    width: 840px;
+    max-width: 840px;
+}
+
+.maincompFeedWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    max-width: 800px;
+}

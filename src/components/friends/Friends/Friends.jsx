@@ -1,9 +1,8 @@
 import { useState } from "react";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import ConfirmDialog from "../../ui/ConfirmDialog";
-import "./Friends.css";
-import { useSearchQuery } from "../../../hooks/useSearchQuery";
-import { useFriends } from "../../../hooks/useFriends";
+import styles from "./Friends.module.css";
+import { useSearchQuery, useFriends } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 
 export default function Friends() {
@@ -35,24 +34,24 @@ export default function Friends() {
 
     if (loading) {
         return (
-            <div className="friends-container">
+            <div className={styles.friendsContainer}>
                 <LoadingSpinner />
             </div>
         );
     }
 
     return (
-        <div className="friends-container">
-            <div className="friends-header">
+        <div className={styles.friendsContainer}>
+            <div className={styles.friendsHeader}>
                 <h1>My Friends</h1>
-                <div className="friends-count">
+                <div className={styles.friendsCount}>
                     {friends.length} {friends.length === 1 ? "Friend" : "Friends"}
                 </div>
             </div>
 
             {friends.length === 0 ? (
-                <div className="empty-state">
-                    <div className="empty-icon">👥</div>
+                <div className={styles.emptyState}>
+                    <div className={styles.emptyIcon}>👥</div>
                     <h2>No friends found</h2>
                     <p>
                         {searchQuery
@@ -61,11 +60,11 @@ export default function Friends() {
                     </p>
                 </div>
             ) : (
-                <div className="friends-grid">
+                <div className={styles.friendsGrid}>
                     {friends.map((friend) => (
-                        <div className="friend-card" key={friend.id}>
+                        <div className={styles.friendCard} key={friend.id}>
                             <div 
-                                className="friend-card-header"
+                                className={styles.friendCardHeader}
                                 onClick={() => navigate(`/profile/${friend.id}`)}
                                 style={{ cursor: "pointer" }}
                             >
@@ -75,19 +74,19 @@ export default function Friends() {
                                         `https://i.pravatar.cc/150?u=${friend.id}`
                                     }
                                     alt={friend.nickname}
-                                    className="friend-avatar"
+                                    className={styles.friendAvatar}
                                 />
-                                <div className="friend-info">
+                                <div className={styles.friendInfo}>
                                     <h3>{friend.nickname}</h3>
-                                    <p className="friend-name">
+                                    <p className={styles.friendName}>
                                         {friend.name} {friend.surname}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="friend-actions">
+                            <div className={styles.friendActions}>
                                 <button
-                                    className="message-btn"
+                                    className={styles.messageBtn}
                                     onClick={() =>
                                         navigate("/chats", {
                                             state: {
@@ -106,7 +105,7 @@ export default function Friends() {
                                     Message
                                 </button>
                                 <button
-                                    className="remove-btn"
+                                    className={styles.removeBtn}
                                     onClick={() => handleRemoveFriend(friend.id, friend.nickname || `${friend.name} ${friend.surname}`)}
                                 >
                                     Remove

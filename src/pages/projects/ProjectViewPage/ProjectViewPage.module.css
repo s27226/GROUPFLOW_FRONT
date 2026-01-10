@@ -1,0 +1,188 @@
+
+.feedProjectsWrapper {
+    position: fixed;
+    left: var(--sidebar-width);
+    top: var(--navbar-height);
+    right: 0;
+    bottom: 0;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.mainFeedWrapper {
+    flex: 1;
+    max-width: 800px;
+    min-width: 0;
+}
+
+.projectSidebarPanels {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 80px;
+}
+
+/* Główne tło i layout */
+.viewPageMainLayout {
+    background-color: #000;
+    color: #e7e9ea;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.viewPageMainContent {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    font-family: var(--font-family), serif;
+}
+
+/* Nagłówek + przyciski */
+.backBtn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.backBtn:hover {
+    text-decoration: underline;
+}
+
+.projectHeader {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.projectHeader h2 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.projectHeader p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Zakładki */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tabBtn {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabBtn:hover {
+    background-color: var(--border-color);
+}
+
+.tabBtn.active {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+
+/* Zawartość */
+.tabContent {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-main);
+}
+
+/* Scrollbar (dla Chrome) */
+.tabContent::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tabContent::-webkit-scrollbar-track {
+    background: var(--bg-main);
+}
+
+.tabContent::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+/* Pliki */
+.filesView h2 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.filesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fileItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-main);
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.fileItem:hover {
+    background: var(--border-color);
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tabBtn {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabBtn:hover {
+    background-color: var(--border-color);
+}
+
+.tabBtn.active,
+.active {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}

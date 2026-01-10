@@ -1,7 +1,7 @@
-import "./MembersPanel.css";
+import styles from "./MembersPanel.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import { useGraphQL } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog";
@@ -57,39 +57,39 @@ export default function MembersPanel({ project, projectId }) {
     }
 
     return (
-        <div className="project-members-panel">
+        <div className={styles.projectMembersPanel}>
             <h3>Członkowie projektu</h3>
             {members.length === 0 ? (
                 <p style={{ color: "#8b8b8b", fontSize: "0.9rem", padding: "10px" }}>
                     No members yet
                 </p>
             ) : (
-                <div className="members-list">
+                <div className={styles.membersList}>
                     {members.map((member) => (
                         <div
                             key={member.id}
-                            className={`member-item ${member.status}`}
+                            className={`${styles.memberItem} ${styles[member.status]}`}
                         >
                             <div
-                                className="member-header"
+                                className={styles.memberHeader}
                                 onClick={() => navigate(`/profile/${member.id}`)}
                                 style={{ cursor: "pointer", flex: 1 }}
                             >
                                 <img
                                     src={member.avatar}
                                     alt={member.name}
-                                    className="member-avatar"
+                                    className={styles.memberAvatar}
                                 />
-                                <span className="status-dot" />
-                                <div className="member-info">
-                                    <span className="member-name">
+                                <span className={styles.statusDot} />
+                                <div className={styles.memberInfo}>
+                                    <span className={styles.memberName}>
                                         {member.nickname || member.name}
                                     </span>
-                                    <span className="member-role">{member.role}</span>
+                                    <span className={styles.memberRole}>{member.role}</span>
                                 </div>
                             </div>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <span className="status-text">
+                                <span className={styles.statusText}>
                                     {member.status === "available"
                                         ? "Dostępny"
                                         : member.status === "away"
@@ -98,7 +98,7 @@ export default function MembersPanel({ project, projectId }) {
                                 </span>
                                 {isOwner && member.role !== "Owner" && (
                                     <button
-                                        className="remove-member-btn"
+                                        className={styles.removeMemberBtn}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleRemoveMember(member.id, member.nickname || member.name);

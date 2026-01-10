@@ -5,7 +5,7 @@ import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import { sanitizeText } from "../../../utils/sanitize";
 import { useAuth } from "../../../context/AuthContext";
-import "./ChatBox.css";
+import styles from "./ChatBox.module.css";
 
 const ChatBox = ({ projectId }) => {
     const { user: currentUser } = useAuth();
@@ -253,8 +253,8 @@ const ChatBox = ({ projectId }) => {
 
     if (loading) {
         return (
-            <div className="chatbox-all">
-                <div className="chatbox-container">
+            <div className={styles.chatboxAll}>
+                <div className={styles.chatboxContainer}>
                     <LoadingSpinner />
                 </div>
             </div>
@@ -263,8 +263,8 @@ const ChatBox = ({ projectId }) => {
 
     if (!chatId) {
         return (
-            <div className="chatbox-all">
-                <div className="chatbox-container">
+            <div className={styles.chatboxAll}>
+                <div className={styles.chatboxContainer}>
                     <p>No chat available for this project yet.</p>
                 </div>
             </div>
@@ -272,31 +272,31 @@ const ChatBox = ({ projectId }) => {
     }
 
     return (
-        <div className="chatbox-all">
-            <div className="chatbox-container">
-                <div className="chatbox-content">
-                    <div className="chatbox-messages-area">
+        <div className={styles.chatboxAll}>
+            <div className={styles.chatboxContainer}>
+                <div className={styles.chatboxContent}>
+                    <div className={styles.chatboxMessagesArea}>
                         {messages.length === 0 ? (
                             <p>No messages yet. Be the first to send one!</p>
                         ) : (
                             messages.map((msg) => (
                                 <div
                                     key={msg.id}
-                                    className={`chatbox-message-row ${msg.self ? "self" : ""}`}
+                                    className={`${styles.chatboxMessageRow} ${msg.self ? styles.self : ""}`}
                                 >
                                     {!msg.self && (
                                         <img
                                             src={msg.avatar}
                                             alt={msg.user}
-                                            className="chatbox-avatar"
+                                            className={styles.chatboxAvatar}
                                         />
                                     )}
-                                    <div className="chatbox-message-content">
+                                    <div className={styles.chatboxMessageContent}>
                                         {!msg.self && (
-                                            <div className="chatbox-username">{msg.user}</div>
+                                            <div className={styles.chatboxUsername}>{msg.user}</div>
                                         )}
                                         <div
-                                            className={`chatbox-message-bubble ${msg.self ? "chatbox-self-bubble" : ""}`}
+                                            className={`${styles.chatboxMessageBubble} ${msg.self ? styles.chatboxSelfBubble : ""}`}
                                         >
                                             {sanitizeText(msg.text)}
                                         </div>
@@ -305,7 +305,7 @@ const ChatBox = ({ projectId }) => {
                                         <img
                                             src={msg.avatar}
                                             alt={msg.user}
-                                            className="chatbox-avatar"
+                                            className={styles.chatboxAvatar}
                                         />
                                     )}
                                 </div>
@@ -314,7 +314,7 @@ const ChatBox = ({ projectId }) => {
                         <div ref={messagesEndRef} />
                     </div>
 
-                    <div className="chatbox-input-area">
+                    <div className={styles.chatboxInputArea}>
                         <input
                             type="text"
                             placeholder="Napisz Wiadomość"

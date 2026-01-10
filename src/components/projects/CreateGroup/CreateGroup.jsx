@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGraphQL } from "../../../hooks/useGraphQL";
-import { useFriends } from "../../../hooks/useFriends";
+import { useGraphQL, useFriends } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import "./CreateGroup.css";
+import styles from "./CreateGroup.module.css";
 
 export default function CreateGroup() {
     const navigate = useNavigate();
@@ -109,13 +108,13 @@ export default function CreateGroup() {
     });
 
     return (
-        <div className="create-group-page">
+        <div className={styles.createGroupPage}>
             {/* Left section - form */}
-            <div className="left-section">
+            <div className={styles.leftSection}>
                 <h2>Create New Project</h2>
-                {error && <div className="error-message">{error}</div>}
-                <form onSubmit={handleSubmit} className="create-group-form">
-                    <div className="form-group">
+                {error && <div className={styles.errorMessage}>{error}</div>}
+                <form onSubmit={handleSubmit} className={styles.createGroupForm}>
+                    <div className={styles.formGroup}>
                         <label>Project Name *</label>
                         <input
                             type="text"
@@ -126,7 +125,7 @@ export default function CreateGroup() {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Description *</label>
                         <textarea
                             placeholder="Describe your project..."
@@ -136,7 +135,7 @@ export default function CreateGroup() {
                         ></textarea>
                     </div>
 
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Image URL (Optional)</label>
                         <input
                             type="url"
@@ -146,9 +145,9 @@ export default function CreateGroup() {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Skills (Optional)</label>
-                        <div className="tag-input-container">
+                        <div className={styles.tagInputContainer}>
                             <input
                                 type="text"
                                 placeholder="Add a skill..."
@@ -156,11 +155,11 @@ export default function CreateGroup() {
                                 onChange={(e) => setSkillInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
                             />
-                            <button type="button" onClick={addSkill} className="add-tag-btn">+</button>
+                            <button type="button" onClick={addSkill} className={styles.addTagBtn}>+</button>
                         </div>
-                        <div className="tags-display">
+                        <div className={styles.tagsDisplay}>
                             {selectedSkills.map((skill) => (
-                                <span key={skill} className="tag skill-tag">
+                                <span key={skill} className={`${styles.tag} ${styles.skillTag}`}>
                                     {skill}
                                     <button type="button" onClick={() => removeSkill(skill)}>×</button>
                                 </span>
@@ -168,9 +167,9 @@ export default function CreateGroup() {
                         </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className={styles.formGroup}>
                         <label>Interests (Optional)</label>
-                        <div className="tag-input-container">
+                        <div className={styles.tagInputContainer}>
                             <input
                                 type="text"
                                 placeholder="Add an interest..."
@@ -178,11 +177,11 @@ export default function CreateGroup() {
                                 onChange={(e) => setInterestInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInterest())}
                             />
-                            <button type="button" onClick={addInterest} className="add-tag-btn">+</button>
+                            <button type="button" onClick={addInterest} className={styles.addTagBtn}>+</button>
                         </div>
-                        <div className="tags-display">
+                        <div className={styles.tagsDisplay}>
                             {selectedInterests.map((interest) => (
-                                <span key={interest} className="tag interest-tag">
+                                <span key={interest} className={`${styles.tag} ${styles.interestTag}`}>
                                     {interest}
                                     <button type="button" onClick={() => removeInterest(interest)}>×</button>
                                 </span>
@@ -190,8 +189,8 @@ export default function CreateGroup() {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label className="checkbox-label">
+                    <div className={styles.formGroup}>
+                        <label className={styles.checkboxLabel}>
                             <input
                                 type="checkbox"
                                 checked={isPublic}
@@ -199,28 +198,28 @@ export default function CreateGroup() {
                             />
                             <span>Make project public</span>
                         </label>
-                        <span className="form-hint">Public projects can be viewed by anyone</span>
+                        <span className={styles.formHint}>Public projects can be viewed by anyone</span>
                     </div>
 
-                    <div className="selected-members-summary">
+                    <div className={styles.selectedMembersSummary}>
                         <h4>Selected Collaborators ({selectedUsers.length})</h4>
                         {selectedUsers.length === 0 ? (
-                            <p className="empty-state">No collaborators selected yet</p>
+                            <p className={styles.emptyState}>No collaborators selected yet</p>
                         ) : (
-                            <div className="selected-chips">
+                            <div className={styles.selectedChips}>
                                 {selectedUsers.map(user => (
-                                    <div key={user.id} className="member-chip">
+                                    <div key={user.id} className={styles.memberChip}>
                                         {user.profilePic && (
                                             <img 
                                                 src={user.profilePic} 
                                                 alt={user.nickname} 
-                                                className="chip-avatar"
+                                                className={styles.chipAvatar}
                                             />
                                         )}
                                         <span>{user.nickname || `${user.name} ${user.surname}`}</span>
                                         <button
                                             type="button"
-                                            className="chip-remove"
+                                            className={styles.chipRemove}
                                             onClick={() => toggleUser(user)}
                                         >
                                             ×
@@ -233,7 +232,7 @@ export default function CreateGroup() {
 
                     <button 
                         type="submit" 
-                        className="submit-btn"
+                        className={styles.submitBtn}
                         disabled={creating}
                     >
                         {creating ? "Creating..." : "Create Project"}
@@ -242,66 +241,66 @@ export default function CreateGroup() {
             </div>
 
             {/* Right section - participants */}
-            <div className="right-section">
-                <div className="participants-header">
+            <div className={styles.rightSection}>
+                <div className={styles.participantsHeader}>
                     <h3>Invite Collaborators</h3>
-                    <span className="count">
+                    <span className={styles.count}>
                         {selectedUsers.length} / {friends.length} selected
                     </span>
                 </div>
 
-                <div className="search-box">
+                <div className={styles.searchBox}>
                     <input
                         type="text"
                         placeholder="Search friends..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
+                        className={styles.searchInput}
                     />
                 </div>
 
                 {loading ? (
-                    <div className="loading-state">
+                    <div className={styles.loadingState}>
                         <p>Loading friends...</p>
                     </div>
                 ) : filteredFriends.length === 0 ? (
-                    <div className="empty-state">
+                    <div className={styles.emptyState}>
                         <p>{searchTerm ? "No friends match your search" : "You don't have any friends yet"}</p>
                     </div>
                 ) : (
-                    <div className="participants-list">
+                    <div className={styles.participantsList}>
                         {filteredFriends.map((friend) => {
                             const isSelected = selectedUsers.some((u) => u.id === friend.id);
                             return (
                                 <div 
                                     key={friend.id} 
-                                    className={`participant-card ${isSelected ? "selected" : ""}`}
+                                    className={`${styles.participantCard} ${isSelected ? styles.selected : ""}`}
                                     onClick={() => toggleUser(friend)}
                                 >
-                                    <div className="participant-info">
+                                    <div className={styles.participantInfo}>
                                         {friend.profilePic ? (
                                             <img 
                                                 src={friend.profilePic} 
                                                 alt={friend.nickname} 
-                                                className="participant-avatar"
+                                                className={styles.participantAvatar}
                                             />
                                         ) : (
-                                            <div className="participant-avatar-placeholder">
+                                            <div className={styles.participantAvatarPlaceholder}>
                                                 {(friend.name?.[0] || '') + (friend.surname?.[0] || '')}
                                             </div>
                                         )}
-                                        <div className="participant-details">
-                                            <div className="participant-name">
+                                        <div className={styles.participantDetails}>
+                                            <div className={styles.participantName}>
                                                 {friend.nickname || `${friend.name} ${friend.surname}`}
                                             </div>
-                                            <div className="participant-fullname">
+                                            <div className={styles.participantFullname}>
                                                 {friend.nickname && `${friend.name} ${friend.surname}`}
                                             </div>
                                         </div>
                                     </div>
                                     <button
                                         type="button"
-                                        className={`toggle-btn ${isSelected ? "remove" : "add"}`}
+                                        className={`${styles.toggleBtn} ${isSelected ? styles.remove : styles.add}`}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             toggleUser(friend);

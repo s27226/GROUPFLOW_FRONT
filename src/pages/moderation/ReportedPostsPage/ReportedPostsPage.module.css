@@ -1,0 +1,458 @@
+/* Isolated CSS for Reported Posts Page - all classes prefixed with .rpp */
+
+.pageLayout {
+    min-height: 100vh;
+    background-color: var(--bg-main);
+}
+
+.pageContent {
+    display: flex;
+    padding-top: 60px;
+}
+
+.rppPage {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    animation: rppFadeIn 0.3s ease-in;
+}
+
+@keyframes rppFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header Section */
+.rppHeader {
+    margin-bottom: 32px;
+}
+
+.rppBackButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.rppBackButton:hover {
+    background-color: rgba(29, 155, 240, 0.1);
+    transform: translateX(-2px);
+}
+
+.rppHeaderTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.rppHeaderIcon {
+    color: var(--accent);
+}
+
+.rppHeader h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.rppHeaderSubtitle {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-left: 40px;
+}
+
+/* Loading State */
+.rppLoadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.rppSpinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--bg-secondary);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: rppSpin 0.8s linear infinite;
+}
+
+@keyframes rppSpin {
+    to { transform: rotate(360deg); }
+}
+
+.rppLoadingState p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Empty State */
+.rppEmptyState {
+    text-align: center;
+    padding: 80px 24px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.rppEmptyIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, rgba(29, 155, 240, 0.1), rgba(29, 155, 240, 0.05));
+    border-radius: 50%;
+    margin-bottom: 24px;
+    color: var(--accent);
+}
+
+.rppEmptyState h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.rppEmptyDescription {
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.rppInfoBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: rgba(29, 155, 240, 0.08);
+    border-radius: 10px;
+    color: var(--accent);
+    font-size: 0.9rem;
+}
+
+/* Reports Count */
+.rppReportsCount {
+    margin-bottom: 24px;
+    padding: 12px 20px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.rppReportsCount span {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Grid Layout */
+.rppReportsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+/* Report Card */
+.rppReportCard {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.rppReportCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--accent);
+}
+
+.rppReportHeaderInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.rppReporterInfo {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.rppReporterAvatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.rppReportedBy {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.rppReportedBy strong {
+    color: var(--text-primary);
+}
+
+.rppReportDate {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    margin: 4px 0 0 0;
+}
+
+.rppReportBadge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Report Reason */
+.rppReportReason {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.08), rgba(255, 152, 0, 0.04));
+    border-left: 3px solid #ff9800;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.rppReportReason strong {
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.rppReportReason p {
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Post Preview */
+.rppReportedPostPreview {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.rppPostAuthor {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rppPostAuthorAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rppAuthorName {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.rppPostDate {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    margin: 4px 0 0 0;
+}
+
+.rppPostContentPreview h4 {
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.rppPostContentPreview p {
+    color: var(--text-secondary);
+    margin: 0 0 12px 0;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.rppPostPreviewImage {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+/* Action Buttons */
+.rppReportActions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.rppActionBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    min-width: 130px;
+    justify-content: center;
+}
+
+.rppActionBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.rppDiscardBtn {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.rppDiscardBtn:hover:not(:disabled) {
+    background-color: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rppDeleteBtn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.rppDeleteBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+.rppActionBtn.loading {
+    pointer-events: none;
+}
+
+.rppButtonSpinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: rppSpin 0.8s linear infinite;
+}
+
+.rppDiscardBtn .rppButtonSpinner {
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .rppReportsGrid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .rppPage {
+        padding: 24px 16px;
+    }
+
+    .rppHeader h1 {
+        font-size: 1.5rem;
+    }
+
+    .rppHeaderSubtitle {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+
+    .rppReportsGrid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .rppReportActions {
+        flex-direction: column;
+    }
+
+    .rppActionBtn {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .rppReportBadge {
+        top: 12px;
+        right: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rppPage {
+        padding: 20px 12px;
+    }
+
+    .rppHeader h1 {
+        font-size: 1.3rem;
+    }
+
+    .rppReporterAvatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .rppPostPreviewImage {
+        max-height: 180px;
+    }
+}

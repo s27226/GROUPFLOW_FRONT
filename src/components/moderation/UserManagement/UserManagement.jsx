@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BAN_USER, UNBAN_USER, SUSPEND_USER, UNSUSPEND_USER, RESET_PASSWORD, MANAGE_USER_ROLE } from '../../../queries/moderationQueries';
-import { useGraphQL } from '../../../hooks/useGraphQL';
-import './UserManagement.css';
+import { useGraphQL } from '../../../hooks';
+import styles from './UserManagement.module.css';
 
 const UserManagement = ({ users, onRefresh }) => {
   const { executeQuery } = useGraphQL();
@@ -115,32 +115,32 @@ const UserManagement = ({ users, onRefresh }) => {
   };
 
   return (
-    <div className="mod-user-management">
-      <div className="mod-users-grid">
+    <div className={styles.userManagement}>
+      <div className={styles.usersGrid}>
         {users.map((user) => (
-          <div key={user.id} className="mod-user-card">
-            <div className="mod-user-header">
+          <div key={user.id} className={styles.userCard}>
+            <div className={styles.userHeader}>
               <img
                 src={user.profilePic || '/default-avatar.png'}
                 alt={user.nickname}
-                className="mod-user-avatar"
+                className={styles.userAvatar}
               />
-              <div className="mod-user-info">
-                <div className="mod-user-name-row">
+              <div className={styles.userInfo}>
+                <div className={styles.userNameRow}>
                   <h3>{user.nickname}</h3>
-                  {user.isModerator && <span className="mod-badge">Moderator</span>}
-                  {user.isBanned && <span className="mod-badge mod-banned">Banned</span>}
+                  {user.isModerator && <span className={styles.badge}>Moderator</span>}
+                  {user.isBanned && <span className={`${styles.badge} ${styles.banned}`}>Banned</span>}
                   {user.suspendedUntil && new Date(user.suspendedUntil) > new Date() && (
-                    <span className="mod-badge mod-suspended">Suspended</span>
+                    <span className={`${styles.badge} ${styles.suspended}`}>Suspended</span>
                   )}
                 </div>
-                <p className="mod-user-email">{user.email}</p>
-                <p className="mod-user-joined">Joined: {formatDate(user.joined)}</p>
+                <p className={styles.userEmail}>{user.email}</p>
+                <p className={styles.userJoined}>Joined: {formatDate(user.joined)}</p>
               </div>
             </div>
 
             {user.isBanned && (
-              <div className="mod-ban-info">
+              <div className={styles.banInfo}>
                 <p><strong>Reason:</strong> {user.banReason}</p>
                 {user.banExpiresAt && <p><strong>Expires:</strong> {formatDate(user.banExpiresAt)}</p>}
                 {user.bannedBy && <p><strong>Banned by:</strong> {user.bannedBy.nickname}</p>}
@@ -148,39 +148,39 @@ const UserManagement = ({ users, onRefresh }) => {
             )}
 
             {user.suspendedUntil && new Date(user.suspendedUntil) > new Date() && (
-              <div className="mod-suspend-info">
+              <div className={styles.suspendInfo}>
                 <p><strong>Suspended until:</strong> {formatDate(user.suspendedUntil)}</p>
               </div>
             )}
 
-            <div className="mod-actions">
+            <div className={styles.actions}>
               {!user.isBanned ? (
-                <button onClick={() => openModal('ban', user)} className="mod-btn mod-btn-danger">
+                <button onClick={() => openModal('ban', user)} className={`${styles.btn} ${styles.btnDanger}`}>
                   Ban User
                 </button>
               ) : (
-                <button onClick={() => openModal('unban', user)} className="mod-btn mod-btn-success">
+                <button onClick={() => openModal('unban', user)} className={`${styles.btn} ${styles.btnSuccess}`}>
                   Unban User
                 </button>
               )}
               {user.suspendedUntil && new Date(user.suspendedUntil) > new Date() ? (
-                <button onClick={() => openModal('unsuspend', user)} className="mod-btn mod-btn-success">
+                <button onClick={() => openModal('unsuspend', user)} className={`${styles.btn} ${styles.btnSuccess}`}>
                   Unsuspend User
                 </button>
               ) : (
-                <button onClick={() => openModal('suspend', user)} className="mod-btn mod-btn-warning">
+                <button onClick={() => openModal('suspend', user)} className={`${styles.btn} ${styles.btnWarning}`}>
                   Suspend User
                 </button>
               )}
-              <button onClick={() => openModal('resetPassword', user)} className="mod-btn mod-btn-secondary">
+              <button onClick={() => openModal('resetPassword', user)} className={`${styles.btn} ${styles.btnSecondary}`}>
                 Reset Password
               </button>
               {!user.isModerator ? (
-                <button onClick={() => openModal('makeModerator', user)} className="mod-btn mod-btn-primary">
+                <button onClick={() => openModal('makeModerator', user)} className={`${styles.btn} ${styles.btnPrimary}`}>
                   Make Moderator
                 </button>
               ) : (
-                <button onClick={() => openModal('removeModerator', user)} className="mod-btn mod-btn-secondary">
+                <button onClick={() => openModal('removeModerator', user)} className={`${styles.btn} ${styles.btnSecondary}`}>
                   Remove Moderator
                 </button>
               )}
@@ -190,9 +190,9 @@ const UserManagement = ({ users, onRefresh }) => {
       </div>
 
       {isModalOpen && (
-        <div className="mod-modal-overlay" onClick={closeModal}>
-          <div className="mod-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mod-modal-header">
+        <div className={styles.modalOverlay} onClick={closeModal}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
               <h2>{modalType === 'ban' ? 'Ban User' : 
                    modalType === 'unban' ? 'Unban User' :
                    modalType === 'suspend' ? 'Suspend User' :
@@ -200,14 +200,14 @@ const UserManagement = ({ users, onRefresh }) => {
                    modalType === 'resetPassword' ? 'Reset Password' :
                    modalType === 'makeModerator' ? 'Make Moderator' :
                    'Remove Moderator'}</h2>
-              <button className="mod-close-btn" onClick={closeModal}>&times;</button>
+              <button className={styles.closeBtn} onClick={closeModal}>&times;</button>
             </div>
 
-            <div className="mod-modal-body">
+            <div className={styles.modalBody}>
               {modalType === 'ban' && (
                 <>
                   <p>Ban user <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-form-group">
+                  <div className={styles.formGroup}>
                     <label>Reason:</label>
                     <textarea
                       value={formData.reason || ''}
@@ -216,7 +216,7 @@ const UserManagement = ({ users, onRefresh }) => {
                       rows={3}
                     />
                   </div>
-                  <div className="mod-form-group">
+                  <div className={styles.formGroup}>
                     <label>Expires At (optional):</label>
                     <input
                       type="datetime-local"
@@ -224,9 +224,9 @@ const UserManagement = ({ users, onRefresh }) => {
                       onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
                     />
                   </div>
-                  <div className="mod-modal-actions">
-                    <button onClick={handleBanUser} className="mod-btn mod-btn-danger">Ban User</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={handleBanUser} className={`${styles.btn} ${styles.btnDanger}`}>Ban User</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -234,9 +234,9 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'unban' && (
                 <>
                   <p>Unban user <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-modal-actions">
-                    <button onClick={handleUnbanUser} className="mod-btn mod-btn-success">Unban User</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={handleUnbanUser} className={`${styles.btn} ${styles.btnSuccess}`}>Unban User</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -244,7 +244,7 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'suspend' && (
                 <>
                   <p>Suspend user <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-form-group">
+                  <div className={styles.formGroup}>
                     <label>Suspended Until:</label>
                     <input
                       type="datetime-local"
@@ -253,9 +253,9 @@ const UserManagement = ({ users, onRefresh }) => {
                       required
                     />
                   </div>
-                  <div className="mod-modal-actions">
-                    <button onClick={handleSuspendUser} className="mod-btn mod-btn-warning">Suspend User</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={handleSuspendUser} className={`${styles.btn} ${styles.btnWarning}`}>Suspend User</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -263,9 +263,9 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'unsuspend' && (
                 <>
                   <p>Unsuspend user <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-modal-actions">
-                    <button onClick={handleUnsuspendUser} className="mod-btn mod-btn-success">Unsuspend User</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={handleUnsuspendUser} className={`${styles.btn} ${styles.btnSuccess}`}>Unsuspend User</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -273,7 +273,7 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'resetPassword' && (
                 <>
                   <p>Reset password for <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-form-group">
+                  <div className={styles.formGroup}>
                     <label>New Password:</label>
                     <input
                       type="password"
@@ -283,9 +283,9 @@ const UserManagement = ({ users, onRefresh }) => {
                       required
                     />
                   </div>
-                  <div className="mod-modal-actions">
-                    <button onClick={handleResetPassword} className="mod-btn mod-btn-primary">Reset Password</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={handleResetPassword} className={`${styles.btn} ${styles.btnPrimary}`}>Reset Password</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -293,9 +293,9 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'makeModerator' && (
                 <>
                   <p>Make <strong>{selectedUser.nickname}</strong> a moderator?</p>
-                  <div className="mod-modal-actions">
-                    <button onClick={() => handleManageRole(true)} className="mod-btn mod-btn-primary">Make Moderator</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={() => handleManageRole(true)} className={`${styles.btn} ${styles.btnPrimary}`}>Make Moderator</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}
@@ -303,9 +303,9 @@ const UserManagement = ({ users, onRefresh }) => {
               {modalType === 'removeModerator' && (
                 <>
                   <p>Remove moderator role from <strong>{selectedUser.nickname}</strong>?</p>
-                  <div className="mod-modal-actions">
-                    <button onClick={() => handleManageRole(false)} className="mod-btn mod-btn-warning">Remove Moderator</button>
-                    <button onClick={closeModal} className="mod-btn mod-btn-secondary">Cancel</button>
+                  <div className={styles.modalActions}>
+                    <button onClick={() => handleManageRole(false)} className={`${styles.btn} ${styles.btnWarning}`}>Remove Moderator</button>
+                    <button onClick={closeModal} className={`${styles.btn} ${styles.btnSecondary}`}>Cancel</button>
                   </div>
                 </>
               )}

@@ -1,4 +1,4 @@
-import "./ProjectInfoPanel.css";
+import styles from "./ProjectInfoPanel.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function ProjectInfoPanel({ project, projectId }) {
@@ -7,16 +7,16 @@ export default function ProjectInfoPanel({ project, projectId }) {
     if (!project) return null;
 
     return (
-        <div className="project-info-panel">
-            <div className="project-info-header">
+        <div className={styles.projectInfoPanel}>
+            <div className={styles.projectInfoHeader}>
                 <img
                     src={project.imageUrl || `https://picsum.photos/200?random=${projectId}`}
                     alt={project.name}
-                    className="project-info-image"
+                    className={styles.projectInfoImage}
                 />
-                <div className="project-info-details">
+                <div className={styles.projectInfoDetails}>
                     <h3>{project.name}</h3>
-                    <p className="project-info-owner">
+                    <p className={styles.projectInfoOwner}>
                         by{" "}
                         <span
                             onClick={(e) => {
@@ -36,7 +36,7 @@ export default function ProjectInfoPanel({ project, projectId }) {
             </div>
 
             <button
-                className="view-project-profile-btn"
+                className={styles.viewProjectProfileBtn}
                 onClick={() => navigate(`/project/${projectId}`)}
             >
                 View Project Profile

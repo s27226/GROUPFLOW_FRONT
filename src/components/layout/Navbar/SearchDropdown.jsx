@@ -1,45 +1,40 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import { useMutationQuery } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
-import "./SearchDropdown.css";
+import styles from "./SearchDropdown.module.css";
 
 export default function SearchDropdown({ query, onClose, isOpen }) {
     const navigate = useNavigate();
-    const { executeQuery } = useGraphQL();
     
     const [users, setUsers] = useState([]);
     const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(false);
+
+    const { mutate: searchUsers, loading } = useMutationQuery(
+        GRAPHQL_QUERIES.SEARCH_USERS,
+        {
+            onSuccess: (data) => {
+                const userResults = data?.users?.searchusers || [];
+                setUsers(userResults.slice(0, 5));
+            },
+            onError: (err) => {
+                console.error("Failed to search users:", err);
+                setUsers([]);
+            }
+        }
+    );
 
     const searchAll = useCallback(async () => {
-        setLoading(true);
-        try {
-            // For now, only search users - project search will be implemented later
-            const usersData = await executeQuery(GRAPHQL_QUERIES.SEARCH_USERS, {
-                input: {
-                    searchTerm: query,
-                    skills: [],
-                    interests: []
-                }
-            }).catch(err => {
-                console.error("Failed to search users:", err);
-                return null;
-            });
-
-            const userResults = usersData?.users?.searchusers || [];
-            
-            setUsers(userResults.slice(0, 5));
-            setProjects([]); // Project search not yet implemented
-        } catch (err) {
-            console.error("Failed to search:", err);
-            setUsers([]);
-            setProjects([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [executeQuery, query]);
+        await searchUsers({
+            input: {
+                searchTerm: query,
+                skills: [],
+                interests: []
+            }
+        });
+        setProjects([]); // Project search not yet implemented
+    }, [searchUsers, query]);
 
     useEffect(() => {
         if (!query.trim() || !isOpen) {
@@ -98,29 +93,29 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
     const totalResults = users.length + projects.length;
 
     return (
-        <div className="search-dropdown">
+        <div className={styles.searchDropdown}>
             {loading ? (
-                <div className="search-dropdown-loading">
-                    <div className="spinner"></div>
+                <div className={styles.searchDropdownLoading}>
+                    <div className={styles.spinner}></div>
                     <p>Searching...</p>
                 </div>
             ) : totalResults === 0 ? (
-                <div className="search-dropdown-empty">
+                <div className={styles.searchDropdownEmpty}>
                     <p>No results found for "{query}"</p>
                 </div>
             ) : (
                 <>
                     {/* Projects Section */}
                     {projects.length > 0 && (
-                        <div className="search-dropdown-section">
-                            <h4 className="search-dropdown-header">Projects</h4>
+                        <div className={styles.searchDropdownSection}>
+                            <h4 className={styles.searchDropdownHeader}>Projects</h4>
                             {projects.map((project) => (
                                 <div
                                     key={project.id}
-                                    className="search-dropdown-item project-item"
+                                    className={`${styles.searchDropdownItem} ${styles.projectItem}`}
                                     onClick={(e) => handleProjectClick(e, project.id)}
                                 >
-                                    <div className="project-icon">
+                                    <div className={styles.projectIcon}>
                                         <img
                                             src={
                                                 project.imageUrl ||
@@ -129,13 +124,13 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
                                             alt={project.name}
                                         />
                                     </div>
-                                    <div className="search-item-content">
-                                        <div className="search-item-title">{sanitizeText(project.name)}</div>
-                                        <div className="search-item-subtitle">
+                                    <div className={styles.searchItemContent}>
+                                        <div className={styles.searchItemTitle}>{sanitizeText(project.name)}</div>
+                                        <div className={styles.searchItemSubtitle}>
                                             by {sanitizeText(project.owner?.name || "Unknown")}
                                         </div>
                                     </div>
-                                    <div className="search-item-stats">
+                                    <div className={styles.searchItemStats}>
                                         ❤️ {project.likeCount || 0}
                                     </div>
                                 </div>
@@ -145,15 +140,15 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
 
                     {/* People Section */}
                     {users.length > 0 && (
-                        <div className="search-dropdown-section">
-                            <h4 className="search-dropdown-header">People</h4>
+                        <div className={styles.searchDropdownSection}>
+                            <h4 className={styles.searchDropdownHeader}>People</h4>
                             {users.map((result) => (
                                 <div
                                     key={result.user.id}
-                                    className="search-dropdown-item user-item"
+                                    className={`${styles.searchDropdownItem} ${styles.userItem}`}
                                     onClick={(e) => handleUserClick(e, result.user.id)}
                                 >
-                                    <div className="user-avatar">
+                                    <div className={styles.userAvatar}>
                                         <img
                                             src={
                                                 result.user.profilePic ||
@@ -162,16 +157,16 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
                                             alt={result.user.nickname}
                                         />
                                     </div>
-                                    <div className="search-item-content">
-                                        <div className="search-item-title">
+                                    <div className={styles.searchItemContent}>
+                                        <div className={styles.searchItemTitle}>
                                             {sanitizeText(result.user.name)} {sanitizeText(result.user.surname)}
                                         </div>
-                                        <div className="search-item-subtitle">
+                                        <div className={styles.searchItemSubtitle}>
                                             @{sanitizeText(result.user.nickname)}
                                         </div>
                                     </div>
                                     {result.isFriend && (
-                                        <div className="search-item-badge">Friend</div>
+                                        <div className={styles.searchItemBadge}>Friend</div>
                                     )}
                                 </div>
                             ))}
@@ -179,9 +174,9 @@ export default function SearchDropdown({ query, onClose, isOpen }) {
                     )}
 
                     {/* View All Links */}
-                    <div className="search-dropdown-footer">
+                    <div className={styles.searchDropdownFooter}>
                         <button
-                            className="search-view-all-btn full-width"
+                            className={`${styles.searchViewAllBtn} ${styles.fullWidth}`}
                             onClick={(e) => handleViewAllPeople(e)}
                         >
                             View all people

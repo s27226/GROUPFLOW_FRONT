@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import { useGraphQL } from "../../../hooks/useGraphQL";
-import { useUserSearch } from "../../../hooks/useUsers";
+import { useGraphQL, useUserSearch } from "../../../hooks";
 import UserSearchFilters from "../UserSearchFilters/UserSearchFilters";
 import UserSearchResults from "../UserSearchResults/UserSearchResults";
 import SuggestedUsersList from "../SuggestedUsersList/SuggestedUsersList";
-import "./Users.css";
+import styles from "./Users.module.css";
 
 export default function Users() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -101,18 +100,18 @@ export default function Users() {
     const hasSearchCriteria = searchTerm || selectedSkills.length > 0 || selectedInterests.length > 0;
 
     return (
-        <div className="users-container">
+        <div className={styles.usersContainer}>
             <h1>Find Friends</h1>
 
-            <div className="tabs">
+            <div className={styles.tabs}>
                 <button
-                    className={`tab ${activeTab === "search" ? "active" : ""}`}
+                    className={`${styles.tab} ${activeTab === "search" ? styles.active : ""}`}
                     onClick={() => setActiveTab("search")}
                 >
                     Search
                 </button>
                 <button
-                    className={`tab ${activeTab === "suggested" ? "active" : ""}`}
+                    className={`${styles.tab} ${activeTab === "suggested" ? styles.active : ""}`}
                     onClick={() => setActiveTab("suggested")}
                 >
                     Suggested for You
@@ -136,7 +135,7 @@ export default function Users() {
                         onAddInterest={addInterestFilter}
                         onRemoveInterest={removeInterestFilter}
                     />
-                    <div className="results">
+                    <div className={styles.results}>
                         <UserSearchResults
                             searchResults={searchResults}
                             loading={loading}
@@ -150,8 +149,8 @@ export default function Users() {
             )}
 
             {activeTab === "suggested" && (
-                <div className="suggested-section">
-                    <p className="suggested-description">
+                <div className={styles.suggestedSection}>
+                    <p className={styles.suggestedDescription}>
                         Users matched based on shared skills, interests, common projects, and recent interactions:
                     </p>
                     <SuggestedUsersList

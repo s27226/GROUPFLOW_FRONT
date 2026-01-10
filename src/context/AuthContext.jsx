@@ -69,7 +69,6 @@ export function AuthProvider({ children }) {
                         errorCode === "NO_REFRESH_TOKEN" ||
                         errorCode === "TOKEN_EXPIRED" ||
                         errorMessage?.includes("Invalid token")) {
-                        console.log("Refresh token invalid, clearing session...");
                         // Call logout to clear server-side cookies
                         await fetch(API_URL, {
                             method: "POST",
@@ -175,7 +174,6 @@ export function AuthProvider({ children }) {
             }
 
             // Access token expired or invalid - try refresh token
-            console.log("Access token invalid, attempting refresh...");
             const refreshed = await refreshAccessToken();
             
             if (refreshed) {
@@ -186,7 +184,6 @@ export function AuthProvider({ children }) {
             }
 
             // Both tokens failed - clear session
-            console.log("Session expired, clearing auth state");
             setIsAuthenticated(false);
             setUser(null);
             setIsModerator(false);

@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Image, X, Link as LinkIcon } from "lucide-react";
-import "./ImageUploadButton.css";
+import styles from "./ImageUploadButton.module.css";
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 
@@ -81,15 +81,15 @@ export default function ImageUploadButton({
     };
 
     return (
-        <div className="image-upload-container">
-            {label && <div className="image-upload-label">{label}</div>}
+        <div className={styles.container}>
+            {label && <div className={styles.label}>{label}</div>}
 
             {preview && (
-                <div className={`image-upload-preview ${type}`}>
+                <div className={`${styles.preview} ${type === 'banner' ? styles.previewBanner : type === 'profile' ? styles.previewProfile : styles.previewProjectLogo}`}>
                     <img src={preview} alt="Preview" />
                     <button
                         type="button"
-                        className="image-upload-remove-btn"
+                        className={styles.removeBtn}
                         onClick={handleRemove}
                         title="Remove image"
                     >
@@ -98,8 +98,8 @@ export default function ImageUploadButton({
                 </div>
             )}
 
-            <div className="image-upload-buttons">
-                <label htmlFor={`file-input-${type}`} className="image-upload-btn">
+            <div className={styles.buttons}>
+                <label htmlFor={`file-input-${type}`} className={styles.btn}>
                     <Image size={20} />
                     <span>Upload Image</span>
                 </label>
@@ -109,36 +109,36 @@ export default function ImageUploadButton({
                     type="file"
                     accept={acceptedTypes}
                     onChange={handleFileSelect}
-                    className="image-upload-hidden-input"
+                    className={styles.hiddenInput}
                 />
 
                 {showUrlInput && (
-                    <div className="image-upload-url-group">
+                    <div className={styles.urlGroup}>
                         <input
                             type="text"
                             value={urlValue}
                             onChange={handleUrlInputChange}
                             placeholder="Or enter image URL"
-                            className="image-upload-url-input"
+                            className={styles.urlInput}
                         />
                         <LinkIcon size={18} style={{ color: 'var(--text-secondary)' }} />
                     </div>
                 )}
             </div>
 
-            <div className="image-upload-size-warning">
+            <div className={styles.sizeWarning}>
                 Maximum file size: 25 MB
             </div>
 
             {error && (
-                <div className="image-upload-error">
+                <div className={styles.error}>
                     {error}
                 </div>
             )}
 
             {uploading && (
-                <div className="image-upload-loading">
-                    <div className="image-upload-spinner"></div>
+                <div className={styles.loading}>
+                    <div className={styles.spinner}></div>
                     <span>Uploading...</span>
                 </div>
             )}

@@ -1,77 +1,81 @@
 import { useState } from "react";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import { useGraphQL } from "../../../hooks/useGraphQL";
+import { useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
-import "./Invitation.css";
+import styles from "./Invitation.module.css";
 
 export default function Invitation({ data, onRemove }) {
-    const [loading, setLoading] = useState(false);
-    const { executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
+    const { mutate: acceptFriend, loading: acceptingFriend } = useMutationQuery(
+        GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST,
+        {
+            onSuccess: () => onRemove(data.id, data.type),
+            onError: (err) => showToast(err.message || "Failed to accept invitation. Please try again.", "error")
+        }
+    );
+
+    const { mutate: acceptProject, loading: acceptingProject } = useMutationQuery(
+        GRAPHQL_MUTATIONS.ACCEPT_PROJECT_INVITATION,
+        {
+            onSuccess: () => onRemove(data.id, data.type),
+            onError: (err) => showToast(err.message || "Failed to accept invitation. Please try again.", "error")
+        }
+    );
+
+    const { mutate: rejectFriend, loading: rejectingFriend } = useMutationQuery(
+        GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST,
+        {
+            onSuccess: () => onRemove(data.id, data.type),
+            onError: (err) => showToast(err.message || "Failed to reject invitation. Please try again.", "error")
+        }
+    );
+
+    const { mutate: rejectProject, loading: rejectingProject } = useMutationQuery(
+        GRAPHQL_MUTATIONS.REJECT_PROJECT_INVITATION,
+        {
+            onSuccess: () => onRemove(data.id, data.type),
+            onError: (err) => showToast(err.message || "Failed to reject invitation. Please try again.", "error")
+        }
+    );
+
+    const loading = acceptingFriend || acceptingProject || rejectingFriend || rejectingProject;
+
     const handleAccept = async () => {
-        setLoading(true);
-        try {
-            if (data.type === "friend") {
-                await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST, {
-                    friendRequestId: data.id
-                });
-                onRemove(data.id);
-            } else if (data.type === "group" || data.type === "project") {
-                await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_PROJECT_INVITATION, {
-                    invitationId: data.id
-                });
-                onRemove(data.id);
-            } else {
-                onRemove(data.id);
-            }
-        } catch (err) {
-            console.error("Failed to accept invitation:", err);
-            showToast(err.message || "Failed to accept invitation. Please try again.", "error");
-        } finally {
-            setLoading(false);
+        if (data.type === "friend") {
+            await acceptFriend({ friendRequestId: data.id });
+        } else if (data.type === "group" || data.type === "project") {
+            await acceptProject({ invitationId: data.id });
+        } else {
+            onRemove(data.id);
         }
     };
 
     const handleReject = async () => {
-        setLoading(true);
-        try {
-            if (data.type === "friend") {
-                await executeMutation(GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST, {
-                    friendRequestId: data.id
-                });
-                onRemove(data.id);
-            } else if (data.type === "group" || data.type === "project") {
-                await executeMutation(GRAPHQL_MUTATIONS.REJECT_PROJECT_INVITATION, {
-                    invitationId: data.id
-                });
-                onRemove(data.id);
-            } else {
-                onRemove(data.id);
-            }
-        } catch (err) {
-            console.error("Failed to reject invitation:", err);
-            showToast(err.message || "Failed to reject invitation. Please try again.", "error");
-        } finally {
-            setLoading(false);
+        if (data.type === "friend") {
+            await rejectFriend({ friendRequestId: data.id });
+        } else if (data.type === "group" || data.type === "project") {
+            await rejectProject({ invitationId: data.id });
+        } else {
+            onRemove(data.id);
         }
     };
 
     return (
-        <div className="invitation-card">
-            <div className="info">
+        <div className={styles.invitationCard}>
+            <div className={styles.info}>
                 <h3>{data.name}</h3>
-                <span className="type">
+                <span className={styles.type}>
                     {data.type === "friend" ? "Friend Request" : 
                      data.type === "project" ? "Project Invite" : "Group Invite"}
                 </span>
             </div>
 
-            <div className="actions">
-                <button className="accept-btn" onClick={handleAccept} disabled={loading}>
+            <div className={styles.actions}>
+                <button className={styles.acceptBtn} onClick={handleAccept} disabled={loading}>
                     {loading ? "..." : "Accept"}
                 </button>
-                <button className="reject-btn" onClick={handleReject} disabled={loading}>
+                <button className={styles.rejectBtn} onClick={handleReject} disabled={loading}>
                     {loading ? "..." : "Reject"}
                 </button>
             </div>

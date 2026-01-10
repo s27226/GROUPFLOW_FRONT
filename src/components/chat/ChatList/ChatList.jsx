@@ -1,24 +1,25 @@
+import styles from "./ChatList.module.css";
+
 export default function ChatList({ users, onSelectUser, selectedUser }) {
     return (
-        <div className="chat-list">
-            <h3 className="text-center"> Friends </h3>
+        <div className={styles.chatList}>
+            <h3 className={styles.textCenter}> Friends </h3>
             <ul>
                 {users.map((u) => (
                     <li
                         key={u.id}
                         onClick={() => onSelectUser(u)}
-                        className={selectedUser?.id === u.id ? "active" : ""}
+                        className={selectedUser?.id === u.id ? styles.active : ""}
                     >
-                        <div className="chat-user-info">
+                        <div className={styles.chatUserInfo}>
                             {u.profilePic && (
                                 <img 
                                     src={u.profilePic} 
                                     alt={u.name} 
-                                    className="chat-user-avatar"
-                                    style={{ width: 32, height: 32, borderRadius: "50%", marginRight: 8 }}
+                                    className={styles.chatUserAvatar}
                                 />
                             )}
-                            <div className={`chat-status ${u.online ? "online" : "offline"}`}></div>
+                            <div className={`${styles.chatStatus} ${u.online ? styles.online : styles.offline}`}></div>
                             <span>{u.name}</span>
                         </div>
                     </li>

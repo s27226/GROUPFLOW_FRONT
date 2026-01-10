@@ -1,0 +1,409 @@
+.newpostContainer {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 28px;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 64px;
+    box-shadow: var(--shadow-soft);
+    font-family: var(--font-family), serif;
+}
+
+.newpostHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.newpostHeader h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0;
+}
+
+.newpostCloseBtn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.newpostCloseBtn:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.newpostForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.newpostProjectSelector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.newpostProjectSelector label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.newpostProjectSelect {
+    width: 100%;
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: var(--font-family), serif;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.newpostProjectSelect:focus {
+    border-color: var(--accent);
+    background-color: var(--bg-main);
+}
+
+.newpostTitleWrapper {
+    position: relative;
+}
+
+.newpostTitleInput {
+    width: 100%;
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: var(--font-family), serif;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+    box-sizing: border-box;
+}
+
+.newpostTitleInput:focus {
+    border-color: var(--accent);
+    background-color: var(--bg-main);
+}
+
+.newpostTitleInput::placeholder {
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.newpostTextareaWrapper {
+    position: relative;
+}
+
+.newpostVisibilityToggle {
+    padding: 12px 16px;
+    background-color: var(--bg-accent);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.newpostToggleLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.newpostToggleText {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.newpostToggleSwitch {
+    position: relative;
+    width: 48px;
+    height: 24px;
+}
+
+.newpostToggleInput {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.newpostToggleSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.newpostToggleSlider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.newpostToggleInput:checked + .newpostToggleSlider {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.newpostToggleInput:checked + .newpostToggleSlider:before {
+    transform: translateX(24px);
+}
+
+.newpostToggleSlider:hover {
+    opacity: 0.9;
+}
+
+.newpostTextarea {
+    width: 100%;
+    background-color: var(--bg-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: var(--font-family), serif;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+    box-sizing: border-box;
+}
+
+.newpostTextarea:focus {
+    border-color: var(--accent);
+    background-color: var(--bg-main);
+}
+
+.newpostTextarea::placeholder {
+    color: var(--text-secondary);
+}
+
+.newpostCharCount {
+    position: absolute;
+    bottom: 12px;
+    right: 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.newpostImagePreview {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.newpostImagePreview img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.newpostRemoveImage {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.newpostRemoveImage:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.newpostActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.newpostToolbar {
+    display: flex;
+    gap: 12px;
+}
+
+.newpostImageBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border: 1px solid var(--border-color);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.newpostImageBtn:hover {
+    background-color: var(--bg-hover-strong);
+    transform: translateY(-1px);
+}
+
+.newpostImageBtn svg {
+    color: var(--accent);
+}
+
+.newpostSubmitGroup {
+    display: flex;
+    gap: 12px;
+}
+
+.newpostCancelBtn,
+.newpostSubmitBtn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border: none;
+}
+
+.newpostCancelBtn {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.newpostCancelBtn:hover {
+    background-color: var(--bg-hover-strong);
+}
+
+.newpostSubmitBtn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.newpostSubmitBtn:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--accent) 85%, #000);
+    transform: translateY(-1px);
+}
+
+.newpostSubmitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.newpostSharedPreview {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--bg-accent);
+}
+
+.newpostSharedHeader {
+    padding: 10px 16px;
+    background-color: var(--bg-hover);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.newpostSharedContent {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.newpostSharedInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.newpostSharedAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.newpostSharedInfo strong {
+    color: var(--text-primary);
+}
+
+.newpostSharedInfo span {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.newpostSharedText {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.newpostSharedImage {
+    width: 100%;
+    border-radius: 8px;
+    max-height: 300px;
+    object-fit: cover;
+}
+
+.newpostSharedLink {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.newpostSharedLink:hover {
+    text-decoration: underline;
+    color: color-mix(in srgb, var(--accent) 85%, #000);
+}

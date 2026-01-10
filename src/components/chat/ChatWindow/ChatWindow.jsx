@@ -1,5 +1,6 @@
-import { useChat } from "../../../hooks/useChat";
+import { useChat } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
+import styles from "./ChatWindow.module.css";
 
 export default function ChatWindow({ user, currentUserId, onMinimize }) {
     const { messages, input, setInput, loading, sendMessage, handleKeyPress } = useChat(
@@ -9,12 +10,12 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
 
     if (loading) {
         return (
-            <div className="chat-window">
-                <div className="chat-header">
+            <div className={styles.chatWindow}>
+                <div className={styles.chatHeader}>
                     <h3>{user.name}</h3>
                 </div>
-                <div className="chat-content">
-                    <div className="chat-messages-area">
+                <div className={styles.chatContent}>
+                    <div className={styles.chatMessagesArea}>
                         <p>Ładowanie...</p>
                     </div>
                 </div>
@@ -23,16 +24,16 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
     }
 
     return (
-        <div className="chat-window">
-            <div className="chat-header">
-                <div className="chat-header-info">
+        <div className={styles.chatWindow}>
+            <div className={styles.chatHeader}>
+                <div className={styles.chatHeaderInfo}>
                     <h3>{user.name}</h3>
-                    <div className={`chat-status-dot ${user.online ? "online" : "offline"}`}></div>
+                    <div className={`${styles.chatStatusDot} ${user.online ? styles.online : styles.offline}`}></div>
                 </div>
                 {onMinimize && (
                     <button
                         onClick={onMinimize}
-                        className="chat-minimize-btn"
+                        className={styles.chatMinimizeBtn}
                         title="Open in popup"
                     >
                         ⤓
@@ -40,23 +41,22 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
                 )}
             </div>
 
-            <div className="chat-content">
-                <div className="chat-messages-area">
+            <div className={styles.chatContent}>
+                <div className={styles.chatMessagesArea}>
                     {messages.length === 0 ? (
-                        <p className="no-messages">Brak wiadomości. Rozpocznij rozmowę!</p>
+                        <p className={styles.noMessages}>Brak wiadomości. Rozpocznij rozmowę!</p>
                     ) : (
                         messages.map((msg) => (
-                            <div key={msg.id} className={`priv-chat-message-wrapper ${msg.from === "me" ? "me" : "them"}`}>
+                            <div key={msg.id} className={`${styles.privChatMessageWrapper} ${msg.from === "me" ? styles.me : styles.them}`}>
                                 {msg.from !== "me" && msg.sender?.profilePic && (
                                     <img 
                                         src={msg.sender.profilePic} 
                                         alt={msg.sender.nickname}
-                                        className="chat-message-avatar"
-                                        style={{ width: 24, height: 24, borderRadius: "50%", marginRight: 8 }}
+                                        className={styles.chatMessageAvatar}
                                     />
                                 )}
                                 <div
-                                    className={`priv-chat-bubble ${msg.from === "me" ? "me" : "them"}`}
+                                    className={`${styles.privChatBubble} ${msg.from === "me" ? styles.me : styles.them}`}
                                 >
                                     {sanitizeText(msg.text)}
                                 </div>
@@ -65,7 +65,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }) {
                     )}
                 </div>
 
-                <div className="chat-input-area">
+                <div className={styles.chatInputArea}>
                     <input
                         type="text"
                         placeholder="Napisz Wiadomość"
