@@ -51,7 +51,7 @@ export { Friends } from './friends';
 export { ModerationPanel, UserManagement } from './moderation';
 
 // Common components
-export { Trending, SocialLoginButtons } from './common';
+export { Trending } from './common';
 
 // UI components (re-export from ui folder)
 export { LoadingBar, LoadingSpinner, ConfirmDialog, LazyImage, SkeletonCard, SkeletonPost, ErrorBoundary, Toast } from './ui';

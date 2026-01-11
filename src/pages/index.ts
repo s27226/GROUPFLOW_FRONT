@@ -17,6 +17,9 @@ export { MainPage, NewPostPage, PostPage, SavedPage } from './feed';
 // Friends pages
 export { FriendPage } from './friends';
 
+// Help pages
+export { HelpPage } from './help';
+
 // Invitations pages
 export { InvitationsPage } from './invitations';
 

@@ -12,14 +12,17 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className={styles.authContainer}>
             <div className={styles.authLeft}>
-                <h1 className={styles.authTitle}>Welcome to the App</h1>
+                <h1 className={styles.authTitle}>Welcome to GroupFlow</h1>
                 <p className={styles.authDesc}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
+                    Connect, collaborate, and bring your projects to life with GroupFlow. 
+                    Join a vibrant community of creators, developers, and innovators working 
+                    together on exciting projects. Share ideas, find teammates, showcase your 
+                    work, and build something amazing together.
+                </p>
+                <p className={styles.authDesc}>
+                    Whether you're looking to contribute to existing projects or start your own, 
+                    GroupFlow provides the perfect platform to connect with like-minded individuals 
+                    and turn your vision into reality.
                 </p>
             </div>
 

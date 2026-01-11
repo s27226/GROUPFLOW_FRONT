@@ -22,7 +22,8 @@ import {
     ProjectEditFrontPage,
     ProjectProfilePage,
     ProjectViewPage as ProjectChatPage,
-    UsersPage
+    UsersPage,
+    HelpPage
 } from "./pages";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -209,6 +210,11 @@ function AppContent({ setInvitationsCount }: AppContentProps): React.ReactElemen
                 <Route path="/moderation" element={
                     <RequireAuth>
                         <ModerationPage />
+                    </RequireAuth>
+                } />
+                <Route path="/help" element={
+                    <RequireAuth>
+                        <HelpPage />
                     </RequireAuth>
                 } />
                 <Route path="/Saved" element={
