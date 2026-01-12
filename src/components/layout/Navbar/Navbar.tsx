@@ -41,6 +41,7 @@ interface CurrentUserResponse {
             nickname: string;
             email?: string;
             profilePic?: string;
+            profilePicUrl?: string;
             isModerator?: boolean;
         };
     };
@@ -76,7 +77,10 @@ function Navbar() {
     // Fetch current user data on mount
     useEffect(() => {
         const fetchCurrentUser = async () => {
-            if (user || !isAuthenticated) return; // Already loaded or not authenticated
+            if (!isAuthenticated) return; // Not authenticated
+            
+            // Fetch if user doesn't exist OR if profilePicUrl is missing (old cached data)
+            if (user && user.profilePicUrl !== undefined) return; // Already have full data
 
             setLoadingUser(true);
             try {
@@ -296,7 +300,7 @@ function Navbar() {
                     }}
                 >
                     <img 
-                        src={user?.profilePic || defaultPfp} 
+                        src={user?.profilePicUrl || user?.profilePic || defaultPfp} 
                         alt="User" 
                         className={styles.userPfp} 
                     />

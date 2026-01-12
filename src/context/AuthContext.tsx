@@ -7,6 +7,7 @@ interface User {
     nickname: string;
     email?: string;
     profilePic?: string;
+    profilePicUrl?: string;
     isModerator?: boolean;
 }
 
@@ -75,6 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                                         nickname
                                         email
                                         profilePic
+                                        profilePicUrl
                                         isModerator
                                     }
                                 }
@@ -120,6 +122,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                         nickname: authData.nickname,
                         email: authData.email,
                         profilePic: authData.profilePic,
+                        profilePicUrl: authData.profilePicUrl,
                         isModerator: authData.isModerator
                     };
                     setUser(userData);

@@ -81,6 +81,21 @@ export function useChat(user: ChatUser | null, currentUserId: number | null): Us
         }
     }, [currentUserId]);
 
+    // Reset state when user changes
+    const previousUserId = useRef<number | null>(null);
+    
+    useEffect(() => {
+        if (user && user.id !== previousUserId.current) {
+            // User changed, reset initialization flag
+            hasInitialized.current = false;
+            previousUserId.current = user.id;
+            // Clear previous chat state
+            setChatId(null);
+            setUserChatId(null);
+            setMessages([]);
+        }
+    }, [user]);
+
     // Fetch or create chat and load messages
     useEffect(() => {
         const initializeChat = async () => {
