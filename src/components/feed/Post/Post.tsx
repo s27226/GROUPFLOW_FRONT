@@ -109,7 +109,7 @@ export default function Post({
     // Check if current user has liked the post
     useEffect(() => {
         if (user && likes) {
-            const hasLiked = likes.some(like => like.userId === user.id);
+            const hasLiked = likes.some(like => String(like.userId) === String(user.id));
             setLiked(hasLiked);
         }
     }, [likes, user]);
@@ -182,7 +182,7 @@ export default function Post({
         try {
             if (liked) {
                 await unlikePost(id);
-                setLikes(prev => prev.filter(like => like.userId !== user?.id));
+                setLikes(prev => prev.filter(like => String(like.userId) !== String(user?.id)));
                 setLiked(false);
             } else {
                 const newLike = await likePost(id);
@@ -273,7 +273,7 @@ export default function Post({
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.REPORT_POST, {
                 input: {
-                    postId: id,
+                    postId: parseInt(id, 10),
                     reason: reportReason
                 }
             });
