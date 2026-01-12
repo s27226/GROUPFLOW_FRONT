@@ -32,11 +32,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    // User state stored in localStorage for UI purposes
-    const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem("user");
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+    const [user, setUser] = useState<User | null>(null);
 
     const [isModerator, setIsModerator] = useState(() => {
         const storedIsModerator = localStorage.getItem("isModerator");
@@ -126,7 +122,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                         isModerator: authData.isModerator
                     };
                     setUser(userData);
-                    localStorage.setItem("user", JSON.stringify(userData));
                     if (authData.isModerator !== undefined) {
                         setIsModerator(authData.isModerator);
                         localStorage.setItem("isModerator", authData.isModerator.toString());
@@ -151,14 +146,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Check authentication status - tries access token first, then refresh token
     const checkAuthStatus = useCallback(async () => {
         try {
-            // Only check if we have user data in localStorage (potential session)
-            const storedUser = localStorage.getItem("user");
-            if (!storedUser) {
-                setIsAuthenticated(false);
-                setAuthLoading(false);
-                return false;
-            }
-            
             // Make a simple authenticated request to check if access token is valid
             const response = await fetch(API_URL, {
                 method: "POST",
@@ -221,7 +208,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setIsAuthenticated(false);
             setUser(null);
             setIsModerator(false);
-            localStorage.removeItem("user");
             localStorage.removeItem("isModerator");
             setAuthLoading(false);
             return false;
@@ -239,7 +225,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setIsAuthenticated(false);
             setUser(null);
             setIsModerator(false);
-            localStorage.removeItem("user");
             localStorage.removeItem("isModerator");
             setAuthLoading(false);
             return false;
@@ -258,7 +243,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         
         if (userData) {
             setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
             if (userData.isModerator !== undefined) {
                 setIsModerator(userData.isModerator);
                 localStorage.setItem("isModerator", userData.isModerator.toString());
@@ -272,7 +256,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(false);
         
         // Clear localStorage
-        localStorage.removeItem("user");
         localStorage.removeItem("isModerator");
         
         // Call logout mutation to clear HTTP-only cookie on server
@@ -296,7 +279,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const updateUser = (userData: User) => {
         setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
     };
 
     return (
