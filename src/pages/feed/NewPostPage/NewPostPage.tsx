@@ -108,7 +108,7 @@ export default function NewPostPage() {
             description: "",
             imageUrl: imagePreview || null,
             projectId: selectedProjectId,
-            sharedPostId: sharedPost?.id || null,
+            sharedPostId: sharedPost?.id ? parseInt(String(sharedPost.id), 10) : null,
             isPublic: isPublic
         };
 
