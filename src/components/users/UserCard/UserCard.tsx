@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./UserCard.module.css";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 interface Skill {
     id: string;
@@ -17,6 +18,7 @@ interface UserData {
     surname?: string;
     nickname: string;
     profilePic?: string;
+    profilePicUrl?: string;
     skills?: Skill[];
     interests?: Interest[];
 }
@@ -65,7 +67,7 @@ export default function UserCard({
                 style={{ cursor: "pointer" }}
             >
                 <img
-                    src={user.profilePic || `https://i.pravatar.cc/80?u=${user.id}`}
+                    src={getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname || user.id)}
                     alt={user.nickname}
                     className={styles.userAvatar}
                 />

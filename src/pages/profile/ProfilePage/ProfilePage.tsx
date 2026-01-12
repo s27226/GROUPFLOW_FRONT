@@ -6,56 +6,19 @@ import SkeletonPost from "../../../components/ui/SkeletonPost";
 import SkeletonCard from "../../../components/ui/SkeletonCard";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
-import { usePosts, useGraphQL, useFriends, useMyProjects, useUserProjects } from "../../../hooks";
+import { usePosts, useGraphQL, useFriends, useMyProjects, useUserProjects, useUserProfile } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./ProfilePage.module.css";
 import feedStyles from "../../../components/feed/Feed/Feed.module.css";
-
-interface ProfileUser {
-    id: string;
-    name: string;
-    surname: string;
-    handle: string;
-    bio: string;
-    banner: string;
-    pfp: string;
-    abt: string;
-}
 
 interface ProfileProject {
     id: string;
     name: string;
     description: string;
     image: string;
-}
-
-interface UserQueryResponse {
-    users?: {
-        getuserbyid?: {
-            id: string;
-            name?: string;
-            surname?: string;
-            nickname?: string;
-            bannerPicUrl?: string;
-            bannerPic?: string;
-            profilePicUrl?: string;
-            profilePic?: string;
-            joined?: string;
-        };
-        me?: {
-            id: string;
-            name?: string;
-            surname?: string;
-            nickname?: string;
-            bannerPicUrl?: string;
-            bannerPic?: string;
-            profilePicUrl?: string;
-            profilePic?: string;
-            joined?: string;
-        };
-    };
 }
 
 interface ProjectQueryResponse {
@@ -76,9 +39,11 @@ export default function ProfilePage() {
     const { executeQuery, executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
-    const [user, setUser] = useState<ProfileUser | null>(null);
+    // Use the new unified useUserProfile hook
+    const { user, loading: userLoading } = useUserProfile(userId);
+    
     const [projects, setProjects] = useState<ProfileProject[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [projectsLoading, setProjectsLoading] = useState(true);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [inviting, setInviting] = useState(false);
 
@@ -111,43 +76,14 @@ export default function ProfilePage() {
         return allPosts.filter((post) => String(post.user?.id) === user.id);
     }, [allPosts, user]);
 
+    // Fetch user's projects when user is loaded
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchUserProjects = async () => {
+            if (!user) return;
+            
             try {
-                // Fetch user details (either from userId param or current user)
-                const userData = await executeQuery<UserQueryResponse>(
-                    userId ? GRAPHQL_QUERIES.GET_USER_BY_ID : GRAPHQL_QUERIES.GET_CURRENT_USER,
-                    userId ? { id: parseInt(userId) } : {}
-                );
-
-                if (!userData || !userData.users) {
-                    console.error("User not found");
-                    setLoading(false);
-                    return;
-                }
-
-                const userInfo = userId ? userData.users?.getuserbyid : userData.users?.me;
-
-                if (!userInfo) {
-                    console.error("User not found");
-                    setLoading(false);
-                    return;
-                }
-
-                setUser({
-                    id: userInfo.id,
-                    name: userInfo.name || '',
-                    surname: userInfo.surname || '',
-                    handle: `@${userInfo.nickname || 'unknown'}`,
-                    bio: "Professional developer", // TODO: Add bio field to backend
-                    banner: userInfo.bannerPicUrl || userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
-                    pfp: userInfo.profilePicUrl || userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname || userInfo.id}`,
-                    abt: `Member since ${userInfo.joined ? new Date(userInfo.joined).toLocaleDateString() : 'Unknown'}`
-                });
-
-                // Fetch user's projects
                 const projectsData = await executeQuery<ProjectQueryResponse>(GRAPHQL_QUERIES.GET_USER_PROJECTS, {
-                    userId: userInfo.id
+                    userId: user.id
                 });
 
                 if (projectsData && projectsData.project) {
@@ -157,21 +93,22 @@ export default function ProfilePage() {
                             id: project.id,
                             name: project.name,
                             description: project.description || '',
-                            image:
-                                project.imageUrl || `https://picsum.photos/60?random=${project.id}`
+                            image: getProjectImageUrl(project.imageUrl, project.id, 60)
                         }))
                     );
                 }
-
-                setLoading(false);
             } catch (err) {
-                console.error("Failed to fetch user profile:", err);
-                setLoading(false);
+                console.error("Failed to fetch user projects:", err);
+            } finally {
+                setProjectsLoading(false);
             }
         };
 
-        fetchUserProfile();
-    }, [userId, executeQuery]);
+        fetchUserProjects();
+    }, [user, executeQuery]);
+
+    // Combined loading state
+    const loading = userLoading || projectsLoading;
 
     const handleInviteToProject = async (projectId: string) => {
         if (!currentUser || !user) return;

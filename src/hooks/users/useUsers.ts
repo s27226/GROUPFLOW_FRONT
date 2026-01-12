@@ -19,6 +19,7 @@ export interface SearchUserData {
     surname?: string;
     nickname: string;
     profilePic?: string;
+    profilePicUrl?: string;
     bio?: string;
     skills?: Skill[];
     interests?: Interest[];

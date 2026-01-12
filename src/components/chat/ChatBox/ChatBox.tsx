@@ -5,6 +5,7 @@ import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import { sanitizeText } from "../../../utils/sanitize";
 import { useAuth } from "../../../context/AuthContext";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ChatBox.module.css";
 
 interface ChatBoxProps {
@@ -27,6 +28,7 @@ interface ChatEntry {
             id: string;
             nickname: string;
             profilePic?: string;
+            profilePicUrl?: string;
         };
     };
 }
@@ -198,7 +200,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
+                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.profilePic, entry.userChat.user.nickname),
                     self: currentUser?.id === entry.userChat.user.id
                 }));
 
@@ -268,7 +270,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: entry.userChat.user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${entry.userChat.user.nickname}`,
+                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.profilePic, entry.userChat.user.nickname),
                     self: currentUser?.id === entry.userChat.user.id
                 }));
                 setMessages(formattedMessages);

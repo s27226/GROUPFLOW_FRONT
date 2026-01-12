@@ -2,6 +2,7 @@ import { Layout } from "../../../components/layout";
 import SkeletonCard from "../../../components/ui/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { useMyProjects } from "../../../hooks";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./MyProjectsPage.module.css";
 
 interface ProjectOwner {
@@ -10,6 +11,7 @@ interface ProjectOwner {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ProjectMember {
@@ -39,9 +41,7 @@ export default function MyProjectsPage() {
         id: project.id,
         name: project.name,
         description: project.description,
-        imageUrl:
-            project.imageUrl ||
-            `https://picsum.photos/300/200?random=${project.id}`,
+        imageUrl: getProjectImageUrl(project.imageUrl, project.id, 300),
         owner: project.owner,
         collaborators: project.members ?? []
     }));

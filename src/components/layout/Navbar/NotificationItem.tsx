@@ -2,6 +2,7 @@ import styles from "./NotificationItem.module.css";
 import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 // Helper function to format time ago
 function timeAgo(dateString: string): string {
@@ -31,6 +32,7 @@ interface ActorUser {
     id: string;
     nickname: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface NotificationData {
@@ -49,18 +51,16 @@ export default function NotificationItem({ notification }: NotificationItemProps
     const { message, createdAt, isRead, actorUser } = notification;
     const navigate = useNavigate();
     
+    const profilePic = getProfilePicUrl(actorUser?.profilePicUrl, actorUser?.profilePic, actorUser?.nickname);
+    
     return (
         <div className={`${styles.notifItem} ${!isRead ? styles.unread : ""}`} onClick={() => navigate("/profile/" + actorUser?.id)}>
             <div className={styles.notifIcon}>
-                {actorUser?.profilePic ? (
-                    <img 
-                        src={actorUser.profilePic} 
-                        alt={actorUser.nickname} 
-                        style={{ width: 18, height: 18, borderRadius: "50%" }}
-                    />
-                ) : (
-                    <Bell size={18} />
-                )}
+                <img 
+                    src={profilePic} 
+                    alt={actorUser?.nickname || "User"} 
+                    style={{ width: 18, height: 18, borderRadius: "50%" }}
+                />
             </div>
             <div className={styles.notifInfo}>
                 <p className={styles.notifText}>{sanitizeText(message)}</p>

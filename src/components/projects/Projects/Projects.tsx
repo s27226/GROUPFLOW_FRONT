@@ -3,6 +3,7 @@ import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../ui/LoadingSpinner";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./Projects.module.css";
 
 interface ProjectSkill {
@@ -119,7 +120,7 @@ export default function Projects() {
                     style={{ cursor: "pointer" }}
                 >
                     <img
-                        src={project.imageUrl || `https://picsum.photos/80?random=${project.id}`}
+                        src={getProjectImageUrl(project.imageUrl, project.id, 80)}
                         alt={project.name}
                         className={styles.userAvatar}
                     />

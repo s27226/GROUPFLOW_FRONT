@@ -6,6 +6,7 @@ import styles from "./NewPostPage.module.css";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useMutationQuery, useMyProjects } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 interface SharedPost {
     id: number;
@@ -209,7 +210,7 @@ export default function NewPostPage() {
                             <div className={styles.newpostSharedContent}>
                                 <div className={styles.newpostSharedInfo}>
                                     <img
-                                        src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                        src={getProfilePicUrl(null, sharedPost.authorProfilePic, sharedPost.author)}
                                         alt={sharedPost.author}
                                         className={styles.newpostSharedAvatar}
                                     />

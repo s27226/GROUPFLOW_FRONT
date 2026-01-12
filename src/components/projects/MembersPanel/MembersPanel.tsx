@@ -5,6 +5,7 @@ import { useGraphQL } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 interface ProjectUser {
     id: string;
@@ -12,6 +13,7 @@ interface ProjectUser {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface Collaborator {
@@ -70,7 +72,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
             name: `${collab.user.name} ${collab.user.surname}`,
             nickname: collab.user.nickname,
             role: collab.role,
-            avatar: collab.user.profilePic || `https://i.pravatar.cc/40?u=${collab.user.id}`,
+            avatar: getProfilePicUrl(collab.user.profilePicUrl, collab.user.profilePic, collab.user.nickname || collab.user.id),
             status: "available"
         })) || [];
 
@@ -80,7 +82,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
             name: `${project.owner.name} ${project.owner.surname}`,
             nickname: project.owner.nickname,
             role: "Owner",
-            avatar: project.owner.profilePic || `https://i.pravatar.cc/40?u=${project.owner.id}`,
+            avatar: getProfilePicUrl(project.owner.profilePicUrl, project.owner.profilePic, project.owner.nickname || project.owner.id),
             status: "available"
         });
     }

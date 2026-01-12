@@ -12,6 +12,7 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             profilePic
+            profilePicUrl
           }
           content
           title
@@ -33,6 +34,7 @@ export const GRAPHQL_QUERIES = {
               name
               surname
               profilePic
+              profilePicUrl
             }
             likes {
               id
@@ -49,6 +51,7 @@ export const GRAPHQL_QUERIES = {
                 name
                 surname
                 profilePic
+                profilePicUrl
               }
               likes {
                 id
@@ -64,6 +67,7 @@ export const GRAPHQL_QUERIES = {
               name
               surname
               profilePic
+              profilePicUrl
             }
             content
             title
@@ -88,6 +92,7 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             profilePic
+            profilePicUrl
           }
           content
           title
@@ -109,6 +114,7 @@ export const GRAPHQL_QUERIES = {
               name
               surname
               profilePic
+              profilePicUrl
             }
             likes {
               id
@@ -125,6 +131,7 @@ export const GRAPHQL_QUERIES = {
                 name
                 surname
                 profilePic
+                profilePicUrl
               }
               likes {
                 id
@@ -140,6 +147,7 @@ export const GRAPHQL_QUERIES = {
               name
               surname
               profilePic
+              profilePicUrl
             }
             content
             title
@@ -230,6 +238,7 @@ export const GRAPHQL_QUERIES = {
           surname
           joined
           profilePic
+          profilePicUrl
         }
       }
     }
@@ -789,6 +798,7 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             profilePic
+            profilePicUrl
           }
           content
           title
@@ -809,6 +819,8 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
+              profilePicUrl
             }
             likes {
               id
@@ -824,6 +836,8 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
+                profilePic
+                profilePicUrl
               }
               likes {
                 id
@@ -838,6 +852,8 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePic
+              profilePicUrl
             }
             content
             title
@@ -870,6 +886,7 @@ export const GRAPHQL_QUERIES = {
             surname
             joined
             profilePic
+            profilePicUrl
             skills {
               id
               skillName
@@ -898,6 +915,7 @@ export const GRAPHQL_QUERIES = {
             surname
             joined
             profilePic
+            profilePicUrl
             skills {
               id
               skillName
@@ -987,6 +1005,7 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             profilePic
+            profilePicUrl
           }
           post {
             id
@@ -1093,6 +1112,7 @@ export const GRAPHQL_MUTATIONS = {
           nickname
           email
           profilePic
+          profilePicUrl
           isModerator
         }
       }
@@ -1117,6 +1137,7 @@ export const GRAPHQL_MUTATIONS = {
           nickname
           email
           profilePic
+          profilePicUrl
           isModerator
         }
       }

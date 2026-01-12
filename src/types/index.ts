@@ -6,6 +6,7 @@ export interface User {
   nickname: string;
   email?: string;
   profilePic?: string;
+  profilePicUrl?: string;
   isModerator?: boolean;
   bio?: string;
   skills?: string[];

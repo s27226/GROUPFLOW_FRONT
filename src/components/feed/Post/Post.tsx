@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import type { Like, Post as PostType } from "../../../types";
 
 interface CommentData {
@@ -297,7 +298,7 @@ export default function Post({
         <div className={styles.postCard}>
             <div className={styles.postHeader}>
                 <img
-                    src={authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
+                    src={getProfilePicUrl(null, authorProfilePic, author)}
                     alt={author}
                     className={styles.postAvatar}
                     style={{ cursor: "pointer" }}
@@ -365,7 +366,7 @@ export default function Post({
                         <div className={styles.postSharedContent}>
                             <div className={styles.postSharedInfo}>
                                 <img
-                                    src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                    src={getProfilePicUrl(null, sharedPost.authorProfilePic, sharedPost.author)}
                                     alt={sharedPost.author}
                                     className={styles.postSharedAvatar}
                                 />
@@ -439,7 +440,7 @@ export default function Post({
                 <div className={styles.commentSection}>
                     <div className={styles.commentInputRow}>
                         <img
-                            src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
+                            src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname || 'You')}
                             alt="You"
                             className={styles.commentAvatar}
                         />
@@ -645,7 +646,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         <div className={styles.comment} style={{ marginLeft: `${leftMargin}px` }}>
             <div className={styles.commentHeader}>
                 <img
-                    src={comment.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${comment.user}`}
+                    src={getProfilePicUrl(null, comment.profilePic, comment.user)}
                     alt={comment.user}
                     className={styles.commentAvatar}
                 />
@@ -715,7 +716,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             {replyOpen && (
                 <div className={styles.replyInputRow}>
                     <img
-                        src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
+                        src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname || 'You')}
                         alt="You"
                         className={styles.commentAvatar}
                     />

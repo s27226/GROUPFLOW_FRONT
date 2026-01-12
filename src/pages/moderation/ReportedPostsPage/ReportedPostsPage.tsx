@@ -7,12 +7,14 @@ import { useToast } from "../../../context/ToastContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { AlertTriangle, Trash2, XCircle, ChevronLeft, ShieldAlert } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ReportedPostsPage.module.css";
 
 interface ReportedUser {
     nickname?: string;
     name?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ReportedPost {
@@ -169,10 +171,7 @@ export default function ReportedPostsPage() {
                                         <div className={styles.rppReportHeaderInfo}>
                                             <div className={styles.rppReporterInfo}>
                                                 <img
-                                                    src={
-                                                        report.reportedByUser?.profilePic ||
-                                                        `https://api.dicebear.com/9.x/identicon/svg?seed=${report.reportedByUser?.nickname}`
-                                                    }
+                                                    src={getProfilePicUrl(report.reportedByUser?.profilePicUrl, report.reportedByUser?.profilePic, report.reportedByUser?.nickname)}
                                                     alt={report.reportedByUser?.nickname}
                                                     className={styles.rppReporterAvatar}
                                                 />
@@ -196,10 +195,7 @@ export default function ReportedPostsPage() {
                                         <div className={styles.rppReportedPostPreview}>
                                             <div className={styles.rppPostAuthor}>
                                                 <img
-                                                    src={
-                                                        report.post?.user?.profilePic ||
-                                                        `https://api.dicebear.com/9.x/identicon/svg?seed=${report.post?.user?.nickname}`
-                                                    }
+                                                    src={getProfilePicUrl(report.post?.user?.profilePicUrl, report.post?.user?.profilePic, report.post?.user?.nickname)}
                                                     alt={report.post?.user?.nickname}
                                                     className={styles.rppPostAuthorAvatar}
                                                 />

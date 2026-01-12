@@ -5,6 +5,7 @@ import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
 import { Shield, UserX, ChevronLeft, AlertCircle } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./BlockedUsersPage.module.css";
 
 interface BlockedUser {
@@ -13,6 +14,7 @@ interface BlockedUser {
     name: string;
     surname: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface BlockedUsersResponse {
@@ -112,7 +114,7 @@ export default function BlockedUsersPage() {
                                         <div className={styles.cardContent}>
                                             <div className={styles.userAvatarWrapper}>
                                                 <img
-                                                    src={user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user.nickname}`}
+                                                    src={getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname)}
                                                     alt={user.nickname}
                                                     className={styles.userAvatar}
                                                     onClick={() => navigate(`/profile/${user.id}`)}

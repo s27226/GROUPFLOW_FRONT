@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Bell, MessageCircle } from "lucide-react";
 import styles from "./Navbar.module.css";
-import defaultPfp from "../../../images/default-pfp.png";
 import logo from "../../../images/logo.png";
 import { useAuth } from "../../../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -12,6 +11,7 @@ import MessagePreview from "./MessagePreview";
 import SearchDropdown from "./SearchDropdown";
 import PrivateChat from "../../chat/PrivateChat";
 import { useClickOutside, useGraphQL, useFriends } from "../../../hooks";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 interface ActiveChatUser {
     id: number;
@@ -79,8 +79,9 @@ function Navbar() {
         const fetchCurrentUser = async () => {
             if (!isAuthenticated) return; // Not authenticated
             
-            // Fetch if user doesn't exist OR if profilePicUrl is missing (old cached data)
-            if (user && user.profilePicUrl !== undefined) return; // Already have full data
+            // Fetch if user doesn't exist OR if we haven't fetched profile data yet
+            // Note: 'profilePicUrl' in user means we've already fetched extended data
+            if (user && 'profilePicUrl' in user) return; // Already have full data
 
             setLoadingUser(true);
             try {
@@ -155,7 +156,7 @@ function Navbar() {
     // Convert friends to message format
     const messages = (friends ?? []).slice(0, 5).map((friend) => ({
         id: friend.id,
-        image: friend.profilePic || defaultPfp,
+        image: getProfilePicUrl(friend.profilePicUrl, friend.profilePic, friend.nickname),
         name: `${friend.name} ${friend.surname}`,
         lastMessage: "Click to chat",
         time: "",
@@ -164,7 +165,7 @@ function Navbar() {
                 id: parseInt(friend.id),
                 name: `${friend.name} ${friend.surname}`,
                 nickname: friend.nickname,
-                image: friend.profilePic || defaultPfp
+                image: getProfilePicUrl(friend.profilePicUrl, friend.profilePic, friend.nickname)
             });
             setMsgOpen(false);
         }
@@ -300,7 +301,7 @@ function Navbar() {
                     }}
                 >
                     <img 
-                        src={user?.profilePicUrl || user?.profilePic || defaultPfp} 
+                        src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname)} 
                         alt="User" 
                         className={styles.userPfp} 
                     />

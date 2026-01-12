@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { GRAPHQL_QUERIES } from "../../queries/graphql";
 import { useGraphQL, useQuery } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
+import { getProjectImageUrl } from "../../utils/profilePicture";
 
 interface ProjectOwner {
     id: number;
@@ -9,6 +10,7 @@ interface ProjectOwner {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface RawProject {
@@ -48,7 +50,7 @@ const formatProjectData = (project: RawProject): FormattedProject => ({
     id: project.id,
     name: project.name,
     description: project.description,
-    image: project.imageUrl || `https://picsum.photos/60?random=${project.id}`,
+    image: getProjectImageUrl(project.imageUrl, project.id, 60),
     viewCount: project.views?.length || 0,
     likeCount: project.likes?.length || 0,
     owner: project.owner

@@ -8,6 +8,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery, useBlobUpload, useMutation } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { getProfilePicUrl, getBannerUrl } from "../../../utils/profilePicture";
 
 interface UserProfile {
     id: string;
@@ -66,11 +67,8 @@ export default function ProfileEditPage() {
         if (user) {
             setName(user.name || "");
             setBio(user.bio || "");
-            setBanner(user.bannerPicUrl || user.bannerPic || "https://picsum.photos/900/200?random=10");
-            setPfp(
-                user.profilePicUrl || user.profilePic ||
-                    `https://api.dicebear.com/9.x/identicon/svg?seed=${user.nickname}`
-            );
+            setBanner(getBannerUrl(user.bannerPicUrl, user.bannerPic, 10));
+            setPfp(getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname));
             setAbt(user.about || "");
         }
     }, [user]);
@@ -93,7 +91,7 @@ export default function ProfileEditPage() {
             showToast("Profile picture removed", "success");
         }
         setPfpFile(null);
-        setPfp(`https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname}`);
+        setPfp(getProfilePicUrl(null, null, user?.nickname));
     };
 
     const handleBannerImageSelect = (data: ImageSelectData) => {
@@ -114,7 +112,7 @@ export default function ProfileEditPage() {
             showToast("Banner removed", "success");
         }
         setBannerFile(null);
-        setBanner("https://picsum.photos/900/200?random=10");
+        setBanner(getBannerUrl(null, null, 10));
     };
 
     const handleSave = async () => {

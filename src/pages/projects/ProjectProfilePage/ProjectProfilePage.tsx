@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts, useGraphQL } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl, getProjectImageUrl, getBannerUrl } from "../../../utils/profilePicture";
 import profileStyles from "./ProjectProfilePage.module.css";
 import feedStyles from "../../../components/feed/Feed/Feed.module.css";
 
@@ -18,6 +19,7 @@ interface ProjectOwner {
     name?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface Skill {
@@ -55,6 +57,7 @@ interface Collaborator {
         name?: string;
         nickname?: string;
         profilePic?: string;
+        profilePicUrl?: string;
     };
     role: string;
 }
@@ -122,10 +125,8 @@ export default function ProjectProfilePage() {
                     id: projectData.id,
                     name: projectData.name,
                     description: projectData.description,
-                    banner: projectData.bannerUrl || `https://picsum.photos/900/200?random=${projectData.id}`,
-                    image:
-                        projectData.imageUrl ||
-                        `https://picsum.photos/200?random=${projectData.id}`,
+                    banner: getBannerUrl(projectData.bannerUrl, null, projectData.id),
+                    image: getProjectImageUrl(projectData.imageUrl, projectData.id, 200),
                     skills: projectData.skills || [],
                     interests: projectData.interests || [],
                     members: [
@@ -134,18 +135,14 @@ export default function ProjectProfilePage() {
                             userId: projectData.owner.id,
                             name: projectData.owner.nickname || projectData.owner.name || '',
                             role: "Owner",
-                            image:
-                                projectData.owner.profilePic ||
-                                `https://i.pravatar.cc/60?u=${projectData.owner.id}`
+                            image: getProfilePicUrl(projectData.owner.profilePicUrl, projectData.owner.profilePic, projectData.owner.nickname || projectData.owner.id)
                         },
                         // Add collaborators
                         ...(projectData.collaborators?.map((collab: Collaborator) => ({
                                 userId: collab.user.id,
                                 name: collab.user.nickname || collab.user.name || '',
                                 role: collab.role,
-                                image:
-                                    collab.user.profilePic ||
-                                    `https://i.pravatar.cc/60?u=${collab.user.id}`
+                                image: getProfilePicUrl(collab.user.profilePicUrl, collab.user.profilePic, collab.user.nickname || collab.user.id)
                             })) || [])
                     ],
                     owner: projectData.owner

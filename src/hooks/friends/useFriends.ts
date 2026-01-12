@@ -9,6 +9,7 @@ interface Friend {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface FriendRequest {

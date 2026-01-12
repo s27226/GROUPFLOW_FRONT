@@ -1,5 +1,6 @@
 import styles from "./ProjectInfoPanel.module.css";
 import { useNavigate } from "react-router-dom";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 
 interface ProjectOwner {
     id: string;
@@ -26,7 +27,7 @@ export default function ProjectInfoPanel({ project, projectId }: ProjectInfoPane
         <div className={styles.projectInfoPanel}>
             <div className={styles.projectInfoHeader}>
                 <img
-                    src={project.imageUrl || `https://picsum.photos/200?random=${projectId}`}
+                    src={getProjectImageUrl(project.imageUrl, projectId, 200)}
                     alt={project.name}
                     className={styles.projectInfoImage}
                 />
