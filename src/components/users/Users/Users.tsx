@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useGraphQL, useUserSearch } from "../../../hooks";
 import UserSearchFilters from "../UserSearchFilters/UserSearchFilters";
@@ -9,6 +10,7 @@ import styles from "./Users.module.css";
 type TabType = 'search' | 'suggested';
 
 export default function Users() {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -103,20 +105,20 @@ export default function Users() {
 
     return (
         <div className={styles.usersContainer}>
-            <h1>Find Friends</h1>
+            <h1>{t('friends.findFriends')}</h1>
 
             <div className={styles.tabs}>
                 <button
                     className={`${styles.tab} ${activeTab === "search" ? styles.active : ""}`}
                     onClick={() => setActiveTab("search")}
                 >
-                    Search
+                    {t('friends.searchTab')}
                 </button>
                 <button
                     className={`${styles.tab} ${activeTab === "suggested" ? styles.active : ""}`}
                     onClick={() => setActiveTab("suggested")}
                 >
-                    Suggested for You
+                    {t('friends.suggestedForYou')}
                 </button>
             </div>
 
@@ -153,7 +155,7 @@ export default function Users() {
             {activeTab === "suggested" && (
                 <div className={styles.suggestedSection}>
                     <p className={styles.suggestedDescription}>
-                        Users matched based on shared skills, interests, common projects, and recent interactions:
+                        {t('friends.suggestedDescription')}
                     </p>
                     <SuggestedUsersList
                         suggestedUsers={suggestedUsers}

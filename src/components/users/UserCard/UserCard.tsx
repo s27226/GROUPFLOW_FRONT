@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./UserCard.module.css";
 
 interface Skill {
@@ -43,17 +44,18 @@ export default function UserCard({
     onSendRequest 
 }: UserCardProps) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
-    let buttonText = "Send Friend Request";
+    let buttonText = t('users.sendFriendRequest');
     let buttonClass = styles.sendRequestBtn;
     let isDisabled = false;
 
     if (isFriend) {
-        buttonText = "Already Friends";
+        buttonText = t('users.alreadyFriends');
         buttonClass = `${styles.sendRequestBtn} ${styles.friends}`;
         isDisabled = true;
     } else if (hasPendingRequest) {
-        buttonText = "Friend Request Sent";
+        buttonText = t('users.friendRequestSent');
         buttonClass = `${styles.sendRequestBtn} ${styles.requestSent}`;
         isDisabled = true;
     }
@@ -76,7 +78,7 @@ export default function UserCard({
                         {user.name} {user.surname}
                     </p>
                     {matchScore !== null && (
-                        <p className={styles.matchScore}>Match: {matchScore.toFixed(0)}%</p>
+                        <p className={styles.matchScore}>{t('users.match')}: {matchScore.toFixed(0)}%</p>
                     )}
                 </div>
             </div>
@@ -89,7 +91,7 @@ export default function UserCard({
 
             {user.skills && user.skills.length > 0 && (
                 <div className={styles.userTags}>
-                    <h4>Skills:</h4>
+                    <h4>{t('users.skills')}:</h4>
                     <div className={styles.tagsList}>
                         {user.skills.map((skill) => (
                             <span key={skill.id} className={`${styles.tag} ${styles.skillTag}`}>
@@ -102,7 +104,7 @@ export default function UserCard({
 
             {user.interests && user.interests.length > 0 && (
                 <div className={styles.userTags}>
-                    <h4>Interests:</h4>
+                    <h4>{t('users.interests')}:</h4>
                     <div className={styles.tagsList}>
                         {user.interests.map((interest) => (
                             <span key={interest.id} className={`${styles.tag} ${styles.interestTag}`}>

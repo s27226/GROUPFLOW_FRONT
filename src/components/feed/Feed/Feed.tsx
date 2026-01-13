@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import Post from "../Post";
 import SkeletonPost from "../../ui/SkeletonPost";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
@@ -12,6 +13,7 @@ interface SavedPostResponse {
 }
 
 export default function Feed() {
+    const { t } = useTranslation();
     const { posts, loading, error } = usePosts();
     const [savedPostIds, setSavedPostIds] = useState<Set<number>>(new Set());
     const { executeQuery } = useGraphQL();
@@ -52,7 +54,7 @@ export default function Feed() {
             ) : error ? (
                 <p className={styles.errorMessage}>{error}</p>
             ) : posts?.length === 0 ? (
-                <p>No posts available. Be the first to create one!</p>
+                <p>{t('feed.noPosts')}</p>
             ) : (
                 posts && posts.map((post) => (
                     <Post

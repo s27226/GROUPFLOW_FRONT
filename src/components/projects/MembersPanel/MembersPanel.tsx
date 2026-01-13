@@ -1,9 +1,10 @@
-import styles from "./MembersPanel.module.css";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import styles from "./MembersPanel.module.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useGraphQL } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
-import { useState } from "react";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
 
@@ -38,6 +39,7 @@ interface MembersPanelProps {
 }
 
 export default function MembersPanel({ project, projectId }: MembersPanelProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useAuth();
     const { executeMutation } = useGraphQL();
@@ -89,10 +91,10 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
 
     return (
         <div className={styles.projectMembersPanel}>
-            <h3>Członkowie projektu</h3>
+            <h3>{t('projects.projectMembers')}</h3>
             {members.length === 0 ? (
                 <p style={{ color: "#8b8b8b", fontSize: "0.9rem", padding: "10px" }}>
-                    No members yet
+                    {t('projects.noMembers')}
                 </p>
             ) : (
                 <div className={styles.membersList}>
@@ -122,10 +124,10 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                 <span className={styles.statusText}>
                                     {member.status === "available"
-                                        ? "Dostępny"
+                                        ? t('projects.available')
                                         : member.status === "away"
-                                          ? "Za chwilę wracam"
-                                          : "Niedostępny"}
+                                          ? t('projects.away')
+                                          : t('projects.unavailable')}
                                 </span>
                                 {isOwner && member.role !== "Owner" && (
                                     <button
@@ -134,7 +136,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
                                             e.stopPropagation();
                                             handleRemoveMember(member.id, member.nickname || member.name);
                                         }}
-                                        title="Remove member"
+                                        title={t('projects.removeMember')}
                                     >
                                         ✕
                                     </button>
@@ -147,10 +149,10 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
 
             <ConfirmDialog
                 isOpen={removeConfirm.show}
-                title="Remove Member"
-                message={`Are you sure you want to remove ${removeConfirm.memberName} from this project?`}
-                confirmText="Remove"
-                cancelText="Cancel"
+                title={t('projects.removeMemberTitle')}
+                message={t('projects.removeMemberConfirm', { name: removeConfirm.memberName })}
+                confirmText={t('common.remove')}
+                cancelText={t('common.cancel')}
                 danger={true}
                 onConfirm={confirmRemoveMember}
                 onCancel={() => setRemoveConfirm({ show: false, memberId: null, memberName: "" })}

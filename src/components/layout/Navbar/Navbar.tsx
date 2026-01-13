@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, MessageCircle } from "lucide-react";
 import styles from "./Navbar.module.css";
 import logo from "../../../images/logo.png";
@@ -54,6 +55,7 @@ interface NotificationsResponse {
 }
 
 function Navbar() {
+    const { t } = useTranslation();
     const { logout, user, updateUser, isAuthenticated, isModerator } = useAuth();
 
     const navigate = useNavigate();
@@ -158,7 +160,7 @@ function Navbar() {
         id: friend.id,
         image: getProfilePicUrl(friend.profilePicUrl, friend.nickname),
         name: `${friend.name} ${friend.surname}`,
-        lastMessage: "Click to chat",
+        lastMessage: t('navigation.clickToChat'),
         time: "",
         onClick: () => {
             setActiveChat({
@@ -179,7 +181,7 @@ function Navbar() {
                 style={{ cursor: "pointer" }}
             >
                 <img src={logo} alt="Logo" className={styles.logoImg} />
-                <span className={styles.logoText}>GroupFlow</span>
+                <span className={styles.logoText}>{t('navigation.groupFlow')}</span>
             </div>
 
             <div className={styles.searchBarContainer}>
@@ -194,7 +196,7 @@ function Navbar() {
                         <FaSearch className={styles.searchIcon} />
                         <input
                             type="text"
-                            placeholder="Search projects and people..."
+                            placeholder={t('navigation.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
@@ -238,12 +240,12 @@ function Navbar() {
 
                     {notifOpen && (
                         <div className={`${styles.dropdownMenu} ${styles.large}`}>
-                            <h4>Notifications</h4>
+                            <h4>{t('navigation.notifications')}</h4>
                             <div className={styles.dropdownScroll}>
                                 {loadingNotifications ? (
-                                    <p>Loading notifications...</p>
+                                    <p>{t('common.loading')}</p>
                                 ) : notifications.length === 0 ? (
-                                    <p>No notifications.</p>
+                                    <p>{t('navigation.noNotifications')}</p>
                                 ) : (
                                     notifications.map((n) => (
                                         <NotificationItem
@@ -270,11 +272,11 @@ function Navbar() {
                     {msgOpen && (
                         <div className={`${styles.dropdownMenu} ${styles.large}`}>
                             <h4 onClick={() => navigate("/chats")} style={{ cursor: "pointer" }}>
-                                Messages
+                                {t('navigation.messages')}
                             </h4>
                             <div className={styles.dropdownScroll}>
                                 {messages.length === 0 ? (
-                                    <p>No messages.</p>
+                                    <p>{t('navigation.noMessages')}</p>
                                 ) : (
                                     messages.map((m) => (
                                         <MessagePreview
@@ -321,24 +323,24 @@ function Navbar() {
                                 <hr />
                             </>
                         )}
-                        <button onClick={() => navigate(`/profile/${user?.id}`)}>Profile</button>
+                        <button onClick={() => navigate(`/profile/${user?.id}`)}>{t('navigation.profile')}</button>
                         <button onClick={() => navigate("/profile-tags")}>
-                            My Skills & Interests
+                            {t('navigation.mySkillsAndInterests')}
                         </button>
-                        <button onClick={() => navigate("/settings")}>Settings</button>
+                        <button onClick={() => navigate("/settings")}>{t('navigation.settings')}</button>
                         {isModerator && (
                             <>
                                 <button onClick={() => navigate("/admin/reported-posts")}>
-                                    Reported Posts (Moderator)
+                                    {t('navigation.reportedPosts')}
                                 </button>
                                 <button onClick={() => {
                                     navigate("/moderation");
                                 }}>
-                                    User Moderation
+                                    {t('navigation.userModeration')}
                                 </button>
                             </>
                         )}
-                        <button>Help</button>
+                        <button>{t('navigation.help')}</button>
                         <button
                             className="CreateGroup"
                             onClick={() => {
@@ -347,7 +349,7 @@ function Navbar() {
                                 setMenuOpen(false);
                             }}
                         >
-                            Create new Group
+                            {t('navigation.createNewGroup')}
                         </button>
                         <hr />
                         <button
@@ -358,7 +360,7 @@ function Navbar() {
                                 setMenuOpen(false);
                             }}
                         >
-                            Log Out
+                            {t('auth.logout')}
                         </button>
                     </div>
                 )}

@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { FileText, Download, Trash2, Upload, X } from "lucide-react";
 import { useBlobUpload, useFetch } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
@@ -36,6 +37,7 @@ interface FilesViewProps {
 }
 
 const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborator }) => {
+    const { t } = useTranslation();
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({ show: false, fileId: null, fileName: "", uploadedByUserId: null });
     const { getProjectFiles, uploadBlob, deleteBlob, uploading } = useBlobUpload();
@@ -61,18 +63,18 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
 
         try {
             await uploadBlob(file, "project", parseInt(projectId));
-            showToast("File uploaded successfully", "success");
+            showToast(t('projects.fileUploaded'), "success");
             refetch();
             setShowUploadDialog(false);
         } catch (error) {
             console.error("Upload error:", error);
-            showToast(error instanceof Error ? error.message : "Failed to upload file", "error");
+            showToast(error instanceof Error ? error.message : t('projects.fileUploadFailed'), "error");
         }
     };
 
     const handleFileDelete = async (fileId: string, fileName: string, uploadedByUserId: string): Promise<void> => {
         if (!isOwner && uploadedByUserId !== user?.id) {
-            showToast("You can only delete your own files", "error");
+            showToast(t('projects.canOnlyDeleteOwn'), "error");
             return;
         }
 
@@ -87,11 +89,11 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
 
         try {
             await deleteBlob(parseInt(fileId));
-            showToast("File deleted successfully", "success");
+            showToast(t('projects.fileDeleted'), "success");
             refetch();
         } catch (error) {
             console.error("Delete error:", error);
-            showToast("Failed to delete file", "error");
+            showToast(t('projects.fileDeleteFailed'), "error");
         }
     };
 
@@ -99,7 +101,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
         if (file.url) {
             window.open(file.url, '_blank');
         } else {
-            showToast("File URL not available", "error");
+            showToast(t('projects.fileUrlNotAvailable'), "error");
         }
     };
 
@@ -123,8 +125,8 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
     if (loading) {
         return (
             <div className={styles.filesView}>
-                <h2>Project Files</h2>
-                <p>Loading files...</p>
+                <h2>{t('projects.projectFiles')}</h2>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -132,14 +134,14 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
     return (
         <div className={styles.filesView}>
             <div className={styles.filesHeader}>
-                <h2>Project Files</h2>
+                <h2>{t('projects.projectFiles')}</h2>
                 {canUpload && (
                     <button 
                         className={styles.uploadFileBtn}
                         onClick={() => setShowUploadDialog(true)}
                     >
                         <Upload size={18} />
-                        <span>Upload File</span>
+                        <span>{t('projects.uploadFile')}</span>
                     </button>
                 )}
             </div>
@@ -148,7 +150,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
                 <div className={styles.uploadDialogOverlay} onClick={() => setShowUploadDialog(false)}>
                     <div className={styles.uploadDialog} onClick={(e) => e.stopPropagation()}>
                         <div className={styles.uploadDialogHeader}>
-                            <h3>Upload File</h3>
+                            <h3>{t('projects.uploadFile')}</h3>
                             <button 
                                 className={styles.closeDialogBtn}
                                 onClick={() => setShowUploadDialog(false)}
@@ -163,8 +165,8 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
                                 disabled={uploading}
                                 className={styles.fileInput}
                             />
-                            <p className={styles.uploadHint}>Maximum file size: 25 MB</p>
-                            {uploading && <p>Uploading...</p>}
+                            <p className={styles.uploadHint}>{t('projects.maxFileSize')}</p>
+                            {uploading && <p>{t('common.uploading')}</p>}
                         </div>
                     </div>
                 </div>
@@ -172,8 +174,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
 
             {(!files || files.length === 0) ? (
                 <p className={styles.noFilesMessage}>
-                    No files uploaded yet. 
-                    {canUpload && " Click 'Upload File' to add files to this project."}
+                    {t('projects.noFilesYet')}
                 </p>
             ) : (
                 <ul className={styles.filesList}>
@@ -185,8 +186,8 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
                                     <span className={styles.fileName}>{file.fileName || file.name}</span>
                                     <span className={styles.fileMeta}>
                                         {formatFileSize(file.fileSize ?? file.size ?? 0)} • 
-                                        Uploaded by {file.uploadedBy?.nickname || 'Unknown'} • 
-                                        {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'Unknown'}
+                                        {t('projects.uploadedBy')} {file.uploadedBy?.nickname || t('common.unknown')} • 
+                                        {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : t('common.unknown')}
                                     </span>
                                 </div>
                             </div>
@@ -194,7 +195,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
                                 <button
                                     className={styles.fileActionBtn}
                                     onClick={() => handleFileDownload(file)}
-                                    title="Download"
+                                    title={t('common.download')}
                                 >
                                     <Download size={18} />
                                 </button>
@@ -202,7 +203,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
                                     <button
                                         className={`${styles.fileActionBtn} ${styles.delete}`}
                                         onClick={() => handleFileDelete(String(file.id), file.fileName || file.name, file.uploadedBy?.id || '')}
-                                        title="Delete"
+                                        title={t('common.delete')}
                                     >
                                         <Trash2 size={18} />
                                     </button>
@@ -215,10 +216,10 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
 
             <ConfirmDialog
                 isOpen={deleteConfirm.show}
-                title="Delete File"
-                message={`Are you sure you want to delete "${deleteConfirm.fileName}"? This action cannot be undone.`}
-                confirmText="Delete"
-                cancelText="Cancel"
+                title={t('projects.deleteFile')}
+                message={t('projects.deleteFileConfirm', { name: deleteConfirm.fileName })}
+                confirmText={t('common.delete')}
+                cancelText={t('common.cancel')}
                 danger={true}
                 onConfirm={confirmFileDelete}
                 onCancel={() => setDeleteConfirm({ show: false, fileId: null, fileName: "", uploadedByUserId: null })}

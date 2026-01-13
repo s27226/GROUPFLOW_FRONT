@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { Post } from "../../../components/feed";
@@ -81,6 +82,7 @@ interface GraphQLProjectResponse {
 }
 
 export default function ProjectProfilePage() {
+    const { t } = useTranslation();
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
@@ -205,7 +207,7 @@ export default function ProjectProfilePage() {
                 <div className={profileStyles.profileContent}>
                     <Sidebar />
                     <div className={profileStyles.profileMain}>
-                        <p>Project not found</p>
+                        <p>{t('projects.projectNotFound')}</p>
                     </div>
                 </div>
             </div>
@@ -230,7 +232,7 @@ export default function ProjectProfilePage() {
                                     className={profileStyles.editBtn}
                                     onClick={() => navigate(`/project/${projectId}/edit`)}
                                 >
-                                    Edit Frontpage
+                                    {t('projects.editFrontpage')}
                                 </button>
                             )}
                         </div>
@@ -239,13 +241,13 @@ export default function ProjectProfilePage() {
                     <div className={profileStyles.profileBody}>
                         <div className={profileStyles.profileLeft}>
                             <section className={profileStyles.aboutMe}>
-                                <h3>Description</h3>
+                                <h3>{t('projects.description')}</h3>
                                 <p>{sanitizeText(project.description)}</p>
                             </section>
 
                             {project.skills && project.skills.length > 0 && (
                                 <section className={profileStyles.aboutMe}>
-                                    <h3>Skills</h3>
+                                    <h3>{t('projects.skills')}</h3>
                                     <div className={profileStyles.tagsDisplay}>
                                         {project.skills.map((skill: Skill) => (
                                             <span key={skill.id} className={`${profileStyles.tag} ${profileStyles.skillTag}`}>
@@ -258,7 +260,7 @@ export default function ProjectProfilePage() {
 
                             {project.interests && project.interests.length > 0 && (
                                 <section className={profileStyles.aboutMe}>
-                                    <h3>Interests</h3>
+                                    <h3>{t('projects.interests')}</h3>
                                     <div className={profileStyles.tagsDisplay}>
                                         {project.interests.map((interest: Interest) => (
                                             <span key={interest.id} className={`${profileStyles.tag} ${profileStyles.interestTag}`}>
@@ -270,7 +272,7 @@ export default function ProjectProfilePage() {
                             )}
 
                             <section className={profileStyles.ownedProjects}>
-                                <h3>Members</h3>
+                                <h3>{t('projects.members')}</h3>
                                 <div className={profileStyles.profileMembersScroll}>
                                     {project.members?.map((member, index) => (
                                         <div
@@ -293,10 +295,10 @@ export default function ProjectProfilePage() {
 
                         <div className={profileStyles.profileRight}>
                             <div className={profileStyles.profilePosts}>
-                                <h3>Activity</h3>
+                                <h3>{t('projects.activity')}</h3>
                                 <div className={feedStyles.feedContainer}>
                                     {!posts || posts.length === 0 ? (
-                                        <p>No activity yet</p>
+                                        <p>{t('projects.noActivityYet')}</p>
                                     ) : (
                                         posts.map((post) => (
                                             <Post

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import styles from "./SettingsPage.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
     const [fontSize, setFontSize] = useState(localStorage.getItem("fontSize") || "medium");
-    const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
+    const [language, setLanguage] = useState(i18n.language);
 
     const handleThemeChange = (newTheme: string) => {
         setTheme(newTheme);
@@ -23,6 +25,8 @@ export default function SettingsPage() {
     };
 
     const handleLanguageChange = (lang: string) => {
+        setLanguage(lang);
+        i18n.changeLanguage(lang);
         localStorage.setItem("language", lang);
     };
 
@@ -40,14 +44,14 @@ export default function SettingsPage() {
                 <Sidebar />
 
                 <div className={styles.settingsMain}>
-                    <h3>Settings</h3>
+                    <h3>{t('settings.title')}</h3>
 
                     <div className={styles.optionSection}>
                         <div className={styles.optionRow}>
                             <div className={styles.optionLabel}>
-                                <span>Theme</span>
+                                <span>{t('settings.theme')}</span>
                                 <p className={styles.optionDescription}>
-                                    Choose between dark and light mode
+                                    {t('settings.themeDescription')}
                                 </p>
                             </div>
                             <div>
@@ -55,13 +59,13 @@ export default function SettingsPage() {
                                     className={theme === "dark" ? "active" : ""}
                                     onClick={() => handleThemeChange("dark")}
                                 >
-                                    Dark
+                                    {t('settings.dark')}
                                 </button>
                                 <button
                                     className={theme === "light" ? "active" : ""}
                                     onClick={() => handleThemeChange("light")}
                                 >
-                                    Light
+                                    {t('settings.light')}
                                 </button>
                             </div>
                         </div>
@@ -70,19 +74,16 @@ export default function SettingsPage() {
                     <div className={styles.optionSection}>
                         <div className={styles.optionRow}>
                             <div className={styles.optionLabel}>
-                                <span>Language</span>
-                                <p className={styles.optionDescription}>Select your preferred language</p>
+                                <span>{t('settings.language')}</span>
+                                <p className={styles.optionDescription}>{t('settings.languageDescription')}</p>
                             </div>
                             <select
                                 value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
+                                onChange={(e) => handleLanguageChange(e.target.value)}
                                 className={styles.settingsSelect}
                             >
-                                <option value="en">English</option>
-                                <option value="pl">Polish</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
+                                <option value="en">{t('settings.english')}</option>
+                                <option value="pl">{t('settings.polish')}</option>
                             </select>
                         </div>
                     </div>
@@ -90,9 +91,9 @@ export default function SettingsPage() {
                     <div className={styles.optionSection}>
                         <div className={styles.optionRow}>
                             <div className={styles.optionLabel}>
-                                <span>Font Size</span>
+                                <span>{t('settings.fontSize')}</span>
                                 <p className={styles.optionDescription}>
-                                    Adjust the base font size for better readability
+                                    {t('settings.fontSizeDescription')}
                                 </p>
                             </div>
                             <div>
@@ -100,19 +101,19 @@ export default function SettingsPage() {
                                     className={fontSize === "small" ? "active" : ""}
                                     onClick={() => handleFontSizeChange("small")}
                                 >
-                                    Small
+                                    {t('settings.small')}
                                 </button>
                                 <button
                                     className={fontSize === "medium" ? "active" : ""}
                                     onClick={() => handleFontSizeChange("medium")}
                                 >
-                                    Medium
+                                    {t('settings.medium')}
                                 </button>
                                 <button
                                     className={fontSize === "large" ? "active" : ""}
                                     onClick={() => handleFontSizeChange("large")}
                                 >
-                                    Large
+                                    {t('settings.large')}
                                 </button>
                             </div>
                         </div>
@@ -120,20 +121,20 @@ export default function SettingsPage() {
                     <div className={styles.optionSection}>
                         <div className={styles.optionRow}>
                             <div className={styles.optionLabel}>
-                                <span>Reset Password</span>
-                                <p className={styles.optionDescription}>Change your account password</p>
+                                <span>{t('settings.resetPassword')}</span>
+                                <p className={styles.optionDescription}>{t('settings.resetPasswordDescription')}</p>
                             </div>
-                            <button onClick={() => navigate("/settings/reset-pass")}>Reset</button>
+                            <button onClick={() => navigate("/settings/reset-pass")}>{t('settings.reset')}</button>
                         </div>
                     </div>
 
                     <div className={styles.optionSection}>
                         <div className={styles.optionRow}>
                             <div className={styles.optionLabel}>
-                                <span>Blocked Users</span>
-                                <p className={styles.optionDescription}>Manage users you have blocked</p>
+                                <span>{t('settings.blockedUsers')}</span>
+                                <p className={styles.optionDescription}>{t('settings.blockedUsersDescription')}</p>
                             </div>
-                            <button onClick={() => navigate("/blocked-users")}>View List</button>
+                            <button onClick={() => navigate("/blocked-users")}>{t('settings.viewList')}</button>
                         </div>
                     </div>
                 </div>

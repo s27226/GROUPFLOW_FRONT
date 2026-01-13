@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { Post } from "../../../components/feed";
 import { ProfileBanner } from "../../../components/profile";
@@ -33,6 +34,7 @@ interface ProjectQueryResponse {
 }
 
 export default function ProfilePage() {
+    const { t } = useTranslation();
     const { userId } = useParams();
     const navigate = useNavigate();
     const { user: currentUser } = useAuth(); // Renamed to currentUser from authUser
@@ -127,11 +129,11 @@ export default function ProfilePage() {
                 throw new Error(response.errors[0].message);
             }
 
-            showToast(`Invitation sent to ${user.name} ${user.surname}!`, 'success');
+            showToast(t('profile.invitationSent', { name: `${user.name} ${user.surname}` }), 'success');
             setShowInviteModal(false);
         } catch (err) {
             console.error("Failed to send invitation:", err);
-            const errorMessage = (err as Error)?.message || "Failed to send invitation. They may already be invited or a member.";
+            const errorMessage = (err as Error)?.message || t('profile.invitationFailed');
             showToast(errorMessage, 'error');
         } finally {
             setInviting(false);
@@ -190,7 +192,7 @@ export default function ProfilePage() {
                 <div className={styles.profileContent}>
                     <Sidebar />
                     <div className={styles.profileMain}>
-                        <p>User not found</p>
+                        <p>{t('profile.userNotFound')}</p>
                     </div>
                 </div>
             </div>
@@ -219,7 +221,7 @@ export default function ProfilePage() {
                                     className={styles.editBtn}
                                     onClick={() => navigate("/profile/edit")}
                                 >
-                                    Edit Profile
+                                    {t('profile.editProfile')}
                                 </button>
                             )}
                             {currentUser && user.id !== currentUser.id && isFriend && ownedProjects.length > 0 && (
@@ -227,7 +229,7 @@ export default function ProfilePage() {
                                     className={styles.inviteBtn}
                                     onClick={() => setShowInviteModal(true)}
                                 >
-                                    Invite to Project
+                                    {t('profile.inviteToProject')}
                                 </button>
                             )}
                         </div>
@@ -236,15 +238,15 @@ export default function ProfilePage() {
                     <div className={styles.profileBody}>
                         <div className={styles.profileLeft}>
                             <section className={styles.aboutMe}>
-                                <h3>About Me</h3>
+                                <h3>{t('profile.aboutMe')}</h3>
                                 <p>{user.abt}</p>
                             </section>
 
                             <section className={styles.ownedProjects}>
-                                <h3>Part of projects</h3>
+                                <h3>{t('profile.partOfProjects')}</h3>
                                 <div className={styles.projectsScroll}>
                                     {projects.length === 0 ? (
-                                        <p>No projects yet</p>
+                                        <p>{t('profile.noProjectsYet')}</p>
                                     ) : (
                                         projects.map((proj) => (
                                             <div
@@ -263,10 +265,10 @@ export default function ProfilePage() {
 
                         <div className={styles.profileRight}>
                             <div className={styles.profilePosts}>
-                                <h3>Activity</h3>
+                                <h3>{t('profile.activity')}</h3>
                                 <div className={feedStyles.feedContainer}>
                                     {posts.length === 0 ? (
-                                        <p>No posts yet</p>
+                                        <p>{t('profile.noPostsYet')}</p>
                                     ) : (
                                         posts.map((post) => (
                                             <Post
@@ -314,10 +316,10 @@ export default function ProfilePage() {
                 {showInviteModal && (
                     <div className={styles.modalOverlay} onClick={() => setShowInviteModal(false)}>
                         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                            <h3>Invite {user.name} to a Project</h3>
+                            <h3>{t('profile.inviteUserToProject', { name: user.name })}</h3>
                             <div className={styles.projectList}>
                                 {ownedProjects.length === 0 ? (
-                                    <p>You don't own any projects yet.</p>
+                                    <p>{t('profile.noOwnedProjects')}</p>
                                 ) : (
                                     ownedProjects.map((project) => {
                                         const isAlreadyMember = userProjectIds.has(project.id);
@@ -334,7 +336,7 @@ export default function ProfilePage() {
                                                             opacity: 0.8,
                                                             fontWeight: 300
                                                         }}>
-                                                            ℹ Already a member
+                                                            ℹ {t('profile.alreadyMember')}
                                                         </small>
                                                     )}
                                                 </div>
@@ -347,7 +349,7 @@ export default function ProfilePage() {
                                                         backgroundColor: isAlreadyMember ? '#ccc' : ''
                                                     }}
                                                 >
-                                                    {isAlreadyMember ? "Member" : inviting ? "Inviting..." : "Invite"}
+                                                    {isAlreadyMember ? t('profile.member') : inviting ? t('profile.inviting') : t('profile.invite')}
                                                 </button>
                                             </div>
                                         );
@@ -358,7 +360,7 @@ export default function ProfilePage() {
                                 className={styles.closeModalBtn}
                                 onClick={() => setShowInviteModal(false)}
                             >
-                                Close
+                                {t('common.close')}
                             </button>
                         </div>
                     </div>

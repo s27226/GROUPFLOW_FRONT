@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { authStyles } from "../../components/layout";
 import axios, { AxiosError } from "axios";
 import { API_CONFIG } from "../../config/api";
 
 export default function ResetPasswordPage() {
+    const { t } = useTranslation();
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,7 +20,7 @@ export default function ResetPasswordPage() {
         setSuccess("");
 
         if (newPassword !== confirmPassword) {
-            setError("New passwords do not match");
+            setError(t('auth.newPasswordsDoNotMatch'));
             return;
         }
 
@@ -30,13 +32,13 @@ export default function ResetPasswordPage() {
                 withCredentials: true
             });
 
-            setSuccess("Password successfully updated!");
+            setSuccess(t('auth.passwordUpdated'));
             setCurrentPassword("");
             setNewPassword("");
             setConfirmPassword("");
         } catch (err) {
             const axiosError = err as AxiosError<{ message?: string }>;
-            setError(axiosError.response?.data?.message || "Failed to reset password");
+            setError(axiosError.response?.data?.message || t('auth.passwordResetFailed'));
         }
     };
 
@@ -44,23 +46,23 @@ export default function ResetPasswordPage() {
         <div className={authStyles.authContainer}>
             <div className={authStyles.authRight}>
                 <div className={authStyles.formCardWide}>
-                    <h1>Reset Password</h1>
+                    <h1>{t('auth.resetPassword')}</h1>
 
                     <input
                         type="password"
-                        placeholder="Current Password"
+                        placeholder={t('auth.currentPassword')}
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                     />
                     <input
                         type="password"
-                        placeholder="New Password"
+                        placeholder={t('auth.newPassword')}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <input
                         type="password"
-                        placeholder="Confirm New Password"
+                        placeholder={t('auth.confirmNewPassword')}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
@@ -69,10 +71,10 @@ export default function ResetPasswordPage() {
                     {success && <p className={authStyles.loginSuccess}>{success}</p>}
 
                     <button className={authStyles.pillBtnLogin} onClick={handleReset}>
-                        Reset Password
+                        {t('auth.resetPassword')}
                     </button>
                     <button className={authStyles.pillBtnRegister} onClick={() => navigate("/settings")}>
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                 </div>
             </div>

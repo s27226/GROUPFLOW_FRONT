@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useChat } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
 import styles from "./ChatWindow.module.css";
@@ -17,6 +18,7 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWindowProps) {
+    const { t } = useTranslation();
     const { messages, input, setInput, loading, sendMessage, handleKeyPress } = useChat(
         user,
         currentUserId
@@ -30,7 +32,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWind
                 </div>
                 <div className={styles.chatContent}>
                     <div className={styles.chatMessagesArea}>
-                        <p>Ładowanie...</p>
+                        <p>{t('chat.loading')}</p>
                     </div>
                 </div>
             </div>
@@ -48,7 +50,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWind
                     <button
                         onClick={onMinimize}
                         className={styles.chatMinimizeBtn}
-                        title="Open in popup"
+                        title={t('chat.openInPopup')}
                     >
                         ⤓
                     </button>
@@ -58,7 +60,7 @@ export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWind
             <div className={styles.chatContent}>
                 <div className={styles.chatMessagesArea}>
                     {messages.length === 0 ? (
-                        <p className={styles.noMessages}>Brak wiadomości. Rozpocznij rozmowę!</p>
+                        <p className={styles.noMessages}>{t('chat.noMessages')}</p>
                     ) : (
                         messages.map((msg) => (
                             <div key={msg.id} className={`${styles.privChatMessageWrapper} ${msg.from === "me" ? styles.me : styles.them}`}>
@@ -82,12 +84,12 @@ export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWind
                 <div className={styles.chatInputArea}>
                     <input
                         type="text"
-                        placeholder="Napisz Wiadomość"
+                        placeholder={t('chat.writeMessage')}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyPress}
                     />
-                    <button onClick={sendMessage}>Wyślij</button>
+                    <button onClick={sendMessage}>{t('chat.send')}</button>
                 </div>
             </div>
         </div>

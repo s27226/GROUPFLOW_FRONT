@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../components/layout";
 import { ChatList, ChatWindow, PrivateChat } from "../../components/chat";
 import { useFriends } from "../../hooks";
@@ -20,6 +21,7 @@ interface LocationState {
 }
 
 export default function ChatPage() {
+    const { t } = useTranslation();
     const location = useLocation();
     const locationState = location.state as LocationState | null;
     const { user: currentUser } = useAuth();
@@ -51,7 +53,7 @@ export default function ChatPage() {
         <Layout variant="compact" showTrending={false}>
             <div className={styles.chatLayout}>
                 {loading ? (
-                    <p>Loading chats...</p>
+                    <p>{t('chat.loadingChats')}</p>
                 ) : (
                     <ChatList
                         users={users}
@@ -72,7 +74,7 @@ export default function ChatPage() {
                         />
                     ) : (
                         <div className={styles.chatPlaceholder}>
-                            <p>💬 Wybierz osobę, aby rozpocząć rozmowę</p>
+                            <p>{t('chat.selectToStart')}</p>
                         </div>
                     )}
                 </div>

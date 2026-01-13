@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import ConfirmDialog from "../../../components/ui/ConfirmDialog";
 import { ImageUploadButton } from "../../../components/profile";
@@ -39,6 +40,7 @@ interface ImageSelectData {
 }
 
 export default function ProjectEditPage() {
+    const { t } = useTranslation();
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
@@ -81,14 +83,14 @@ export default function ProjectEditPage() {
     // Update form fields when project data loads
     useEffect(() => {
         if (!projectId) {
-            setError("No project ID provided");
+            setError(t('projects.noProjectId'));
             return;
         }
 
         if (projectData) {
             // Check if current user is the owner
             if (!authUser || String(projectData.owner.id) !== String(authUser.id)) {
-                setError("You don't have permission to edit this project");
+                setError(t('projects.noPermissionEdit'));
                 setIsOwner(false);
                 return;
             }
@@ -101,9 +103,9 @@ export default function ProjectEditPage() {
             setIsPublic(projectData.isPublic ?? true);
             setError(null);
         } else if (!loading && projectId) {
-            setError("Project not found");
+            setError(t('projects.projectNotFound'));
         }
-    }, [projectData, projectId, authUser, loading]);
+    }, [projectData, projectId, authUser, loading, t]);
 
     const handleImageSelect = ({ file, preview }: ImageSelectData) => {
         setImageFile(file);
@@ -127,12 +129,12 @@ export default function ProjectEditPage() {
 
     const handleSave = async () => {
         if (!name.trim()) {
-            setError("Project name is required");
+            setError(t('projects.projectNameIsRequired'));
             return;
         }
 
         if (!description.trim()) {
-            setError("Project description is required");
+            setError(t('projects.projectDescriptionIsRequired'));
             return;
         }
 
@@ -150,7 +152,7 @@ export default function ProjectEditPage() {
                             imageBlobId: blobData.id 
                         }
                     });
-                    showToast("Project logo uploaded successfully", "success");
+                    showToast(t('projects.projectLogoUploaded'), "success");
                 }
             }
 
@@ -164,7 +166,7 @@ export default function ProjectEditPage() {
                             bannerBlobId: blobData.id 
                         }
                     });
-                    showToast("Project banner uploaded successfully", "success");
+                    showToast(t('projects.projectBannerUploaded'), "success");
                 }
             }
 
@@ -178,15 +180,13 @@ export default function ProjectEditPage() {
 
             await executeMutation(GRAPHQL_MUTATIONS.UPDATE_PROJECT, { input });
 
-            showToast("Project updated successfully", "success");
+            showToast(t('projects.projectUpdated'), "success");
             navigate(`/project/${projectId}`);
         }).catch((err: Error) => {
             if (err.message?.includes("permission") || err.message?.includes("not authenticated")) {
-                setError(
-                    "You don't have permission to edit this project. Only the project owner can make changes."
-                );
+                setError(t('projects.noPermissionEdit'));
             } else {
-                setError(err.message || "Failed to save changes. Please try again.");
+                setError(err.message || t('projects.saveChangesFailed'));
             }
         });
     };
@@ -202,11 +202,9 @@ export default function ProjectEditPage() {
             navigate("/myprojects");
         }).catch((err: Error) => {
             if (err.message?.includes("permission") || err.message?.includes("not authenticated")) {
-                setError(
-                    "You don't have permission to delete this project. Only the project owner can delete it."
-                );
+                setError(t('projects.noPermissionDelete'));
             } else {
-                setError(err.message || "Failed to delete project. Please try again.");
+                setError(err.message || t('projects.deleteProjectFailed'));
             }
         });
     };
@@ -218,7 +216,7 @@ export default function ProjectEditPage() {
                 <div className={styles.editContent}>
                     <Sidebar />
                     <div className={styles.editMain}>
-                        <p>Loading project data...</p>
+                        <p>{t('projects.loadingProjectData')}</p>
                     </div>
                 </div>
             </div>
@@ -242,7 +240,7 @@ export default function ProjectEditPage() {
                             }}
                         >
                             <h2 style={{ color: "var(--error-color)", marginBottom: "1rem" }}>
-                                Access Denied
+                                {t('projects.accessDenied')}
                             </h2>
                             <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
                                 {error}
@@ -252,7 +250,7 @@ export default function ProjectEditPage() {
                                     className={styles.editBtn}
                                     onClick={() => navigate(`/project/${projectId}`)}
                                 >
-                                    View Project
+                                    {t('projects.viewProject')}
                                 </button>
                                 <button
                                     className={styles.editBtn}
@@ -262,7 +260,7 @@ export default function ProjectEditPage() {
                                         color: "var(--text-primary)"
                                     }}
                                 >
-                                    Go Back
+                                    {t('projects.goBack')}
                                 </button>
                             </div>
                         </div>
@@ -279,7 +277,7 @@ export default function ProjectEditPage() {
                 <Sidebar />
 
                 <div className={styles.editMain}>
-                    <h2>Edit Project Frontpage</h2>
+                    <h2>{t('projects.editProjectFrontpage')}</h2>
 
                     {error && (
                         <div
@@ -298,7 +296,7 @@ export default function ProjectEditPage() {
 
                     <div className={styles.optionSection}>
                         <ImageUploadButton
-                            label="Project Logo *"
+                            label={t('projects.projectLogo')}
                             preview={imageUrl}
                             onImageSelect={handleImageSelect}
                             onImageRemove={handleImageRemove}
@@ -311,7 +309,7 @@ export default function ProjectEditPage() {
 
                     <div className={styles.optionSection}>
                         <ImageUploadButton
-                            label="Project Banner"
+                            label={t('projects.projectBanner')}
                             preview={bannerUrl}
                             onImageSelect={handleBannerSelect}
                             onImageRemove={handleBannerRemove}
@@ -323,22 +321,22 @@ export default function ProjectEditPage() {
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>Project Name *</label>
+                        <label>{t('projects.projectNameRequired')}</label>
                         <input
                             className={styles.nameInput}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter project name"
+                            placeholder={t('projects.enterProjectName')}
                             required
                         />
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>Description *</label>
+                        <label>{t('projects.descriptionRequired')}</label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Write a short description of your project..."
+                            placeholder={t('projects.descriptionPlaceholder')}
                             rows={5}
                             required
                         />
@@ -352,7 +350,7 @@ export default function ProjectEditPage() {
                                 onChange={(e) => setIsPublic(e.target.checked)}
                                 style={{ marginRight: "0.5rem" }}
                             />
-                            Make project public
+                            {t('projects.makePublic')}
                         </label>
                         <p
                             style={{
@@ -361,8 +359,7 @@ export default function ProjectEditPage() {
                                 marginTop: "0.5rem"
                             }}
                         >
-                            Public projects can be viewed by anyone. Private projects are only
-                            visible to you and your collaborators.
+                            {t('projects.publicDescription')}
                         </p>
                     </div>
 
@@ -379,7 +376,7 @@ export default function ProjectEditPage() {
                                         : "pointer"
                             }}
                         >
-                            {saving || blobUploading ? "Saving..." : "Save Changes"}
+                            {saving || blobUploading ? t('projects.savingChanges') : t('projects.saveChanges')}
                         </button>
 
                         <button
@@ -391,7 +388,7 @@ export default function ProjectEditPage() {
                                 color: "var(--text-primary)"
                             }}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
 
                         <button
@@ -406,7 +403,7 @@ export default function ProjectEditPage() {
                                 cursor: saving || deleting ? "not-allowed" : "pointer"
                             }}
                         >
-                            {deleting ? "Deleting..." : "Delete Project"}
+                            {deleting ? t('projects.deletingProject') : t('projects.deleteProject')}
                         </button>
                     </div>
 
@@ -414,10 +411,10 @@ export default function ProjectEditPage() {
                         isOpen={showDeleteConfirm}
                         onConfirm={handleDelete}
                         onCancel={() => setShowDeleteConfirm(false)}
-                        title="Delete Project"
-                        message={`Are you sure you want to delete "${name}"? This action cannot be undone and will delete all project data, including chat history.`}
-                        confirmText="Delete"
-                        cancelText="Cancel"
+                        title={t('projects.deleteProject')}
+                        message={t('projects.deleteProjectConfirm', { name })}
+                        confirmText={t('common.delete')}
+                        cancelText={t('common.cancel')}
                         danger={true}
                     />
                 </div>

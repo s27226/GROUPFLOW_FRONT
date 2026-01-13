@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import LoadingSpinner from "../../../components/ui/LoadingSpinner";
 import { ImageUploadButton, ImageSelectData } from "../../../components/profile";
@@ -30,6 +31,7 @@ interface UserProfileResponse {
 }
 
 export default function ProfileEditPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user: authUser } = useAuth();
     const { uploadBlob, deleteBlob, uploading: blobUploading } = useBlobUpload();
@@ -87,7 +89,7 @@ export default function ProfileEditPage() {
                     profilePicBlobId: null 
                 }
             });
-            showToast("Profile picture removed", "success");
+            showToast(t('profile.profilePicRemoved'), "success");
         }
         setPfpFile(null);
         setPfp(getProfilePicUrl(null, user?.nickname));
@@ -108,7 +110,7 @@ export default function ProfileEditPage() {
                     bannerPicBlobId: null 
                 }
             });
-            showToast("Banner removed", "success");
+            showToast(t('profile.bannerRemoved'), "success");
         }
         setBannerFile(null);
         setBanner(getBannerUrl(null, 10));
@@ -136,7 +138,7 @@ export default function ProfileEditPage() {
                             profilePicBlobId: blobData.id 
                         }
                     });
-                    showToast("Profile picture uploaded successfully", "success");
+                    showToast(t('profile.profilePicUploaded'), "success");
                 }
             }
 
@@ -150,12 +152,12 @@ export default function ProfileEditPage() {
                             bannerPicBlobId: blobData.id 
                         }
                     });
-                    showToast("Banner uploaded successfully", "success");
+                    showToast(t('profile.bannerUploaded'), "success");
                 }
             }
 
             // Navigate back to profile
-            showToast("Profile updated successfully", "success");
+            showToast(t('profile.profileUpdated'), "success");
             if (user.id) {
                 navigate(`/profile/${user.id}`);
             }
@@ -181,11 +183,11 @@ export default function ProfileEditPage() {
                 <Sidebar />
 
                 <div className={styles.editMain}>
-                    <h2>Edit Profile</h2>
+                    <h2>{t('profile.editProfile')}</h2>
 
                     <div className={styles.optionSection}>
                         <ImageUploadButton
-                            label="Profile Picture"
+                            label={t('profile.profilePicture')}
                             preview={pfp}
                             onImageSelect={handleProfileImageSelect}
                             onImageRemove={handleProfileImageRemove}
@@ -198,7 +200,7 @@ export default function ProfileEditPage() {
 
                     <div className={styles.optionSection}>
                         <ImageUploadButton
-                            label="Banner"
+                            label={t('profile.banner')}
                             preview={banner}
                             onImageSelect={handleBannerImageSelect}
                             onImageRemove={handleBannerImageRemove}
@@ -210,7 +212,7 @@ export default function ProfileEditPage() {
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>Name</label>
+                        <label>{t('profile.name')}</label>
                         <input
                             className={styles.nameInput}
                             value={name}
@@ -219,17 +221,17 @@ export default function ProfileEditPage() {
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>Bio</label>
+                        <label>{t('profile.bio')}</label>
                         <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>About</label>
+                        <label>{t('profile.about')}</label>
                         <textarea value={abt} onChange={(e) => setAbt(e.target.value)} />
                     </div>
 
                     <button className={styles.editBtn} onClick={handleSave} disabled={blobUploading || saving}>
-                        {blobUploading || saving ? "Saving..." : "Save Changes"}
+                        {blobUploading || saving ? t('common.saving') : t('profile.saveChanges')}
                     </button>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import styles from "./ChatList.module.css";
 
 interface ChatListUser {
@@ -14,9 +15,10 @@ interface ChatListProps {
 }
 
 export default function ChatList({ users, onSelectUser, selectedUser }: ChatListProps) {
+    const { t } = useTranslation();
     return (
         <div className={styles.chatList}>
-            <h3 className={styles.textCenter}> Friends </h3>
+            <h3 className={styles.textCenter}>{t('chat.friends')}</h3>
             <ul>
                 {users.map((u: ChatListUser) => (
                     <li

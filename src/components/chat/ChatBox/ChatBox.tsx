@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { API_CONFIG, getAuthHeaders } from "../../../config/api";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
@@ -44,6 +45,7 @@ interface UserChatData {
 }
 
 const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
+    const { t } = useTranslation();
     const { user: currentUser } = useAuth();
     const [messages, setMessages] = useState<ChatBoxMessage[]>([]);
     const [input, setInput] = useState("");
@@ -301,7 +303,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
         return (
             <div className={styles.chatboxAll}>
                 <div className={styles.chatboxContainer}>
-                    <p>No chat available for this project yet.</p>
+                    <p>{t('chat.noChatAvailable')}</p>
                 </div>
             </div>
         );
@@ -313,7 +315,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                 <div className={styles.chatboxContent}>
                     <div className={styles.chatboxMessagesArea}>
                         {messages.length === 0 ? (
-                            <p>No messages yet. Be the first to send one!</p>
+                            <p>{t('chat.noMessagesYet')}</p>
                         ) : (
                             messages.map((msg) => (
                                 <div
@@ -353,13 +355,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     <div className={styles.chatboxInputArea}>
                         <input
                             type="text"
-                            placeholder="Napisz Wiadomość"
+                            placeholder={t('chat.writeMessage')}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyPress}
                         />
                         <button onClick={sendMessage} disabled={!input.trim()}>
-                            Wyślij
+                            {t('chat.send')}
                         </button>
                     </div>
                 </div>

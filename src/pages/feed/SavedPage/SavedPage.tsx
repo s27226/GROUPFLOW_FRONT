@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../../components/layout";
 import { Post } from "../../../components/feed";
 import SkeletonPost from "../../../components/ui/SkeletonPost";
@@ -6,6 +7,7 @@ import { useToast } from "../../../context/ToastContext";
 import styles from "./SavedPage.module.css";
 
 export default function SavedPage() {
+    const { t } = useTranslation();
     const { posts, setPosts, loading, error, refetch: fetchSavedPosts } = useSavedPosts();
     const { showToast } = useToast();
 
@@ -23,7 +25,7 @@ export default function SavedPage() {
             <Layout variant="main">
                 <div className={styles.feedContainer}>
                     <h2 className={styles.pageTitle}>
-                        Saved Posts
+                        {t('feed.savedPosts')}
                     </h2>
                     <SkeletonPost count={3} />
                 </div>
@@ -36,16 +38,16 @@ export default function SavedPage() {
             <Layout variant="main">
                 <div className={styles.feedContainer}>
                     <h2 className={styles.pageTitle}>
-                        Saved Posts
+                        {t('feed.savedPosts')}
                     </h2>
                     <p className={styles.errorMessage}>
-                        Error: {error}
+                        {t('common.error')}: {error}
                     </p>
                     <button
                         onClick={() => fetchSavedPosts()}
                         className={styles.retryBtn}
                     >
-                        Retry
+                        {t('common.retry')}
                     </button>
                 </div>
             </Layout>
@@ -56,11 +58,11 @@ export default function SavedPage() {
         <Layout variant="main">
             <div className={styles.feedContainer}>
                 <h2 className={styles.pageTitle}>
-                    Saved Posts
+                    {t('feed.savedPosts')}
                 </h2>
                 {visiblePosts.length === 0 ? (
                     <p className={styles.emptyMessage}>
-                        No saved posts yet
+                        {t('feed.noSavedPosts')}
                     </p>
                 ) : (
                     visiblePosts.map((post) => (

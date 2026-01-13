@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../../components/layout";
 import { Post } from "../../../components/feed";
 import SkeletonPost from "../../../components/ui/SkeletonPost";
@@ -7,6 +8,7 @@ import { usePost } from "../../../hooks";
 import styles from "./PostPage.module.css";
 
 export default function PostPage() {
+    const { t } = useTranslation();
     const { postId } = useParams();
     const navigate = useNavigate();
     const { post, loading, error } = usePost(postId ?? "");
@@ -16,7 +18,7 @@ export default function PostPage() {
             <div className={styles.postpageWrapper}>
                 <button className={styles.postpageBackBtn} onClick={() => navigate(-1)}>
                     <ArrowLeft size={20} />
-                    <span>Back</span>
+                    <span>{t('common.back')}</span>
                 </button>
 
                 <div className={styles.postpageCard}>

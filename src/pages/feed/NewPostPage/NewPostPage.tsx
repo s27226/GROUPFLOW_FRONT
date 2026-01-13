@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../../components/layout";
 import { Image, X } from "lucide-react";
 import { useToast } from "../../../context/ToastContext";
@@ -26,6 +27,7 @@ interface CreatePostResponse {
 }
 
 export default function NewPostPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const { projectId } = useParams<{ projectId: string }>();
@@ -43,14 +45,14 @@ export default function NewPostPage() {
     const { projects: myProjects } = useMyProjects({ autoFetch: true });
     const { execute: createPost, loading } = useMutationQuery<CreatePostResponse>({
         onSuccess: () => {
-            showToast("Post created successfully!", "success");
+            showToast(t('feed.postCreated'), "success");
             if (selectedProjectId) {
                 navigate(`/project/${selectedProjectId}`);
             } else {
                 navigate("/");
             }
         },
-        onError: () => showToast("Failed to create post", "error")
+        onError: () => showToast(t('feed.postCreateFailed'), "error")
     });
 
     useEffect(() => {
@@ -94,12 +96,12 @@ export default function NewPostPage() {
         e.preventDefault();
 
         if (!content.trim()) {
-            showToast("Please write something for your post", "warning");
+            showToast(t('feed.pleaseWriteSomething'), "warning");
             return;
         }
 
         if (!selectedProjectId) {
-            showToast("Please select a project for your post", "warning");
+            showToast(t('feed.pleaseSelectProject'), "warning");
             return;
         }
 
@@ -125,7 +127,7 @@ export default function NewPostPage() {
         <Layout variant="compact" showTrending={false}>
             <div className={styles.newpostContainer}>
                 <div className={styles.newpostHeader}>
-                    <h2>Create New Post</h2>
+                    <h2>{t('feed.createNewPost')}</h2>
                     <button className={styles.newpostCloseBtn} onClick={() => navigate("/")}>
                         <X size={24} />
                     </button>
@@ -133,14 +135,14 @@ export default function NewPostPage() {
 
                 <form onSubmit={handleSubmit} className={styles.newpostForm}>
                     <div className={styles.newpostProjectSelector}>
-                        <label htmlFor="project-select">Post to Project:</label>
+                        <label htmlFor="project-select">{t('feed.postToProject')}</label>
                         <select
                             id="project-select"
                             value={selectedProjectId ?? ""}
                             onChange={(e) => setSelectedProjectId(e.target.value ? parseInt(e.target.value) : null)}
                             className={styles.newpostProjectSelect}
                         >
-                            <option value="">Select a project...</option>
+                            <option value="">{t('feed.selectProject')}</option>
                             {(myProjects || []).map((project) => (
                                 <option key={project.id} value={project.id}>
                                     {project.name}
@@ -153,7 +155,7 @@ export default function NewPostPage() {
                         <input
                             type="text"
                             className={styles.newpostTitleInput}
-                            placeholder="Post title (optional)"
+                            placeholder={t('feed.postTitleOptional')}
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             maxLength={100}
@@ -163,7 +165,7 @@ export default function NewPostPage() {
                     <div className={styles.newpostTextareaWrapper}>
                         <textarea
                             className={styles.newpostTextarea}
-                            placeholder="What's on your mind?"
+                            placeholder={t('feed.whatsOnYourMind')}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             rows={8}
@@ -175,7 +177,7 @@ export default function NewPostPage() {
                     <div className={styles.newpostVisibilityToggle}>
                         <label className={styles.newpostToggleLabel}>
                             <span className={styles.newpostToggleText}>
-                                {isPublic ? "Public (Anyone can see)" : "Private (Only project members)"}
+                                {isPublic ? t('feed.publicPost') : t('feed.privatePost')}
                             </span>
                             <div className={styles.newpostToggleSwitch}>
                                 <input
@@ -205,7 +207,7 @@ export default function NewPostPage() {
                     {sharedPost && (
                         <div className={styles.newpostSharedPreview}>
                             <div className={styles.newpostSharedHeader}>
-                                <span>Sharing post from {sharedPost.author}</span>
+                                <span>{t('feed.sharedPostFrom')} {sharedPost.author}</span>
                             </div>
                             <div className={styles.newpostSharedContent}>
                                 <div className={styles.newpostSharedInfo}>
@@ -237,7 +239,7 @@ export default function NewPostPage() {
                                         navigate(`/post/${sharedPost.id}`);
                                     }}
                                 >
-                                    View original post
+                                    {t('feed.viewOriginal')}
                                 </a>
                             </div>
                         </div>
@@ -247,7 +249,7 @@ export default function NewPostPage() {
                         <div className={styles.newpostToolbar}>
                             <label htmlFor="image-upload" className={styles.newpostImageBtn}>
                                 <Image size={20} />
-                                <span>Add Image</span>
+                                <span>{t('feed.addImage')}</span>
                             </label>
                             <input
                                 id="image-upload"
@@ -264,14 +266,14 @@ export default function NewPostPage() {
                                 className={styles.newpostCancelBtn}
                                 onClick={() => navigate("/")}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             <button
                                 type="submit"
                                 className={styles.newpostSubmitBtn}
                                 disabled={!content.trim() || !selectedProjectId || loading}
                             >
-                                {loading ? "Posting..." : "Post"}
+                                {loading ? t('feed.posting') : t('feed.post')}
                             </button>
                         </div>
                     </div>

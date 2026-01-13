@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useTrendingProjects } from "../../../hooks";
 import SkeletonCard from "../../ui/SkeletonCard";
 import styles from "./Trending.module.css";
 
 export default function Trending() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { projects, loading } = useTrendingProjects(5);
 
     if (loading) {
         return (
             <div className={styles.trendingBar}>
-                <h3>Trending Projects</h3>
+                <h3>{t('trending.trendingProjects')}</h3>
                 <SkeletonCard count={5} />
             </div>
         );
@@ -19,15 +21,15 @@ export default function Trending() {
     if (!projects || projects.length === 0) {
         return (
             <div className={styles.trendingBar}>
-                <h3>Trending Projects</h3>
-                <p>No trending projects at the moment.</p>
+                <h3>{t('trending.trendingProjects')}</h3>
+                <p>{t('trending.noTrending')}</p>
             </div>
         );
     }
 
     return (
         <div className={styles.trendingBar}>
-            <h3>Trending Projects</h3>
+            <h3>{t('trending.trendingProjects')}</h3>
             <ul>
                 {projects.map((project) => (
                     <li
@@ -48,7 +50,7 @@ export default function Trending() {
                             <p className={styles.trendingDesc}>{project.description}</p>
                             {project.owner && (
                                 <span className={styles.trendingOwner}>
-                                    by{" "}
+                                    {t('common.by')}{" "}
                                     <span
                                         onClick={(e: React.MouseEvent<HTMLSpanElement>) => {
                                             e.stopPropagation();
