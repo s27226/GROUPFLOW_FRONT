@@ -26,43 +26,43 @@ export default function PostPage() {
                         <p className={styles.errorMessage}>{error}</p>
                     ) : post ? (
                         <Post
-                            id={String(post.id)}
+                            id={post.id}
                             author={post.author}
-                            authorId={String(post.authorId ?? '')}
+                            authorId={post.authorId ?? 0}
                             authorProfilePic={post.authorProfilePic}
                             time={post.time ?? ''}
                             content={post.content ?? ''}
                             image={post.image}
                             comments={(post.comments ?? []).map((c) => ({
-                                id: String(c.id),
+                                id: c.id,
                                 user: c.user,
-                                userId: String(c.userId),
+                                userId: c.userId,
                                 profilePic: c.profilePic,
                                 time: c.time,
                                 text: c.text,
-                                likes: (c.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName })),
+                                likes: c.likes ?? [],
                                 liked: c.liked,
                                 menuOpen: c.menuOpen,
                                 replies: (c.replies ?? []).map((r) => ({
-                                    id: String(r.id),
+                                    id: r.id,
                                     user: r.user,
-                                    userId: String(r.userId),
+                                    userId: r.userId,
                                     profilePic: r.profilePic,
                                     time: r.time,
                                     text: r.text,
-                                    likes: (r.likes ?? []).map((rl) => ({ userId: String(rl.userId), userName: rl.userName })),
+                                    likes: r.likes ?? [],
                                     liked: r.liked,
                                     menuOpen: r.menuOpen,
                                     replies: []
                                 }))
                             }))}
-                            likes={(post.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName }))}
+                            likes={post.likes ?? []}
                             saved={post.saved}
                             hidden={post.hidden}
                             sharedPost={post.sharedPost ? {
-                                id: String(post.sharedPost.id),
+                                id: post.sharedPost.id,
                                 author: post.sharedPost.author,
-                                authorId: post.sharedPost.authorId ? String(post.sharedPost.authorId) : undefined,
+                                authorId: post.sharedPost.authorId,
                                 authorProfilePic: post.sharedPost.authorProfilePic,
                                 time: post.sharedPost.time,
                                 content: post.sharedPost.content ?? '',

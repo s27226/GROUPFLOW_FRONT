@@ -242,7 +242,7 @@ export const usePostInteractions = () => {
      */
     const isLikedByUser = useCallback((post: Post | null): boolean => {
         if (!user || !post || !post.likes) return false;
-        return post.likes.some((like: PostLike) => String(like.userId) === String(user.id));
+        return post.likes.some((like: PostLike) => like.userId === user.id);
     }, [user]);
 
     /**
@@ -252,7 +252,7 @@ export const usePostInteractions = () => {
      */
     const isCommentLikedByUser = useCallback((comment: PostComment | null): boolean => {
         if (!user || !comment || !comment.likes) return false;
-        return comment.likes.some((like: PostLike) => String(like.userId) === String(user.id));
+        return comment.likes.some((like: PostLike) => like.userId === user.id);
     }, [user]);
 
     /**
@@ -262,7 +262,7 @@ export const usePostInteractions = () => {
      */
     const isOwnPost = useCallback((post: Post | null): boolean => {
         if (!user || !post || !post.user) return false;
-        return String(post.user.id) === String(user.id);
+        return post.user.id === user.id;
     }, [user]);
 
     /**
@@ -272,7 +272,7 @@ export const usePostInteractions = () => {
      */
     const isOwnComment = useCallback((comment: PostComment | null): boolean => {
         if (!user || !comment || !comment.user) return false;
-        return String(comment.user.id) === String(user.id);
+        return comment.user.id === user.id;
     }, [user]);
 
     return {

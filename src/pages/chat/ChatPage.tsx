@@ -8,7 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import styles from "./ChatPage.module.css";
 
 interface ChatUser {
-    id: string;
+    id: number;
     name: string;
     nickname?: string;
     profilePic?: string;
@@ -31,10 +31,10 @@ export default function ChatPage() {
     
     // Map friends to chat users format
     const users: ChatUser[] = (friends || []).map((friend) => ({
-        id: String(friend.id),
+        id: friend.id,
         name: `${friend.name || ''} ${friend.surname || ''}`.trim(),
         nickname: friend.nickname,
-        profilePic: friend.profilePic,
+        profilePic: friend.profilePicUrl,
         online: false // TODO: Implement online status
     }));
 
@@ -63,7 +63,7 @@ export default function ChatPage() {
                 <div className={styles.chatWindowWrapper}>
                     {selectedUser ? (
                         <ChatWindow
-                            user={{ ...selectedUser, id: parseInt(selectedUser.id, 10) }}
+                            user={selectedUser}
                             currentUserId={currentUser?.id ?? 0}
                             onMinimize={() => {
                                 setPopupUser(selectedUser);
@@ -79,7 +79,7 @@ export default function ChatPage() {
             </div>
             {popupUser && (
                 <PrivateChat
-                    user={{ ...popupUser, id: parseInt(popupUser.id, 10) }}
+                    user={popupUser}
                     currentUserId={currentUser?.id}
                     onClose={() => setPopupUser(null)}
                     onExpand={() => {

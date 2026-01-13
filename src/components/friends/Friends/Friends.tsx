@@ -33,7 +33,7 @@ export default function Friends() {
         if (friendId === null) return;
 
         try {
-            await removeFriendMutation(String(friendId));
+            await removeFriendMutation(friendId);
             // Hook automatically updates state
         } catch (err) {
             console.error("Failed to remove friend:", err);
@@ -78,7 +78,7 @@ export default function Friends() {
                             >
                                 <img
                                     src={
-                                        friend.profilePic ||
+                                        friend.profilePicUrl ||
                                         `https://i.pravatar.cc/150?u=${friend.id}`
                                     }
                                     alt={friend.nickname}
@@ -103,7 +103,7 @@ export default function Friends() {
                                                     name: `${friend.name} ${friend.surname}`,
                                                     nickname: friend.nickname,
                                                     image:
-                                                        friend.profilePic ||
+                                                        friend.profilePicUrl ||
                                                         `https://i.pravatar.cc/150?u=${friend.id}`
                                                 }
                                             }
@@ -114,7 +114,7 @@ export default function Friends() {
                                 </button>
                                 <button
                                     className={styles.removeBtn}
-                                    onClick={() => handleRemoveFriend(parseInt(friend.id), friend.nickname || `${friend.name} ${friend.surname}`)}
+                                    onClick={() => handleRemoveFriend(friend.id, friend.nickname || `${friend.name} ${friend.surname}`)}
                                 >
                                     Remove
                                 </button>
