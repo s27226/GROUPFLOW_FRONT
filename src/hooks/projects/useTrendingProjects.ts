@@ -19,7 +19,7 @@ interface RawProject {
     description?: string;
     imageUrl?: string;
     views?: unknown[];
-    likes?: unknown[];
+    totalPostLikes?: number;
     owner?: ProjectOwner;
 }
 
@@ -52,7 +52,7 @@ const formatProjectData = (project: RawProject): FormattedProject => ({
     description: project.description,
     image: getProjectImageUrl(project.imageUrl, project.id, 60),
     viewCount: project.views?.length || 0,
-    likeCount: project.likes?.length || 0,
+    likeCount: project.totalPostLikes || 0,
     owner: project.owner
 });
 

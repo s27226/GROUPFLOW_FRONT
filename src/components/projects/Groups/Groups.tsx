@@ -12,7 +12,6 @@ interface ProjectData {
     description?: string;
     imageUrl?: string;
     viewCount?: number;
-    likeCount?: number;
     created?: string;
     owner?: {
         id: string;
@@ -51,7 +50,6 @@ export default function Groups({ projects }: GroupsProps) {
                     description: project.description,
                     imageUrl: project.imageUrl,
                     viewCount: project.viewCount,
-                    likeCount: project.likeCount,
                     created: project.created,
                     owner: project.owner
                 }));

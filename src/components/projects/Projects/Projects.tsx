@@ -31,7 +31,6 @@ interface ProjectSearchResult {
     skills?: ProjectSkill[];
     interests?: ProjectInterest[];
     views?: unknown[];
-    likes?: unknown[];
 }
 
 interface SearchProjectsResponse {
@@ -163,7 +162,6 @@ export default function Projects() {
 
                 <div className={styles.projectStats}>
                     <span>👁️ {project.views?.length || 0} views</span>
-                    <span> ❤️ {project.likes?.length || 0} likes</span>
                 </div>
             </div>
         );

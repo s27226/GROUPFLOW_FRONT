@@ -168,9 +168,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
             }
-            likes {
-              id
-            }
+            totalPostLikes
             views {
               id
             }
@@ -414,9 +412,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
           }
-          likes {
-            id
-          }
           views {
             id
           }
@@ -441,9 +436,6 @@ export const GRAPHQL_QUERIES = {
               id
               nickname
               name
-            }
-            likes {
-              id
             }
             views {
               id
@@ -487,9 +479,6 @@ export const GRAPHQL_QUERIES = {
           interests {
             id
             interestName
-          }
-          likes {
-            id
           }
           views {
             id
@@ -933,9 +922,6 @@ export const GRAPHQL_QUERIES = {
             id
             interestName
           }
-          likes {
-            id
-          }
           views {
             id
           }
@@ -1348,38 +1334,11 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
-    // Like a project
-    LIKE_PROJECT: `
-    mutation LikeProject($projectId: Int!) {
-      project {
-        likeproject(projectId: $projectId)
-      }
-    }
-  `,
-
-    // Unlike a project
-    UNLIKE_PROJECT: `
-    mutation UnlikeProject($projectId: Int!) {
-      project {
-        unlikeproject(projectId: $projectId)
-      }
-    }
-  `,
-
     // Record a project view
     RECORD_PROJECT_VIEW: `
     mutation RecordProjectView($projectId: Int!) {
       project {
         recordprojectview(projectId: $projectId)
-      }
-    }
-  `,
-
-    // Check if user has liked a project
-    HAS_LIKED_PROJECT: `
-    query HasLikedProject($projectId: Int!) {
-      project {
-        haslikedproject(projectId: $projectId)
       }
     }
   `,

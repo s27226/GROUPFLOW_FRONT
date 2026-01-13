@@ -68,7 +68,7 @@ export default function Group({
 
             <div className={styles.groupFooter}>
                 <div className={styles.groupStats}>
-                    {likeCount !== undefined && <span>👍 {likeCount} likes</span>}
+                    {likeCount !== undefined && <span>❤️ {likeCount} likes</span>}
                     {viewCount !== undefined && <span>👁 {viewCount} views</span>}
                 </div>
                 {created && (
