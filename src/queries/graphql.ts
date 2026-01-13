@@ -1094,6 +1094,14 @@ export const GRAPHQL_MUTATIONS = {
     }
   `,
 
+    CHANGE_PASSWORD: `
+    mutation ChangePassword($input: ChangePasswordInput!) {
+      auth {
+        changePassword(input: $input)
+      }
+    }
+  `,
+
     CREATE_POST: `
     mutation CreatePost($input: PostInput!) {
       post {

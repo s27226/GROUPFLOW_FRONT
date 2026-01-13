@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { authStyles } from "../../components/layout";
-import axios, { AxiosError } from "axios";
-import { API_CONFIG } from "../../config/api";
+import { useGraphQL } from "../../hooks";
+import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
+
+interface ChangePasswordResponse {
+    auth?: {
+        changePassword?: boolean;
+    };
+}
 
 export default function ResetPasswordPage() {
     const { t } = useTranslation();
@@ -12,7 +18,9 @@ export default function ResetPasswordPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { executeMutation } = useGraphQL();
 
     const handleReset = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -24,21 +32,33 @@ export default function ResetPasswordPage() {
             return;
         }
 
+        if (newPassword.length < 8) {
+            setError(t('auth.passwordTooShort'));
+            return;
+        }
+
+        setLoading(true);
         try {
-            await axios.post(API_CONFIG.RESET_PASSWORD_ENDPOINT, {
-                currentPassword,
-                newPassword
-            }, {
-                withCredentials: true
+            const result = await executeMutation<ChangePasswordResponse>(GRAPHQL_MUTATIONS.CHANGE_PASSWORD, {
+                input: {
+                    currentPassword,
+                    newPassword
+                }
             });
 
-            setSuccess(t('auth.passwordUpdated'));
-            setCurrentPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
+            if (result?.auth?.changePassword) {
+                setSuccess(t('auth.passwordUpdated'));
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+            } else {
+                setError(t('auth.passwordResetFailed'));
+            }
         } catch (err) {
-            const axiosError = err as AxiosError<{ message?: string }>;
-            setError(axiosError.response?.data?.message || t('auth.passwordResetFailed'));
+            const errorMessage = err instanceof Error ? err.message : t('auth.passwordResetFailed');
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,8 +90,12 @@ export default function ResetPasswordPage() {
                     {error && <p className={authStyles.loginError}>{error}</p>}
                     {success && <p className={authStyles.loginSuccess}>{success}</p>}
 
-                    <button className={authStyles.pillBtnLogin} onClick={handleReset}>
-                        {t('auth.resetPassword')}
+                    <button 
+                        className={authStyles.pillBtnLogin} 
+                        onClick={handleReset}
+                        disabled={loading}
+                    >
+                        {loading ? t('common.loading') : t('auth.resetPassword')}
                     </button>
                     <button className={authStyles.pillBtnRegister} onClick={() => navigate("/settings")}>
                         {t('common.cancel')}
