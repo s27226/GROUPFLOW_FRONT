@@ -84,11 +84,10 @@ export default function ProjectProfilePage() {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
-    const { user: authUser } = useAuth();
 
     const [project, setProject] = useState<ProjectState | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isOwner, setIsOwner] = useState(false);
+    const {user: currentUser} = useAuth();
 
     const { posts, loading: postsLoading } = useProjectPosts(projectId ?? '');
 
@@ -125,7 +124,7 @@ export default function ProjectProfilePage() {
                     id: projectData.id,
                     name: projectData.name,
                     description: projectData.description,
-                    banner: getBannerUrl(projectData.bannerUrl, null, projectData.id),
+                    banner: getBannerUrl(projectData.bannerUrl, projectData.id),
                     image: getProjectImageUrl(projectData.imageUrl, projectData.id, 200),
                     skills: projectData.skills || [],
                     interests: projectData.interests || [],
@@ -135,23 +134,18 @@ export default function ProjectProfilePage() {
                             userId: projectData.owner.id,
                             name: projectData.owner.nickname || projectData.owner.name || '',
                             role: "Owner",
-                            image: getProfilePicUrl(projectData.owner.profilePicUrl, projectData.owner.profilePic, projectData.owner.nickname || projectData.owner.id)
+                            image: getProfilePicUrl(projectData.owner.profilePicUrl, projectData.owner.nickname || projectData.owner.id)
                         },
                         // Add collaborators
                         ...(projectData.collaborators?.map((collab: Collaborator) => ({
                                 userId: collab.user.id,
                                 name: collab.user.nickname || collab.user.name || '',
                                 role: collab.role,
-                                image: getProfilePicUrl(collab.user.profilePicUrl, collab.user.profilePic, collab.user.nickname || collab.user.id)
+                                image: getProfilePicUrl(collab.user.profilePicUrl, collab.user.nickname || collab.user.id)
                             })) || [])
                     ],
                     owner: projectData.owner
                 });
-
-                // Check if current user is the owner
-                if (authUser && String(projectData.owner.id) === String(authUser.id)) {
-                    setIsOwner(true);
-                }
 
                 setLoading(false);
             } catch (err) {
@@ -161,7 +155,7 @@ export default function ProjectProfilePage() {
         };
 
         fetchProjectProfile();
-    }, [projectId, executeQuery, authUser]);
+    }, [projectId, executeQuery]);
 
     if (loading || postsLoading) {
         return (
@@ -231,7 +225,7 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className={profileStyles.profilePfp} />
                         <div className={profileStyles.profileInfo}>
                             <h2>{sanitizeText(project.name)}</h2>
-                            {isOwner && (
+                            {currentUser && String(projectId) === String(currentUser.id) && (
                                 <button
                                     className={profileStyles.editBtn}
                                     onClick={() => navigate(`/project/${projectId}/edit`)}
@@ -307,35 +301,35 @@ export default function ProjectProfilePage() {
                                         posts.map((post) => (
                                             <Post
                                                 key={post.id}
-                                                id={String(post.id)}
+                                                id={post.id}
                                                 author={post.author ?? ''}
-                                                authorId={String(post.authorId ?? '')}
+                                                authorId={post.authorId ?? 0}
                                                 authorProfilePic={post.authorProfilePic}
                                                 time={post.time ?? ''}
                                                 content={post.content ?? ''}
                                                 image={post.image}
                                                 comments={(post.comments ?? []).map((c) => ({
-                                                    id: String(c.id),
-                                                    userId: String(c.userId),
+                                                    id: c.id,
+                                                    userId: c.userId,
                                                     user: c.user,
                                                     profilePic: c.profilePic,
                                                     text: c.text,
                                                     time: c.time,
-                                                    likes: (c.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName })),
+                                                    likes: c.likes ?? [],
                                                     liked: c.liked,
                                                     menuOpen: c.menuOpen,
                                                     replies: []
                                                 }))}
                                                 saved={false}
                                                 sharedPost={post.sharedPost ? {
-                                                    id: String(post.sharedPost.id),
+                                                    id: post.sharedPost.id,
                                                     author: post.sharedPost.author,
-                                                    authorId: String(post.sharedPost.authorId ?? ''),
+                                                    authorId: post.sharedPost.authorId,
                                                     authorProfilePic: post.sharedPost.authorProfilePic,
                                                     time: post.sharedPost.time,
                                                     content: post.sharedPost.content ?? ''
                                                 } : null}
-                                                likes={(post.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName }))}
+                                                likes={post.likes ?? []}
                                                 projectId={projectId}
                                             />
                                         ))

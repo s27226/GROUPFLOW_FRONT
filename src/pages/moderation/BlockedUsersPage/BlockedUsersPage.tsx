@@ -114,7 +114,7 @@ export default function BlockedUsersPage() {
                                         <div className={styles.cardContent}>
                                             <div className={styles.userAvatarWrapper}>
                                                 <img
-                                                    src={getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname)}
+                                                    src={getProfilePicUrl(user.profilePicUrl, user.nickname)}
                                                     alt={user.nickname}
                                                     className={styles.userAvatar}
                                                     onClick={() => navigate(`/profile/${user.id}`)}

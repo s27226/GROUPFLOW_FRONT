@@ -174,7 +174,7 @@ export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdow
                                 >
                                     <div className={styles.userAvatar}>
                                         <img
-                                            src={getProfilePicUrl(result.user.profilePicUrl, result.user.profilePic, result.user.nickname)}
+                                            src={getProfilePicUrl(result.user.profilePicUrl, result.user.nickname)}
                                             alt={result.user.nickname}
                                         />
                                     </div>

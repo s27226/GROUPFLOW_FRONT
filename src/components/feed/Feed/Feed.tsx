@@ -13,7 +13,7 @@ interface SavedPostResponse {
 
 export default function Feed() {
     const { posts, loading, error } = usePosts();
-    const [savedPostIds, setSavedPostIds] = useState<Set<string>>(new Set());
+    const [savedPostIds, setSavedPostIds] = useState<Set<number>>(new Set());
     const { executeQuery } = useGraphQL();
 
     const fetchSavedPosts = useCallback(async () => {
@@ -21,7 +21,7 @@ export default function Feed() {
             const data = await executeQuery<SavedPostResponse>(GRAPHQL_QUERIES.GET_SAVED_POSTS);
 
             const savedPosts = data?.savedPost?.savedposts || [];
-            setSavedPostIds(new Set(savedPosts.map((post) => String(post.id))));
+            setSavedPostIds(new Set(savedPosts.map((post) => typeof post.id === 'number' ? post.id : parseInt(String(post.id), 10))));
         } catch (err) {
             console.error("Failed to fetch saved posts:", err);
         }
@@ -33,7 +33,7 @@ export default function Feed() {
 
     // This is called AFTER Post.jsx handles the mutation
     // Just update the local saved state tracking
-    const handleSavePost = (postId: string) => {
+    const handleSavePost = (postId: number) => {
         setSavedPostIds((prev) => {
             const newSet = new Set(prev);
             if (newSet.has(postId)) {
@@ -56,52 +56,43 @@ export default function Feed() {
             ) : (
                 posts && posts.map((post) => (
                     <Post
-                        key={String(post.id)}
-                        id={String(post.id)}
+                        key={post.id}
+                        id={post.id}
                         author={post.author}
-                        authorId={String(post.authorId || '')}
+                        authorId={post.authorId || 0}
                         authorProfilePic={post.authorProfilePic}
                         time={post.time}
                         content={post.content || ''}
                         image={post.image}
-                        saved={savedPostIds.has(String(post.id))}
+                        saved={savedPostIds.has(post.id)}
                         sharedPost={post.sharedPost ? {
-                            id: String(post.sharedPost.id),
+                            id: post.sharedPost.id,
                             author: post.sharedPost.author,
-                            authorId: post.sharedPost.authorId ? String(post.sharedPost.authorId) : undefined,
+                            authorId: post.sharedPost.authorId,
                             authorProfilePic: post.sharedPost.authorProfilePic,
                             time: post.sharedPost.time,
                             content: post.sharedPost.content || '',
                             image: post.sharedPost.image
                         } : null}
-                        likes={(post.likes || []).map(like => ({
-                            userId: String(like.userId),
-                            userName: like.userName
-                        }))}
+                        likes={post.likes || []}
                         comments={(post.comments || []).map(comment => ({
-                            id: String(comment.id),
+                            id: comment.id,
                             user: comment.user,
-                            userId: String(comment.userId),
+                            userId: comment.userId,
                             profilePic: comment.profilePic,
                             time: comment.time,
                             text: comment.text,
-                            likes: (comment.likes || []).map(l => ({
-                                userId: String(l.userId),
-                                userName: l.userName
-                            })),
+                            likes: comment.likes || [],
                             liked: comment.liked,
                             menuOpen: comment.menuOpen,
                             replies: (comment.replies || []).map(reply => ({
-                                id: String(reply.id),
+                                id: reply.id,
                                 user: reply.user,
-                                userId: String(reply.userId),
+                                userId: reply.userId,
                                 profilePic: reply.profilePic,
                                 time: reply.time,
                                 text: reply.text,
-                                likes: (reply.likes || []).map(rl => ({
-                                    userId: String(rl.userId),
-                                    userName: rl.userName
-                                })),
+                                likes: reply.likes || [],
                                 liked: reply.liked,
                                 menuOpen: reply.menuOpen,
                                 replies: []

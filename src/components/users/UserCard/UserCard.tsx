@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./UserCard.module.css";
-import { getProfilePicUrl } from "../../../utils/profilePicture";
 
 interface Skill {
     id: string;
@@ -67,7 +66,7 @@ export default function UserCard({
                 style={{ cursor: "pointer" }}
             >
                 <img
-                    src={getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname || user.id)}
+                    src={user.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${user.nickname || user.id}`}
                     alt={user.nickname}
                     className={styles.userAvatar}
                 />

@@ -9,13 +9,12 @@ import { useAuth } from "../../../context/AuthContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
-import { getProfilePicUrl } from "../../../utils/profilePicture";
 import type { Like, Post as PostType } from "../../../types";
 
 interface CommentData {
-    id: string;
+    id: number;
     user?: string;
-    userId: string;
+    userId: number;
     author?: string;
     authorProfilePic?: string;
     profilePic?: string;
@@ -29,10 +28,10 @@ interface CommentData {
 }
 
 interface SharedPostData {
-    id: string;
+    id: number;
     author: string;
-    authorId?: string;
-    userId?: string;
+    authorId?: number;
+    userId?: number;
     authorProfilePic?: string;
     time: string;
     content: string;
@@ -40,9 +39,9 @@ interface SharedPostData {
 }
 
 interface PostProps {
-    id: string;
+    id: number;
     author: string;
-    authorId: string;
+    authorId: number;
     authorProfilePic?: string;
     time: string;
     content: string;
@@ -56,7 +55,7 @@ interface PostProps {
     projectId?: string | null;
     onHide?: () => void;
     onUndoHide?: () => void;
-    onSave?: (postId: string) => void;
+    onSave?: (postId: number) => void;
     onUpdate?: () => void;
 }
 
@@ -77,7 +76,7 @@ export default function Post({
     projectId = null,
     onHide = () => {},
     onUndoHide = () => {},
-    onSave = (_postId: string) => {},
+    onSave = (_postId: number) => {},
     onUpdate = () => {}
 }: PostProps) {
     const navigate = useNavigate();
@@ -110,7 +109,7 @@ export default function Post({
     // Check if current user has liked the post
     useEffect(() => {
         if (user && likes) {
-            const hasLiked = likes.some(like => String(like.userId) === String(user.id));
+            const hasLiked = likes.some(like => like.userId === user.id);
             setLiked(hasLiked);
         }
     }, [likes, user]);
@@ -131,7 +130,7 @@ export default function Post({
                     };
                 }
                 const response = await makeRequest<FriendshipResponse>(GRAPHQL_QUERIES.GET_FRIENDSHIP_STATUS, {
-                    friendId: parseInt(authorId, 10)
+                    friendId: authorId
                 });
 
                 if (!response.errors && response.data?.friendship?.friendshipstatus) {
@@ -157,7 +156,7 @@ export default function Post({
 
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.BLOCK_USER, {
-                userIdToBlock: parseInt(authorId, 10)
+                userIdToBlock: authorId
             });
 
             if (!response.errors) {
@@ -183,13 +182,13 @@ export default function Post({
         try {
             if (liked) {
                 await unlikePost(id);
-                setLikes(prev => prev.filter(like => String(like.userId) !== String(user?.id)));
+                setLikes(prev => prev.filter(like => like.userId !== user?.id));
                 setLiked(false);
             } else {
                 const newLike = await likePost(id);
                 if (newLike) {
                     setLikes(prev => [...prev, {
-                        userId: String(newLike.userId),
+                        userId: newLike.userId,
                         userName: newLike.userName
                     }]);
                 }
@@ -208,9 +207,9 @@ export default function Post({
             
             if (newComment && newComment.user) {
                 const commentData: CommentData = {
-                    id: String(newComment.id),
+                    id: newComment.id,
                     user: newComment.user.nickname || `${newComment.user.name || ''} ${newComment.user.surname || ''}`,
-                    userId: String(newComment.userId),
+                    userId: newComment.userId,
                     time: formatTime(newComment.createdAt || null),
                     text: newComment.content,
                     likes: [],
@@ -274,7 +273,7 @@ export default function Post({
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.REPORT_POST, {
                 input: {
-                    postId: parseInt(id, 10),
+                    postId: id,
                     reason: reportReason
                 }
             });
@@ -298,7 +297,7 @@ export default function Post({
         <div className={styles.postCard}>
             <div className={styles.postHeader}>
                 <img
-                    src={getProfilePicUrl(null, authorProfilePic, author)}
+                    src={authorProfilePic}
                     alt={author}
                     className={styles.postAvatar}
                     style={{ cursor: "pointer" }}
@@ -366,7 +365,7 @@ export default function Post({
                         <div className={styles.postSharedContent}>
                             <div className={styles.postSharedInfo}>
                                 <img
-                                    src={getProfilePicUrl(null, sharedPost.authorProfilePic, sharedPost.author)}
+                                    src={sharedPost.authorProfilePic}
                                     alt={sharedPost.author}
                                     className={styles.postSharedAvatar}
                                 />
@@ -440,7 +439,7 @@ export default function Post({
                 <div className={styles.commentSection}>
                     <div className={styles.commentInputRow}>
                         <img
-                            src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname || 'You')}
+                            src={user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                             alt="You"
                             className={styles.commentAvatar}
                         />
@@ -513,8 +512,8 @@ interface CommentComponentProps {
     comment: CommentData;
     update: (newData: CommentData) => void;
     depth?: number;
-    postId: string;
-    onDelete: (commentId: string) => void;
+    postId: number;
+    onDelete: (commentId: number) => void;
 }
 
 function Comment({ comment, update, depth = 0, postId, onDelete }: CommentComponentProps) {
@@ -563,7 +562,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
                 const newLike = await likeComment(comment.id);
                 if (newLike) {
                     const formattedLike: Like = {
-                        userId: String(newLike.userId),
+                        userId: newLike.userId,
                         userName: newLike.userName
                     };
                     const newLikes = [...likes, formattedLike];
@@ -606,9 +605,9 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             
             if (newReply && newReply.user) {
                 const replyData: CommentData = {
-                    id: String(newReply.id),
+                    id: newReply.id,
                     user: newReply.user.nickname || `${newReply.user.name || ''} ${newReply.user.surname || ''}`,
-                    userId: String(newReply.userId),
+                    userId: newReply.userId,
                     time: formatTime(newReply.createdAt || null),
                     text: newReply.content,
                     likes: [],
@@ -637,7 +636,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         update({ ...comment, replies: updated });
     };
 
-    const deleteReply = (replyId: string) => {
+    const deleteReply = (replyId: number) => {
         const updated = (comment.replies || []).filter(reply => reply.id !== replyId);
         update({ ...comment, replies: updated });
     };
@@ -646,7 +645,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         <div className={styles.comment} style={{ marginLeft: `${leftMargin}px` }}>
             <div className={styles.commentHeader}>
                 <img
-                    src={getProfilePicUrl(null, comment.profilePic, comment.user)}
+                    src={comment.profilePic}
                     alt={comment.user}
                     className={styles.commentAvatar}
                 />
@@ -716,7 +715,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             {replyOpen && (
                 <div className={styles.replyInputRow}>
                     <img
-                        src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname || 'You')}
+                        src={user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                         alt="You"
                         className={styles.commentAvatar}
                     />

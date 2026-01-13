@@ -16,7 +16,6 @@ interface UserProfile {
     nickname?: string;
     bio?: string;
     about?: string;
-    bannerPic?: string;
     bannerPicUrl?: string;
     bannerPicBlobId?: string;
     profilePic?: string;
@@ -67,8 +66,8 @@ export default function ProfileEditPage() {
         if (user) {
             setName(user.name || "");
             setBio(user.bio || "");
-            setBanner(getBannerUrl(user.bannerPicUrl, user.bannerPic, 10));
-            setPfp(getProfilePicUrl(user.profilePicUrl, user.profilePic, user.nickname));
+            setBanner(getBannerUrl(user.bannerPicUrl, 10));
+            setPfp(getProfilePicUrl(user.profilePicUrl, user.nickname));
             setAbt(user.about || "");
         }
     }, [user]);
@@ -91,7 +90,7 @@ export default function ProfileEditPage() {
             showToast("Profile picture removed", "success");
         }
         setPfpFile(null);
-        setPfp(getProfilePicUrl(null, null, user?.nickname));
+        setPfp(getProfilePicUrl(null, user?.nickname));
     };
 
     const handleBannerImageSelect = (data: ImageSelectData) => {
@@ -112,13 +111,21 @@ export default function ProfileEditPage() {
             showToast("Banner removed", "success");
         }
         setBannerFile(null);
-        setBanner(getBannerUrl(null, null, 10));
+        setBanner(getBannerUrl(null, 10));
     };
 
     const handleSave = async () => {
         if (!user) return;
         
         await saveProfile(async () => {
+            // Update basic profile info (name, bio)
+            await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE, {
+                input: {
+                    name: name,
+                    bio: bio
+                }
+            });
+
             // Upload profile picture to S3 if a new file was selected
             if (pfpFile) {
                 const blobData = await uploadBlob(pfpFile, "profile");

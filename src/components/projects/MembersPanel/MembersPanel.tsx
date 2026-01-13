@@ -72,7 +72,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
             name: `${collab.user.name} ${collab.user.surname}`,
             nickname: collab.user.nickname,
             role: collab.role,
-            avatar: getProfilePicUrl(collab.user.profilePicUrl, collab.user.profilePic, collab.user.nickname || collab.user.id),
+            avatar: getProfilePicUrl(collab.user.profilePicUrl, collab.user.nickname || collab.user.id),
             status: "available"
         })) || [];
 
@@ -82,7 +82,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
             name: `${project.owner.name} ${project.owner.surname}`,
             nickname: project.owner.nickname,
             role: "Owner",
-            avatar: getProfilePicUrl(project.owner.profilePicUrl, project.owner.profilePic, project.owner.nickname || project.owner.id),
+            avatar: getProfilePicUrl(project.owner.profilePicUrl, project.owner.nickname || project.owner.id),
             status: "available"
         });
     }

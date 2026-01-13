@@ -171,7 +171,7 @@ export default function ReportedPostsPage() {
                                         <div className={styles.rppReportHeaderInfo}>
                                             <div className={styles.rppReporterInfo}>
                                                 <img
-                                                    src={getProfilePicUrl(report.reportedByUser?.profilePicUrl, report.reportedByUser?.profilePic, report.reportedByUser?.nickname)}
+                                                    src={getProfilePicUrl(report.reportedByUser?.profilePicUrl, report.reportedByUser?.nickname)}
                                                     alt={report.reportedByUser?.nickname}
                                                     className={styles.rppReporterAvatar}
                                                 />
@@ -195,7 +195,7 @@ export default function ReportedPostsPage() {
                                         <div className={styles.rppReportedPostPreview}>
                                             <div className={styles.rppPostAuthor}>
                                                 <img
-                                                    src={getProfilePicUrl(report.post?.user?.profilePicUrl, report.post?.user?.profilePic, report.post?.user?.nickname)}
+                                                    src={getProfilePicUrl(report.post?.user?.profilePicUrl, report.post?.user?.nickname)}
                                                     alt={report.post?.user?.nickname}
                                                     className={styles.rppPostAuthorAvatar}
                                                 />

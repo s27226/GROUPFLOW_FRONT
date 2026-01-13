@@ -48,13 +48,13 @@ export default function ProfilePage() {
     const [inviting, setInviting] = useState(false);
 
     // Use unified hooks
-    const { friends: myFriends } = useFriends({ autoFetch: false });
+    const { friends: myFriends } = useFriends({ autoFetch: !!currentUser });
     const { projects: myProjects } = useMyProjects({ autoFetch: !!currentUser });
-    const { projects: userProjects } = useUserProjects(user?.id ? parseInt(user.id) : 0, { autoFetch: !!user });
+    const { projects: userProjects } = useUserProjects(user?.id ?? 0, { autoFetch: !!user });
     
     // Derive state from hooks
     const isFriend = useMemo(() => 
-        (myFriends || []).some(friend => friend.id === user?.id),
+        (myFriends || []).some(friend => friend.id == user?.id),
         [myFriends, user]
     );
     
@@ -73,7 +73,7 @@ export default function ProfilePage() {
     // Filter posts by current user
     const posts = useMemo(() => {
         if (!user || !allPosts) return [];
-        return allPosts.filter((post) => String(post.user?.id) === user.id);
+        return allPosts.filter((post) => post.user?.id === user.id);
     }, [allPosts, user]);
 
     // Fetch user's projects when user is loaded
@@ -271,36 +271,36 @@ export default function ProfilePage() {
                                         posts.map((post) => (
                                             <Post
                                                 key={post.id}
-                                                id={String(post.id)}
+                                                id={post.id}
                                                 author={post.author}
-                                                authorId={String(post.authorId ?? '')}
+                                                authorId={post.authorId ?? 0}
                                                 authorProfilePic={post.authorProfilePic ?? undefined}
                                                 time={post.time}
                                                 content={post.content ?? ''}
                                                 image={post.image}
                                                 comments={post.comments?.map(c => ({
-                                                    id: String(c.id),
-                                                    userId: String(c.userId),
+                                                    id: c.id,
+                                                    userId: c.userId,
                                                     user: c.user,
                                                     profilePic: c.profilePic,
                                                     text: c.text,
                                                     time: c.time,
-                                                    likes: c.likes?.map(l => ({ userId: String(l.userId), userName: l.userName })),
+                                                    likes: c.likes || [],
                                                     liked: c.liked,
                                                     menuOpen: c.menuOpen,
                                                     replies: []
                                                 })) || []}
                                                 saved={false}
                                                 sharedPost={post.sharedPost ? {
-                                                    id: String(post.sharedPost.id),
+                                                    id: post.sharedPost.id,
                                                     author: post.sharedPost.author,
-                                                    authorId: String(post.sharedPost.authorId ?? ''),
+                                                    authorId: post.sharedPost.authorId,
                                                     authorProfilePic: post.sharedPost.authorProfilePic,
                                                     time: post.sharedPost.time,
                                                     content: post.sharedPost.content ?? '',
                                                     image: post.sharedPost.image
                                                 } : null}
-                                                likes={post.likes?.map(l => ({ userId: String(l.userId), userName: l.userName })) || []}
+                                                likes={post.likes || []}
                                             />
                                         ))
                                     )}

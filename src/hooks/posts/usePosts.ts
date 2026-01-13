@@ -2,7 +2,6 @@ import { GRAPHQL_QUERIES } from "../../queries/graphql";
 import { formatTime } from "../../utils/dateFormatter";
 import { useQuery } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
-import { getProfilePicUrl } from "../../utils/profilePicture";
 
 interface PostUser {
     id: number;
@@ -100,7 +99,7 @@ const formatCommentData = (comment: RawComment | null): FormattedComment | null 
         id: comment.id,
         user: displayName,
         userId: comment.userId,
-        profilePic: getProfilePicUrl(user?.profilePicUrl, user?.profilePic, seed),
+        profilePic: user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${seed}`,
         time: formatTime(comment.createdAt),
         text: comment.content,
         likes: comment.likes || [],
@@ -128,7 +127,7 @@ export const formatPostData = (post: RawPost | null): FormattedPost | null => {
         ...post,
         author: user?.nickname || "Unknown",
         authorId: user?.id,
-        authorProfilePic: getProfilePicUrl(user?.profilePicUrl, user?.profilePic, authorSeed),
+        authorProfilePic: user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${authorSeed}`,
         time: formatTime(post.created),
         content: post.content || post.description,
         image: post.imageUrl,
@@ -139,7 +138,7 @@ export const formatPostData = (post: RawPost | null): FormattedPost | null => {
                   id: post.sharedPost.id,
                   author: sharedUser?.nickname || "Unknown",
                   authorId: sharedUser?.id,
-                  authorProfilePic: getProfilePicUrl(sharedUser?.profilePicUrl, sharedUser?.profilePic, sharedAuthorSeed),
+                  authorProfilePic: sharedUser?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedAuthorSeed}`,
                   time: formatTime(post.sharedPost.created),
                   content: post.sharedPost.content || post.sharedPost.description,
                   image: post.sharedPost.imageUrl

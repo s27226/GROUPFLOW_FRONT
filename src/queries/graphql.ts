@@ -11,7 +11,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
             profilePicUrl
           }
           content
@@ -33,7 +32,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             likes {
@@ -50,7 +48,6 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
-                profilePic
                 profilePicUrl
               }
               likes {
@@ -66,7 +63,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             content
@@ -91,7 +87,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
             profilePicUrl
           }
           content
@@ -113,7 +108,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             likes {
@@ -130,7 +124,6 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
-                profilePic
                 profilePicUrl
               }
               likes {
@@ -146,7 +139,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             content
@@ -237,7 +229,6 @@ export const GRAPHQL_QUERIES = {
           name
           surname
           joined
-          profilePic
           profilePicUrl
         }
       }
@@ -262,7 +253,6 @@ export const GRAPHQL_QUERIES = {
           nickname
           name
           surname
-          profilePic
           joined
         }
       }
@@ -284,7 +274,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
             }
           }
         }
@@ -309,7 +298,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
             }
           }
         }
@@ -346,7 +334,6 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
-                profilePic
               }
             }
           }
@@ -367,9 +354,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
-          profilePic
           profilePicUrl
-          bannerPic
           bannerPicUrl
         }
       }
@@ -388,9 +373,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
-          profilePic
           profilePicUrl
-          bannerPic
           bannerPicUrl
         }
       }
@@ -409,9 +392,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
-          profilePic
           profilePicUrl
-          bannerPic
           bannerPicUrl
         }
       }
@@ -498,7 +479,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
           }
           skills {
             id
@@ -520,7 +500,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
             }
             role
           }
@@ -702,7 +681,6 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
-                profilePic
               }
             }
           }
@@ -797,7 +775,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
             profilePicUrl
           }
           content
@@ -819,7 +796,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             likes {
@@ -836,7 +812,6 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
-                profilePic
                 profilePicUrl
               }
               likes {
@@ -852,7 +827,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
               profilePicUrl
             }
             content
@@ -885,7 +859,6 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             joined
-            profilePic
             profilePicUrl
             skills {
               id
@@ -914,7 +887,6 @@ export const GRAPHQL_QUERIES = {
             name
             surname
             joined
-            profilePic
             profilePicUrl
             skills {
               id
@@ -952,7 +924,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
           }
           skills {
             id
@@ -1004,7 +975,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
             profilePicUrl
           }
           post {
@@ -1047,7 +1017,6 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
-              profilePic
             }
           }
           reportedByUser {
@@ -1055,7 +1024,6 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
-            profilePic
           }
         }
       }
@@ -1077,7 +1045,6 @@ export const GRAPHQL_QUERIES = {
           id
           nickname
           name
-          profilePic
         }
       }
     }
@@ -1095,7 +1062,6 @@ export const GRAPHQL_MUTATIONS = {
           surname
           nickname
           email
-          profilePic
           isModerator
         }
       }
@@ -1111,7 +1077,6 @@ export const GRAPHQL_MUTATIONS = {
           surname
           nickname
           email
-          profilePic
           profilePicUrl
           isModerator
         }
@@ -1136,7 +1101,6 @@ export const GRAPHQL_MUTATIONS = {
           surname
           nickname
           email
-          profilePic
           profilePicUrl
           isModerator
         }
@@ -1162,7 +1126,6 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
-            profilePic
           }
         }
       }
@@ -1601,7 +1564,6 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
-            profilePic
           }
           skills {
             id
@@ -1621,7 +1583,6 @@ export const GRAPHQL_MUTATIONS = {
               nickname
               name
               surname
-              profilePic
             }
           }
         }
@@ -1702,7 +1663,7 @@ export const GRAPHQL_MUTATIONS = {
     mutation UpdateUserProfileImage($input: UpdateUserProfileImageInput!) {
       updateUserProfileImage(input: $input) {
         id
-        profilePic
+        profilePicUrl
         profilePicBlobId
       }
     }
@@ -1712,8 +1673,23 @@ export const GRAPHQL_MUTATIONS = {
     mutation UpdateUserBannerImage($input: UpdateUserBannerImageInput!) {
       updateUserBannerImage(input: $input) {
         id
-        bannerPic
+        bannerPicUrl
         bannerPicBlobId
+      }
+    }
+  `,
+
+  UPDATE_USER_PROFILE: `
+    mutation UpdateUserProfile($input: UpdateUserProfileInput!) {
+      user {
+        updateUserProfile(input: $input) {
+          id
+          name
+          surname
+          nickname
+          bio
+          dateOfBirth
+        }
       }
     }
   `,

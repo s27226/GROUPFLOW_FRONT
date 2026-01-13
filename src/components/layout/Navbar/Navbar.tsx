@@ -35,7 +35,7 @@ interface NotificationData {
 interface CurrentUserResponse {
     users: {
         me: {
-            id: string;
+            id: number;
             name?: string;
             surname?: string;
             nickname: string;
@@ -156,16 +156,16 @@ function Navbar() {
     // Convert friends to message format
     const messages = (friends ?? []).slice(0, 5).map((friend) => ({
         id: friend.id,
-        image: getProfilePicUrl(friend.profilePicUrl, friend.profilePic, friend.nickname),
+        image: getProfilePicUrl(friend.profilePicUrl, friend.nickname),
         name: `${friend.name} ${friend.surname}`,
         lastMessage: "Click to chat",
         time: "",
         onClick: () => {
             setActiveChat({
-                id: parseInt(friend.id),
+                id: friend.id,
                 name: `${friend.name} ${friend.surname}`,
                 nickname: friend.nickname,
-                image: getProfilePicUrl(friend.profilePicUrl, friend.profilePic, friend.nickname)
+                image: getProfilePicUrl(friend.profilePicUrl, friend.nickname)
             });
             setMsgOpen(false);
         }
@@ -301,7 +301,7 @@ function Navbar() {
                     }}
                 >
                     <img 
-                        src={getProfilePicUrl(user?.profilePicUrl, user?.profilePic, user?.nickname)} 
+                        src={getProfilePicUrl(user?.profilePicUrl, user?.nickname)} 
                         alt="User" 
                         className={styles.userPfp} 
                     />
@@ -365,7 +365,7 @@ function Navbar() {
                 {activeChat && (
                     <PrivateChat
                         user={activeChat}
-                        currentUserId={user?.id ? Number(user.id) : null}
+                        currentUserId={user?.id ?? null}
                         onClose={() => setActiveChat(null)}
                         onExpand={() => {
                             navigate("/chats", { state: { selectedUser: activeChat } });

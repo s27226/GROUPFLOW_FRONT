@@ -51,7 +51,7 @@ export default function NotificationItem({ notification }: NotificationItemProps
     const { message, createdAt, isRead, actorUser } = notification;
     const navigate = useNavigate();
     
-    const profilePic = getProfilePicUrl(actorUser?.profilePicUrl, actorUser?.profilePic, actorUser?.nickname);
+    const profilePic = getProfilePicUrl(actorUser?.profilePicUrl, actorUser?.nickname);
     
     return (
         <div className={`${styles.notifItem} ${!isRead ? styles.unread : ""}`} onClick={() => navigate("/profile/" + actorUser?.id)}>

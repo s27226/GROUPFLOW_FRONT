@@ -210,7 +210,7 @@ export default function NewPostPage() {
                             <div className={styles.newpostSharedContent}>
                                 <div className={styles.newpostSharedInfo}>
                                     <img
-                                        src={getProfilePicUrl(null, sharedPost.authorProfilePic, sharedPost.author)}
+                                        src={sharedPost.authorProfilePic}
                                         alt={sharedPost.author}
                                         className={styles.newpostSharedAvatar}
                                     />

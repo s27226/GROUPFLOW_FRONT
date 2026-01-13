@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from "react";
 
 interface User {
-    id: string;
+    id: number;
     name?: string;
     surname?: string;
     nickname: string;
     email?: string;
-    profilePic?: string;
     profilePicUrl?: string;
     isModerator?: boolean;
 }
@@ -71,7 +70,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                                         surname
                                         nickname
                                         email
-                                        profilePic
                                         profilePicUrl
                                         isModerator
                                     }
@@ -117,7 +115,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                         surname: authData.surname,
                         nickname: authData.nickname,
                         email: authData.email,
-                        profilePic: authData.profilePic,
                         profilePicUrl: authData.profilePicUrl,
                         isModerator: authData.isModerator
                     };

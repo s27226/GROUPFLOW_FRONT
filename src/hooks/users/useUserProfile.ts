@@ -8,7 +8,7 @@ import { getProfilePicUrl, getBannerUrl } from "../../utils/profilePicture";
  * Unified User Profile Data
  */
 export interface UserProfileData {
-    id: string;
+    id: number;
     name: string;
     surname: string;
     nickname: string;
@@ -26,7 +26,7 @@ export interface UserProfileData {
  * Raw user data from GraphQL query
  */
 interface RawUserData {
-    id: string;
+    id: number;
     name?: string;
     surname?: string;
     nickname?: string;
@@ -35,7 +35,6 @@ interface RawUserData {
     dateOfBirth?: string;
     profilePic?: string;
     profilePicUrl?: string;
-    bannerPic?: string;
     bannerPicUrl?: string;
 }
 
@@ -56,15 +55,15 @@ interface UseUserProfileOptions {
  */
 const transformUserData = (userInfo: RawUserData): UserProfileData => {
     return {
-        id: String(userInfo.id),
+        id: userInfo.id,
         name: userInfo.name || '',
         surname: userInfo.surname || '',
         nickname: userInfo.nickname || '',
         email: userInfo.email,
         handle: `@${userInfo.nickname || 'unknown'}`,
         bio: "Professional developer", // TODO: Add bio field to backend
-        banner: getBannerUrl(userInfo.bannerPicUrl, userInfo.bannerPic, userInfo.id),
-        pfp: getProfilePicUrl(userInfo.profilePicUrl, userInfo.profilePic, userInfo.nickname || userInfo.id),
+        banner: getBannerUrl(userInfo.bannerPicUrl, userInfo.id),
+        pfp: getProfilePicUrl(userInfo.profilePicUrl, userInfo.nickname || userInfo.id),
         abt: `Member since ${userInfo.joined ? new Date(userInfo.joined).toLocaleDateString() : 'Unknown'}`,
         joined: userInfo.joined,
         dateOfBirth: userInfo.dateOfBirth
@@ -105,7 +104,7 @@ export const useUserProfile = (
             // Fetch user details (either from userId param or current user)
             const userData = await executeQuery<UserQueryResponse>(
                 userId ? GRAPHQL_QUERIES.GET_USER_BY_ID : GRAPHQL_QUERIES.GET_CURRENT_USER,
-                userId ? { id: parseInt(String(userId)) } : {}
+                userId ? { id: typeof userId === 'string' ? parseInt(userId, 10) : userId } : {}
             );
 
             if (!userData || !userData.users) {

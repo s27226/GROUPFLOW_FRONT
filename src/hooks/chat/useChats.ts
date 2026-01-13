@@ -83,7 +83,7 @@ export const useChats = (options: UseChatsOptions = {}) => {
             transform: (data: unknown): FormattedChat[] => {
                 const typedData = data as { userChat?: { myuserchats?: UserChatData[] } } | null;
                 const userChats = typedData?.userChat?.myuserchats || [];
-                const currentUserId = currentUser?.id ? parseInt(String(currentUser.id), 10) : null;
+                const currentUserId = currentUser?.id ?? null;
                 return userChats.map((uc): FormattedChat => {
                     // Find the other user in the chat
                     const otherUserChat = uc.chat.userChats?.find(
@@ -158,7 +158,7 @@ export const useChatMessages = (chatId: number | string, options: UseChatMessage
             transform: (data: unknown): FormattedMessage[] => {
                 const typedData = data as { entry?: { chatmessages?: ChatEntry[] } } | null;
                 const entries = typedData?.entry?.chatmessages || [];
-                const currentUserId = currentUser?.id ? parseInt(String(currentUser.id), 10) : null;
+                const currentUserId = currentUser?.id ?? null;
                 return entries.map((entry): FormattedMessage => ({
                     id: entry.id,
                     from: entry.userChat.userId === currentUserId ? "me" : "them",

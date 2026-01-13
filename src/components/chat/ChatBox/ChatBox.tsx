@@ -200,7 +200,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.profilePic, entry.userChat.user.nickname),
+                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.nickname),
                     self: currentUser?.id === entry.userChat.user.id
                 }));
 
@@ -270,7 +270,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     id: entry.id,
                     user: entry.userChat.user.nickname,
                     text: entry.message,
-                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.profilePic, entry.userChat.user.nickname),
+                    avatar: getProfilePicUrl(entry.userChat.user.profilePicUrl, entry.userChat.user.nickname),
                     self: currentUser?.id === entry.userChat.user.id
                 }));
                 setMessages(formattedMessages);

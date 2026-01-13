@@ -64,7 +64,7 @@ export default function ChatPage() {
                     {selectedUser ? (
                         <ChatWindow
                             user={{ ...selectedUser, id: parseInt(selectedUser.id, 10) }}
-                            currentUserId={currentUser?.id ? parseInt(String(currentUser.id), 10) : 0}
+                            currentUserId={currentUser?.id ?? 0}
                             onMinimize={() => {
                                 setPopupUser(selectedUser);
                                 setSelectedUser(null);
@@ -80,7 +80,7 @@ export default function ChatPage() {
             {popupUser && (
                 <PrivateChat
                     user={{ ...popupUser, id: parseInt(popupUser.id, 10) }}
-                    currentUserId={currentUser?.id ? parseInt(String(currentUser.id), 10) : undefined}
+                    currentUserId={currentUser?.id}
                     onClose={() => setPopupUser(null)}
                     onExpand={() => {
                         setSelectedUser(popupUser);
