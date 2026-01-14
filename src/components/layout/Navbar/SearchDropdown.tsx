@@ -170,7 +170,7 @@ export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdow
                                 <div
                                     key={result.user.id}
                                     className={`${styles.searchDropdownItem} ${styles.userItem}`}
-                                    onClick={(e) => handleUserClick(e, result.user.id)}
+                                    onClick={(e) => handleUserClick(e, String(result.user.id))}
                                 >
                                     <div className={styles.userAvatar}>
                                         <img

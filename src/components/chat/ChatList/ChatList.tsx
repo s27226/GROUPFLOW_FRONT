@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import styles from "./ChatList.module.css";
 
 interface ChatListUser {
-    id: string;
+    id: number;
     name: string;
     profilePic?: string;
     online?: boolean;

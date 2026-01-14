@@ -26,7 +26,7 @@ interface ChatEntry {
     message: string;
     userChat: {
         user: {
-            id: string;
+            id: number;
             nickname: string;
             profilePic?: string;
             profilePicUrl?: string;
@@ -41,7 +41,7 @@ interface ChatData {
 
 interface UserChatData {
     id: number;
-    userId: string;
+    userId: number;
 }
 
 const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {

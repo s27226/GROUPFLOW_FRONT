@@ -45,7 +45,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
     const { executeMutation } = useGraphQL();
     const [removeConfirm, setRemoveConfirm] = useState<RemoveConfirmState>({ show: false, memberId: null, memberName: "" });
 
-    const isOwner = user && project?.owner?.id === user.id;
+    const isOwner = user && project?.owner?.id && Number(project.owner.id) === user.id;
 
     const handleRemoveMember = async (memberId: string, memberName: string): Promise<void> => {
         setRemoveConfirm({ show: true, memberId, memberName });

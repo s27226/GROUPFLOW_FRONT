@@ -57,7 +57,7 @@ export default function ChatPage() {
                 ) : (
                     <ChatList
                         users={users}
-                        onSelectUser={(user) => setSelectedUser(user as ChatUser)}
+                        onSelectUser={(user) => setSelectedUser(user)}
                         selectedUser={selectedUser}
                     />
                 )}

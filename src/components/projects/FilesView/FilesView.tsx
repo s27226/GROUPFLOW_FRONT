@@ -73,7 +73,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
     };
 
     const handleFileDelete = async (fileId: string, fileName: string, uploadedByUserId: string): Promise<void> => {
-        if (!isOwner && uploadedByUserId !== user?.id) {
+        if (!isOwner && Number(uploadedByUserId) !== user?.id) {
             showToast(t('projects.canOnlyDeleteOwn'), "error");
             return;
         }

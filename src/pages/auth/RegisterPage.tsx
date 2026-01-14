@@ -67,12 +67,12 @@ export default function RegisterPage() {
 
             const authData = data.auth.registerUser;
             login({
-                id: authData.id,
+                id: Number(authData.id),
                 name: authData.name,
                 surname: authData.surname,
                 nickname: authData.nickname,
                 email: authData.email,
-                profilePic: authData.profilePic,
+                profilePicUrl: authData.profilePic,
                 isModerator: authData.isModerator
             });
             navigate("/");
