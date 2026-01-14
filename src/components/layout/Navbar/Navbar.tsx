@@ -333,7 +333,7 @@ function Navbar() {
                                 </button>
                             </>
                         )}
-                        <button>Help</button>
+                        <button onClick={() => navigate("/help")}>Help</button>
                         <button
                             className="CreateGroup"
                             onClick={() => {
