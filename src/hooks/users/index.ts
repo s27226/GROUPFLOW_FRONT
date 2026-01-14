@@ -6,3 +6,9 @@ export {
     useAllUsers, 
     useUser 
 } from './useUsers';
+
+export {
+    useUserProfile,
+    useUserProfileByNickname,
+    type UserProfileData
+} from './useUserProfile';

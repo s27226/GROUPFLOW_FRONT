@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
@@ -20,6 +21,7 @@ interface AuthResponse {
 }
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
@@ -41,48 +43,48 @@ export default function LoginPage() {
             const authData = data.auth.loginUser;
             // JWT token is set as HTTP-only cookie by the server
             login({
-                id: authData.id,
+                id: Number(authData.id),
                 name: authData.name,
                 surname: authData.surname,
                 nickname: authData.nickname,
                 email: authData.email,
-                profilePic: authData.profilePic,
+                profilePicUrl: authData.profilePic,
                 isModerator: authData.isModerator
             });
             navigate("/");
         } catch (err) {
             console.error("Login error:", err);
             const error = err as Error;
-            setError(error.message || "Invalid credentials");
+            setError(error.message || t('auth.invalidCredentials'));
         }
     };
 
     return (
         <AuthLayout>
             <div className={authStyles.formCardWide}>
-                <h1>Login</h1>
+                <h1>{t('auth.login')}</h1>
                 <input
                     type="email"
-                    placeholder="Email"
+                    placeholder={t('auth.email')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder={t('auth.password')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {error && <p className={authStyles.loginError}>{error}</p>}
                 <button className={authStyles.pillBtnLogin} type="submit" onClick={handleSubmit}>
-                    Sign In
+                    {t('auth.signIn')}
                 </button>
                 <button
                     className={authStyles.pillBtnRegister}
                     type="button"
                     onClick={() => navigate("/register")}
                 >
-                    Register
+                    {t('auth.register')}
                 </button>
             </div>
         </AuthLayout>

@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../../components/layout";
 import SkeletonCard from "../../../components/ui/SkeletonCard";
 import { useNavigate } from "react-router-dom";
 import { useMyProjects } from "../../../hooks";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./MyProjectsPage.module.css";
 
 interface ProjectOwner {
@@ -10,6 +12,7 @@ interface ProjectOwner {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ProjectMember {
@@ -29,6 +32,7 @@ interface RawProject {
 }
 
 export default function MyProjectsPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     
     // Use unified hook for projects
@@ -39,9 +43,7 @@ export default function MyProjectsPage() {
         id: project.id,
         name: project.name,
         description: project.description,
-        imageUrl:
-            project.imageUrl ||
-            `https://picsum.photos/300/200?random=${project.id}`,
+        imageUrl: getProjectImageUrl(project.imageUrl, project.id, 300),
         owner: project.owner,
         collaborators: project.members ?? []
     }));
@@ -49,9 +51,9 @@ export default function MyProjectsPage() {
     return (
         <Layout variant="compact" showTrending={false}>
             <div className={styles.myProjectsHeader}>
-                <h1 className={styles.myProjectsTitle}>My Projects</h1>
+                <h1 className={styles.myProjectsTitle}>{t('projects.myProjects')}</h1>
                 <p className={styles.myProjectsSubtitle}>
-                    Manage and collaborate on your projects
+                    {t('projects.manageDescription')}
                 </p>
             </div>
             {loading ? (
@@ -60,12 +62,12 @@ export default function MyProjectsPage() {
                 </div>
             ) : myProjects.length === 0 ? (
                 <div className={styles.noProjectsMessage}>
-                    <p>You don't have any projects yet.</p>
+                    <p>{t('projects.noProjectsYet')}</p>
                     <button 
                         className={styles.createProjectBtn}
                         onClick={() => navigate('/creategroup')}
                     >
-                        Create New Project
+                        {t('projects.createNewProject')}
                     </button>
                 </div>
             ) : (
@@ -86,12 +88,12 @@ export default function MyProjectsPage() {
                                 <p>{project.description}</p>
                                 <div className={styles.myProjectCardFooter}>
                                     <span className={styles.myProjectOwner}>
-                                        by {project.owner?.nickname || "Unknown"}
+                                        {t('common.by')} {project.owner?.nickname || t('common.unknown')}
                                     </span>
                                     {project.collaborators.length > 0 && (
                                         <span className={styles.myProjectCollaborators}>
                                             {project.collaborators.length}{" "}
-                                            collaborator(s)
+                                            {t('projects.collaborators')}
                                         </span>
                                     )}
                                 </div>

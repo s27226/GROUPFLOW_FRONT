@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Layout } from "../../components/layout";
 import { ChatList, ChatWindow, PrivateChat } from "../../components/chat";
 import { useFriends } from "../../hooks";
@@ -8,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import styles from "./ChatPage.module.css";
 
 interface ChatUser {
-    id: string;
+    id: number;
     name: string;
     nickname?: string;
     profilePic?: string;
@@ -20,6 +21,7 @@ interface LocationState {
 }
 
 export default function ChatPage() {
+    const { t } = useTranslation();
     const location = useLocation();
     const locationState = location.state as LocationState | null;
     const { user: currentUser } = useAuth();
@@ -31,10 +33,10 @@ export default function ChatPage() {
     
     // Map friends to chat users format
     const users: ChatUser[] = (friends || []).map((friend) => ({
-        id: String(friend.id),
+        id: friend.id,
         name: `${friend.name || ''} ${friend.surname || ''}`.trim(),
         nickname: friend.nickname,
-        profilePic: friend.profilePic,
+        profilePic: friend.profilePicUrl,
         online: false // TODO: Implement online status
     }));
 
@@ -51,11 +53,11 @@ export default function ChatPage() {
         <Layout variant="compact" showTrending={false}>
             <div className={styles.chatLayout}>
                 {loading ? (
-                    <p>Loading chats...</p>
+                    <p>{t('chat.loadingChats')}</p>
                 ) : (
                     <ChatList
                         users={users}
-                        onSelectUser={(user) => setSelectedUser(user as ChatUser)}
+                        onSelectUser={(user) => setSelectedUser(user)}
                         selectedUser={selectedUser}
                     />
                 )}
@@ -63,8 +65,8 @@ export default function ChatPage() {
                 <div className={styles.chatWindowWrapper}>
                     {selectedUser ? (
                         <ChatWindow
-                            user={{ ...selectedUser, id: parseInt(selectedUser.id, 10) }}
-                            currentUserId={currentUser?.id ? parseInt(String(currentUser.id), 10) : 0}
+                            user={selectedUser}
+                            currentUserId={currentUser?.id ?? 0}
                             onMinimize={() => {
                                 setPopupUser(selectedUser);
                                 setSelectedUser(null);
@@ -72,15 +74,15 @@ export default function ChatPage() {
                         />
                     ) : (
                         <div className={styles.chatPlaceholder}>
-                            <p>💬 Wybierz osobę, aby rozpocząć rozmowę</p>
+                            <p>{t('chat.selectToStart')}</p>
                         </div>
                     )}
                 </div>
             </div>
             {popupUser && (
                 <PrivateChat
-                    user={{ ...popupUser, id: parseInt(popupUser.id, 10) }}
-                    currentUserId={currentUser?.id ? parseInt(String(currentUser.id), 10) : undefined}
+                    user={popupUser}
+                    currentUserId={currentUser?.id}
                     onClose={() => setPopupUser(null)}
                     onExpand={() => {
                         setSelectedUser(popupUser);

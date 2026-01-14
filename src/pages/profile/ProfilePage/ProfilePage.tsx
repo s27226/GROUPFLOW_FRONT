@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { Post } from "../../../components/feed";
 import { ProfileBanner } from "../../../components/profile";
@@ -6,56 +7,19 @@ import SkeletonPost from "../../../components/ui/SkeletonPost";
 import SkeletonCard from "../../../components/ui/SkeletonCard";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
-import { usePosts, useGraphQL, useFriends, useMyProjects, useUserProjects } from "../../../hooks";
+import { usePosts, useGraphQL, useFriends, useMyProjects, useUserProjects, useUserProfile } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./ProfilePage.module.css";
 import feedStyles from "../../../components/feed/Feed/Feed.module.css";
-
-interface ProfileUser {
-    id: string;
-    name: string;
-    surname: string;
-    handle: string;
-    bio: string;
-    banner: string;
-    pfp: string;
-    abt: string;
-}
 
 interface ProfileProject {
     id: string;
     name: string;
     description: string;
     image: string;
-}
-
-interface UserQueryResponse {
-    users?: {
-        getuserbyid?: {
-            id: string;
-            name?: string;
-            surname?: string;
-            nickname?: string;
-            bannerPicUrl?: string;
-            bannerPic?: string;
-            profilePicUrl?: string;
-            profilePic?: string;
-            joined?: string;
-        };
-        me?: {
-            id: string;
-            name?: string;
-            surname?: string;
-            nickname?: string;
-            bannerPicUrl?: string;
-            bannerPic?: string;
-            profilePicUrl?: string;
-            profilePic?: string;
-            joined?: string;
-        };
-    };
 }
 
 interface ProjectQueryResponse {
@@ -70,26 +34,29 @@ interface ProjectQueryResponse {
 }
 
 export default function ProfilePage() {
+    const { t } = useTranslation();
     const { userId } = useParams();
     const navigate = useNavigate();
     const { user: currentUser } = useAuth(); // Renamed to currentUser from authUser
     const { executeQuery, executeMutation } = useGraphQL();
     const { showToast } = useToast();
 
-    const [user, setUser] = useState<ProfileUser | null>(null);
+    // Use the new unified useUserProfile hook
+    const { user, loading: userLoading } = useUserProfile(userId);
+    
     const [projects, setProjects] = useState<ProfileProject[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [projectsLoading, setProjectsLoading] = useState(true);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [inviting, setInviting] = useState(false);
 
     // Use unified hooks
-    const { friends: myFriends } = useFriends({ autoFetch: false });
+    const { friends: myFriends } = useFriends({ autoFetch: !!currentUser });
     const { projects: myProjects } = useMyProjects({ autoFetch: !!currentUser });
-    const { projects: userProjects } = useUserProjects(user?.id ? parseInt(user.id) : 0, { autoFetch: !!user });
+    const { projects: userProjects } = useUserProjects(user?.id ?? 0, { autoFetch: !!user });
     
     // Derive state from hooks
     const isFriend = useMemo(() => 
-        (myFriends || []).some(friend => friend.id === user?.id),
+        (myFriends || []).some(friend => friend.id == user?.id),
         [myFriends, user]
     );
     
@@ -108,46 +75,17 @@ export default function ProfilePage() {
     // Filter posts by current user
     const posts = useMemo(() => {
         if (!user || !allPosts) return [];
-        return allPosts.filter((post) => String(post.user?.id) === user.id);
+        return allPosts.filter((post) => post.user?.id === user.id);
     }, [allPosts, user]);
 
+    // Fetch user's projects when user is loaded
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchUserProjects = async () => {
+            if (!user) return;
+            
             try {
-                // Fetch user details (either from userId param or current user)
-                const userData = await executeQuery<UserQueryResponse>(
-                    userId ? GRAPHQL_QUERIES.GET_USER_BY_ID : GRAPHQL_QUERIES.GET_CURRENT_USER,
-                    userId ? { id: parseInt(userId) } : {}
-                );
-
-                if (!userData || !userData.users) {
-                    console.error("User not found");
-                    setLoading(false);
-                    return;
-                }
-
-                const userInfo = userId ? userData.users?.getuserbyid : userData.users?.me;
-
-                if (!userInfo) {
-                    console.error("User not found");
-                    setLoading(false);
-                    return;
-                }
-
-                setUser({
-                    id: userInfo.id,
-                    name: userInfo.name || '',
-                    surname: userInfo.surname || '',
-                    handle: `@${userInfo.nickname || 'unknown'}`,
-                    bio: "Professional developer", // TODO: Add bio field to backend
-                    banner: userInfo.bannerPicUrl || userInfo.bannerPic || `https://picsum.photos/900/200?random=${userInfo.id}`,
-                    pfp: userInfo.profilePicUrl || userInfo.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${userInfo.nickname || userInfo.id}`,
-                    abt: `Member since ${userInfo.joined ? new Date(userInfo.joined).toLocaleDateString() : 'Unknown'}`
-                });
-
-                // Fetch user's projects
                 const projectsData = await executeQuery<ProjectQueryResponse>(GRAPHQL_QUERIES.GET_USER_PROJECTS, {
-                    userId: userInfo.id
+                    userId: user.id
                 });
 
                 if (projectsData && projectsData.project) {
@@ -157,21 +95,22 @@ export default function ProfilePage() {
                             id: project.id,
                             name: project.name,
                             description: project.description || '',
-                            image:
-                                project.imageUrl || `https://picsum.photos/60?random=${project.id}`
+                            image: getProjectImageUrl(project.imageUrl, project.id, 60)
                         }))
                     );
                 }
-
-                setLoading(false);
             } catch (err) {
-                console.error("Failed to fetch user profile:", err);
-                setLoading(false);
+                console.error("Failed to fetch user projects:", err);
+            } finally {
+                setProjectsLoading(false);
             }
         };
 
-        fetchUserProfile();
-    }, [userId, executeQuery]);
+        fetchUserProjects();
+    }, [user, executeQuery]);
+
+    // Combined loading state
+    const loading = userLoading || projectsLoading;
 
     const handleInviteToProject = async (projectId: string) => {
         if (!currentUser || !user) return;
@@ -190,11 +129,11 @@ export default function ProfilePage() {
                 throw new Error(response.errors[0].message);
             }
 
-            showToast(`Invitation sent to ${user.name} ${user.surname}!`, 'success');
+            showToast(t('profile.invitationSent', { name: `${user.name} ${user.surname}` }), 'success');
             setShowInviteModal(false);
         } catch (err) {
             console.error("Failed to send invitation:", err);
-            const errorMessage = (err as Error)?.message || "Failed to send invitation. They may already be invited or a member.";
+            const errorMessage = (err as Error)?.message || t('profile.invitationFailed');
             showToast(errorMessage, 'error');
         } finally {
             setInviting(false);
@@ -253,7 +192,7 @@ export default function ProfilePage() {
                 <div className={styles.profileContent}>
                     <Sidebar />
                     <div className={styles.profileMain}>
-                        <p>User not found</p>
+                        <p>{t('profile.userNotFound')}</p>
                     </div>
                 </div>
             </div>
@@ -282,7 +221,7 @@ export default function ProfilePage() {
                                     className={styles.editBtn}
                                     onClick={() => navigate("/profile/edit")}
                                 >
-                                    Edit Profile
+                                    {t('profile.editProfile')}
                                 </button>
                             )}
                             {currentUser && user.id !== currentUser.id && isFriend && ownedProjects.length > 0 && (
@@ -290,7 +229,7 @@ export default function ProfilePage() {
                                     className={styles.inviteBtn}
                                     onClick={() => setShowInviteModal(true)}
                                 >
-                                    Invite to Project
+                                    {t('profile.inviteToProject')}
                                 </button>
                             )}
                         </div>
@@ -299,15 +238,15 @@ export default function ProfilePage() {
                     <div className={styles.profileBody}>
                         <div className={styles.profileLeft}>
                             <section className={styles.aboutMe}>
-                                <h3>About Me</h3>
+                                <h3>{t('profile.aboutMe')}</h3>
                                 <p>{user.abt}</p>
                             </section>
 
                             <section className={styles.ownedProjects}>
-                                <h3>Part of projects</h3>
+                                <h3>{t('profile.partOfProjects')}</h3>
                                 <div className={styles.projectsScroll}>
                                     {projects.length === 0 ? (
-                                        <p>No projects yet</p>
+                                        <p>{t('profile.noProjectsYet')}</p>
                                     ) : (
                                         projects.map((proj) => (
                                             <div
@@ -326,44 +265,44 @@ export default function ProfilePage() {
 
                         <div className={styles.profileRight}>
                             <div className={styles.profilePosts}>
-                                <h3>Activity</h3>
+                                <h3>{t('profile.activity')}</h3>
                                 <div className={feedStyles.feedContainer}>
                                     {posts.length === 0 ? (
-                                        <p>No posts yet</p>
+                                        <p>{t('profile.noPostsYet')}</p>
                                     ) : (
                                         posts.map((post) => (
                                             <Post
                                                 key={post.id}
-                                                id={String(post.id)}
+                                                id={post.id}
                                                 author={post.author}
-                                                authorId={String(post.authorId ?? '')}
+                                                authorId={post.authorId ?? 0}
                                                 authorProfilePic={post.authorProfilePic ?? undefined}
                                                 time={post.time}
                                                 content={post.content ?? ''}
                                                 image={post.image}
                                                 comments={post.comments?.map(c => ({
-                                                    id: String(c.id),
-                                                    userId: String(c.userId),
+                                                    id: c.id,
+                                                    userId: c.userId,
                                                     user: c.user,
                                                     profilePic: c.profilePic,
                                                     text: c.text,
                                                     time: c.time,
-                                                    likes: c.likes?.map(l => ({ userId: String(l.userId), userName: l.userName })),
+                                                    likes: c.likes || [],
                                                     liked: c.liked,
                                                     menuOpen: c.menuOpen,
                                                     replies: []
                                                 })) || []}
                                                 saved={false}
                                                 sharedPost={post.sharedPost ? {
-                                                    id: String(post.sharedPost.id),
+                                                    id: post.sharedPost.id,
                                                     author: post.sharedPost.author,
-                                                    authorId: String(post.sharedPost.authorId ?? ''),
+                                                    authorId: post.sharedPost.authorId,
                                                     authorProfilePic: post.sharedPost.authorProfilePic,
                                                     time: post.sharedPost.time,
                                                     content: post.sharedPost.content ?? '',
                                                     image: post.sharedPost.image
                                                 } : null}
-                                                likes={post.likes?.map(l => ({ userId: String(l.userId), userName: l.userName })) || []}
+                                                likes={post.likes || []}
                                             />
                                         ))
                                     )}
@@ -377,10 +316,10 @@ export default function ProfilePage() {
                 {showInviteModal && (
                     <div className={styles.modalOverlay} onClick={() => setShowInviteModal(false)}>
                         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                            <h3>Invite {user.name} to a Project</h3>
+                            <h3>{t('profile.inviteUserToProject', { name: user.name })}</h3>
                             <div className={styles.projectList}>
                                 {ownedProjects.length === 0 ? (
-                                    <p>You don't own any projects yet.</p>
+                                    <p>{t('profile.noOwnedProjects')}</p>
                                 ) : (
                                     ownedProjects.map((project) => {
                                         const isAlreadyMember = userProjectIds.has(project.id);
@@ -397,7 +336,7 @@ export default function ProfilePage() {
                                                             opacity: 0.8,
                                                             fontWeight: 300
                                                         }}>
-                                                            ℹ Already a member
+                                                            ℹ {t('profile.alreadyMember')}
                                                         </small>
                                                     )}
                                                 </div>
@@ -410,7 +349,7 @@ export default function ProfilePage() {
                                                         backgroundColor: isAlreadyMember ? '#ccc' : ''
                                                     }}
                                                 >
-                                                    {isAlreadyMember ? "Member" : inviting ? "Inviting..." : "Invite"}
+                                                    {isAlreadyMember ? t('profile.member') : inviting ? t('profile.inviting') : t('profile.invite')}
                                                 </button>
                                             </div>
                                         );
@@ -421,7 +360,7 @@ export default function ProfilePage() {
                                 className={styles.closeModalBtn}
                                 onClick={() => setShowInviteModal(false)}
                             >
-                                Close
+                                {t('common.close')}
                             </button>
                         </div>
                     </div>

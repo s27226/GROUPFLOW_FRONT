@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../ui/LoadingSpinner";
+import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./Projects.module.css";
 
 interface ProjectSkill {
@@ -29,7 +31,6 @@ interface ProjectSearchResult {
     skills?: ProjectSkill[];
     interests?: ProjectInterest[];
     views?: unknown[];
-    likes?: unknown[];
 }
 
 interface SearchProjectsResponse {
@@ -39,6 +40,7 @@ interface SearchProjectsResponse {
 }
 
 export default function Projects() {
+    const { t } = useTranslation();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -119,7 +121,7 @@ export default function Projects() {
                     style={{ cursor: "pointer" }}
                 >
                     <img
-                        src={project.imageUrl || `https://picsum.photos/80?random=${project.id}`}
+                        src={getProjectImageUrl(project.imageUrl, project.id, 80)}
                         alt={project.name}
                         className={styles.userAvatar}
                     />
@@ -160,7 +162,6 @@ export default function Projects() {
 
                 <div className={styles.projectStats}>
                     <span>👁️ {project.views?.length || 0} views</span>
-                    <span> ❤️ {project.likes?.length || 0} likes</span>
                 </div>
             </div>
         );
@@ -168,30 +169,30 @@ export default function Projects() {
 
     return (
         <div className={styles.usersContainer}>
-            <h1>Find Projects</h1>
+            <h1>{t('projects.findProjects')}</h1>
 
             <div className={styles.searchSection}>
                 <div className={styles.findFriendsSearch}>
                     <input
                         type="text"
-                        placeholder="Search by project name or description..."
+                        placeholder={t('projects.searchPlaceholder')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                         className={styles.findFriendsInput}
                     />
                     <button onClick={handleSearch} className={styles.findFriendsBtn}>
-                        Search
+                        {t('common.search')}
                     </button>
                 </div>
 
                 <div className={styles.filters}>
                     <div className={styles.filterGroup}>
-                        <h3>Filter by Skills</h3>
+                        <h3>{t('projects.filterBySkills')}</h3>
                         <div className={styles.filterInput}>
                             <input
                                 type="text"
-                                placeholder="Add skill..."
+                                placeholder={t('projects.addSkillPlaceholder')}
                                 value={skillInput}
                                 onChange={(e) => setSkillInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && addSkillFilter()}
@@ -211,11 +212,11 @@ export default function Projects() {
                     </div>
 
                     <div className={styles.filterGroup}>
-                        <h3>Filter by Interests</h3>
+                        <h3>{t('projects.filterByInterests')}</h3>
                         <div className={styles.filterInput}>
                             <input
                                 type="text"
-                                placeholder="Add interest..."
+                                placeholder={t('projects.addInterestPlaceholder')}
                                 value={interestInput}
                                 onChange={(e) => setInterestInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && addInterestFilter()}
@@ -249,8 +250,8 @@ export default function Projects() {
                             {searchTerm ||
                             selectedSkills.length > 0 ||
                             selectedInterests.length > 0
-                                ? "No projects found matching your criteria."
-                                : "Enter search criteria to find projects."}
+                                ? t('projects.noProjectsMatchCriteria')
+                                : t('projects.enterSearchCriteria')}
                         </p>
                     )}
                 </div>

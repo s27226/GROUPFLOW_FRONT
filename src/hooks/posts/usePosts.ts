@@ -9,6 +9,7 @@ interface PostUser {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface PostLike {
@@ -90,11 +91,15 @@ interface FormattedSharedPost {
 const formatCommentData = (comment: RawComment | null): FormattedComment | null => {
     if (!comment) return null;
     
+    const user = comment.user;
+    const displayName = user?.nickname || `${user?.name || ''} ${user?.surname || ''}`.trim() || "Unknown";
+    const seed = user?.nickname || user?.id || 'unknown';
+    
     return {
         id: comment.id,
-        user: comment.user?.nickname || `${comment.user?.name || ''} ${comment.user?.surname || ''}`.trim() || "Unknown",
+        user: displayName,
         userId: comment.userId,
-        profilePic: comment.user?.profilePic,
+        profilePic: user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${seed}`,
         time: formatTime(comment.createdAt),
         text: comment.content,
         likes: comment.likes || [],
@@ -112,11 +117,17 @@ const formatCommentData = (comment: RawComment | null): FormattedComment | null 
 export const formatPostData = (post: RawPost | null): FormattedPost | null => {
     if (!post) return null;
 
+    const user = post.user;
+    const authorSeed = user?.nickname || user?.id || 'unknown';
+    
+    const sharedUser = post.sharedPost?.user;
+    const sharedAuthorSeed = sharedUser?.nickname || sharedUser?.id || 'unknown';
+
     return {
         ...post,
-        author: post.user?.nickname || "Unknown",
-        authorId: post.user?.id,
-        authorProfilePic: post.user?.profilePic,
+        author: user?.nickname || "Unknown",
+        authorId: user?.id,
+        authorProfilePic: user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${authorSeed}`,
         time: formatTime(post.created),
         content: post.content || post.description,
         image: post.imageUrl,
@@ -125,9 +136,9 @@ export const formatPostData = (post: RawPost | null): FormattedPost | null => {
         sharedPost: post.sharedPost
             ? {
                   id: post.sharedPost.id,
-                  author: post.sharedPost.user?.nickname || "Unknown",
-                  authorId: post.sharedPost.user?.id,
-                  authorProfilePic: post.sharedPost.user?.profilePic,
+                  author: sharedUser?.nickname || "Unknown",
+                  authorId: sharedUser?.id,
+                  authorProfilePic: sharedUser?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedAuthorSeed}`,
                   time: formatTime(post.sharedPost.created),
                   content: post.sharedPost.content || post.sharedPost.description,
                   image: post.sharedPost.imageUrl

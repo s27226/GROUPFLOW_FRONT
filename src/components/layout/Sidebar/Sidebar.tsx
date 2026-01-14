@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     FaProjectDiagram,
     FaUserFriends,
@@ -15,6 +16,7 @@ import { FcInvite } from "react-icons/fc";
 import { useFriends, useMyProjects } from "../../../hooks";
 
 export default function Sidebar() {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(true);
     const [projectsOpen, setProjectsOpen] = useState(false);
     const [friendsOpen, setFriendsOpen] = useState(false);
@@ -63,7 +65,7 @@ export default function Sidebar() {
                 <ul>
                     <li onClick={handleProjectsToggle}>
                         <FaProjectDiagram className={styles.icon} />
-                        {isOpen && <span>Projects</span>}
+                        {isOpen && <span>{t('navigation.projects')}</span>}
                         {isOpen &&
                             (projectsOpen ? (
                                 <FaChevronUp className={styles.chevron} />
@@ -81,7 +83,7 @@ export default function Sidebar() {
                                         navigate("/projects");
                                     }}
                                 >
-                                    Find Projects
+                                    {t('navigation.findProjects')}
                                 </button>
                             </li>
                             <li>
@@ -91,7 +93,7 @@ export default function Sidebar() {
                                         navigate("/myprojects");
                                     }}
                                 >
-                                    My Projects
+                                    {t('navigation.myProjects')}
                                 </button>
                             </li>
                             <li>
@@ -101,7 +103,7 @@ export default function Sidebar() {
                                         navigate("/creategroup");
                                     }}
                                 >
-                                    Create Project
+                                    {t('navigation.createProject')}
                                 </button>
                             </li>
                         </ul>
@@ -109,7 +111,7 @@ export default function Sidebar() {
 
                     <li onClick={handleFriendsToggle}>
                         <FaUserFriends className={styles.icon} />
-                        {isOpen && <span>Friends</span>}
+                        {isOpen && <span>{t('navigation.friends')}</span>}
                         {isOpen &&
                             (friendsOpen ? (
                                 <FaChevronUp className={styles.chevron} />
@@ -127,7 +129,7 @@ export default function Sidebar() {
                                         navigate("/findfriends");
                                     }}
                                 >
-                                    Find Friends
+                                    {t('navigation.findFriends')}
                                 </button>
                             </li>
                             <li>
@@ -138,7 +140,7 @@ export default function Sidebar() {
                                         navigate("/friendslist");
                                     }}
                                 >
-                                    Friend List
+                                    {t('navigation.friendList')}
                                 </button>
                             </li>
                         </ul>
@@ -146,17 +148,17 @@ export default function Sidebar() {
 
                     <li onClick={() => navigate("/chats")}>
                         <FaComments className={styles.icon} />
-                        {isOpen && <span>Chats</span>}
+                        {isOpen && <span>{t('navigation.chats')}</span>}
                     </li>
                     <li onClick={() => navigate("/Saved")}>
                         <FaBookmark className={styles.icon} />
-                        {isOpen && <span>Saved</span>}
+                        {isOpen && <span>{t('navigation.saved')}</span>}
                     </li>
                     <li>
                         <FcInvite className={styles.icon} />
                         {isOpen && (
                             <Link to="/invitations" className={styles.menuItem}>
-                                Invitations
+                                {t('navigation.invitations')}
                                 {invitationsCount > 0 && <span className={styles.notificationDot}></span>}
                             </Link>
                         )}

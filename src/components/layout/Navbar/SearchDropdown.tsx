@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl, getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./SearchDropdown.module.css";
 import type { User } from "@/types";
 
@@ -143,10 +144,7 @@ export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdow
                                 >
                                     <div className={styles.projectIcon}>
                                         <img
-                                            src={
-                                                project.imageUrl ||
-                                                `https://picsum.photos/40?random=${project.id}`
-                                            }
+                                            src={getProjectImageUrl(project.imageUrl, project.id, 40)}
                                             alt={project.name}
                                         />
                                     </div>
@@ -172,14 +170,11 @@ export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdow
                                 <div
                                     key={result.user.id}
                                     className={`${styles.searchDropdownItem} ${styles.userItem}`}
-                                    onClick={(e) => handleUserClick(e, result.user.id)}
+                                    onClick={(e) => handleUserClick(e, String(result.user.id))}
                                 >
                                     <div className={styles.userAvatar}>
                                         <img
-                                            src={
-                                                result.user.profilePic ||
-                                                `https://api.dicebear.com/9.x/identicon/svg?seed=${result.user.nickname}`
-                                            }
+                                            src={getProfilePicUrl(result.user.profilePicUrl, result.user.nickname)}
                                             alt={result.user.nickname}
                                         />
                                     </div>

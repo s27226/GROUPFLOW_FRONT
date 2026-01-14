@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./Invitations.module.css";
 import Invitation from "../Invitation";
 import { InvitationContext } from "../../../context/InvitationContext";
@@ -6,6 +7,7 @@ import { useInvitations } from "../../../hooks";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 
 export default function Invitations() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState("friends");
     const { setInvitationsCount } = useContext(InvitationContext);
     
@@ -40,27 +42,27 @@ export default function Invitations() {
 
     return (
         <div className={styles.invitationsContainer}>
-            <h1>Invitations</h1>
+            <h1>{t('invitations.title')}</h1>
 
             <div className={styles.tabs}>
                 <button
                     className={`${styles.tab} ${activeTab === "friends" ? styles.active : ""}`}
                     onClick={() => setActiveTab("friends")}
                 >
-                    Friend Requests ({friendRequests.length})
+                    {t('invitations.friendRequests')} ({friendRequests.length})
                 </button>
                 <button
                     className={`${styles.tab} ${activeTab === "groups" ? styles.active : ""}`}
                     onClick={() => setActiveTab("groups")}
                 >
-                    Group Invitations ({projectInvitations.length})
+                    {t('invitations.groupInvitations')} ({projectInvitations.length})
                 </button>
             </div>
 
             <div className={styles.invitationsList}>
                 {currentInvitations.length === 0 ? (
                     <p className={styles.empty}>
-                        {activeTab === "friends" ? "No friend requests" : "No group invitations"}
+                        {activeTab === "friends" ? t('invitations.noFriendRequests') : t('invitations.noGroupInvitations')}
                     </p>
                 ) : (
                     currentInvitations.map((inv) => (

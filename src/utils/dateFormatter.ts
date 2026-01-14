@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 /**
  * Formats an ISO date string to a human-readable relative time format
  * @param {string} isoDate - ISO 8601 date string
@@ -9,10 +11,12 @@ export const formatTime = (isoDate: string | null | undefined): string => {
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // difference in seconds
 
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
+    if (diff < 60) return i18n.t('common.timeAgo.justNow');
+    if (diff < 3600) return i18n.t('common.timeAgo.minutesAgo', { count: Math.floor(diff / 60) });
+    if (diff < 86400) return i18n.t('common.timeAgo.hoursAgo', { count: Math.floor(diff / 3600) });
+    if (diff < 604800) return i18n.t('common.timeAgo.daysAgo', { count: Math.floor(diff / 86400) });
+    if (diff < 2592000) return i18n.t('common.timeAgo.weeksAgo', { count: Math.floor(diff / 604800) });
+    return i18n.t('common.timeAgo.monthsAgo', { count: Math.floor(diff / 2592000) });
 };
 
 /**

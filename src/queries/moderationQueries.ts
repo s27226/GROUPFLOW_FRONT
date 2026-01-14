@@ -9,7 +9,7 @@ export const GET_ALL_USERS = `
         surname
         nickname
         email
-        profilePic
+        profilePicUrl
         dateOfBirth
         joined
         isModerator
@@ -36,7 +36,7 @@ export const GET_BANNED_USERS = `
         surname
         nickname
         email
-        profilePic
+        profilePicUrl
         dateOfBirth
         joined
         isModerator
@@ -62,7 +62,7 @@ export const GET_SUSPENDED_USERS = `
         surname
         nickname
         email
-        profilePic
+        profilePicUrl
         dateOfBirth
         joined
         isModerator

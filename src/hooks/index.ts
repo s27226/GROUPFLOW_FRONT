@@ -41,7 +41,7 @@ export { useClickOutside, useImageLoaded, useSearchQuery } from './ui';
 export { useBlobUpload } from './upload';
 
 // Users
-export { useUserSearch, useAllUsers, useUser } from './users';
+export { useUserSearch, useAllUsers, useUser, useUserProfile, useUserProfileByNickname, type UserProfileData } from './users';
 
 /**
  * Hook Options Pattern

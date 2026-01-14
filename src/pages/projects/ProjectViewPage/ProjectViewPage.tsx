@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { ChatBox } from "../../../components/chat";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
@@ -75,6 +76,7 @@ interface GraphQLProjectResponse {
 }
 
 export default function ProjectsViewPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
@@ -175,7 +177,7 @@ export default function ProjectsViewPage() {
                     <Sidebar />
                     <div className={styles.feedProjectsWrapper}>
                         <div className={styles.mainFeedWrapper}>
-                            <p>Loading project...</p>
+                            <p>{t('projects.loadingProject')}</p>
                         </div>
                     </div>
                 </div>
@@ -191,9 +193,9 @@ export default function ProjectsViewPage() {
                     <Sidebar />
                     <div className={styles.feedProjectsWrapper}>
                         <div className={styles.mainFeedWrapper}>
-                            <p>Project not found</p>
+                            <p>{t('projects.projectNotFound')}</p>
                             <button className={styles.backBtn} onClick={() => navigate("/myprojects")}>
-                                ← Back to projects
+                                {t('projects.backToProjects')}
                             </button>
                         </div>
                     </div>
@@ -210,7 +212,7 @@ export default function ProjectsViewPage() {
                 <div className={styles.feedProjectsWrapper}>
                     <div className={`${styles.mainFeedWrapper} ${styles.projectViewPage}`}>
                         <button className={styles.backBtn} onClick={() => navigate("/myprojects")}>
-                            ← Back to projects
+                            {t('projects.backToProjects')}
                         </button>
 
                         <div className={styles.projectHeader}>
@@ -223,19 +225,19 @@ export default function ProjectsViewPage() {
                                 className={`${styles.tabBtn} ${activeTab === "files" ? styles.active : ""}`}
                                 onClick={() => setActiveTab("files")}
                             >
-                                📁 Files
+                                {t('projects.files')}
                             </button>
                             <button
                                 className={`${styles.tabBtn} ${activeTab === "messages" ? styles.active : ""}`}
                                 onClick={() => setActiveTab("messages")}
                             >
-                                ✉️ Messages
+                                {t('projects.messagesTab')}
                             </button>
                             <button
                                 className={`${styles.tabBtn} ${activeTab === "termins" ? styles.active : ""}`}
                                 onClick={() => setActiveTab("termins")}
                             >
-                                🕒 Termins
+                                {t('projects.termins')}
                             </button>
                         </div>
                         <div className={styles.tabContent}>{renderContent()}</div>

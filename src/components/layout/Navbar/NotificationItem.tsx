@@ -2,6 +2,8 @@ import styles from "./NotificationItem.module.css";
 import { Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
+import i18n from "../../../i18n";
 
 // Helper function to format time ago
 function timeAgo(dateString: string): string {
@@ -9,28 +11,29 @@ function timeAgo(dateString: string): string {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     
-    if (seconds < 60) return "just now";
+    if (seconds < 60) return i18n.t('common.timeAgo.justNow');
     
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+    if (minutes < 60) return i18n.t('common.timeAgo.minutesAgo', { count: minutes });
     
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return i18n.t('common.timeAgo.hoursAgo', { count: hours });
     
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days}d ago`;
+    if (days < 7) return i18n.t('common.timeAgo.daysAgo', { count: days });
     
     const weeks = Math.floor(days / 7);
-    if (weeks < 4) return `${weeks}w ago`;
+    if (weeks < 4) return i18n.t('common.timeAgo.weeksAgo', { count: weeks });
     
     const months = Math.floor(days / 30);
-    return `${months}mo ago`;
+    return i18n.t('common.timeAgo.monthsAgo', { count: months });
 }
 
 interface ActorUser {
     id: string;
     nickname: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface NotificationData {
@@ -49,18 +52,16 @@ export default function NotificationItem({ notification }: NotificationItemProps
     const { message, createdAt, isRead, actorUser } = notification;
     const navigate = useNavigate();
     
+    const profilePic = getProfilePicUrl(actorUser?.profilePicUrl, actorUser?.nickname);
+    
     return (
         <div className={`${styles.notifItem} ${!isRead ? styles.unread : ""}`} onClick={() => navigate("/profile/" + actorUser?.id)}>
             <div className={styles.notifIcon}>
-                {actorUser?.profilePic ? (
-                    <img 
-                        src={actorUser.profilePic} 
-                        alt={actorUser.nickname} 
-                        style={{ width: 18, height: 18, borderRadius: "50%" }}
-                    />
-                ) : (
-                    <Bell size={18} />
-                )}
+                <img 
+                    src={profilePic} 
+                    alt={actorUser?.nickname || "User"} 
+                    style={{ width: 18, height: 18, borderRadius: "50%" }}
+                />
             </div>
             <div className={styles.notifInfo}>
                 <p className={styles.notifText}>{sanitizeText(message)}</p>

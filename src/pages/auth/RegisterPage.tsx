@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
@@ -20,6 +21,7 @@ interface AuthResponse {
 }
 
 export default function RegisterPage() {
+    const { t } = useTranslation();
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
     const [nickname, setNickname] = useState("");
@@ -37,17 +39,17 @@ export default function RegisterPage() {
 
         // Validation
         if (!name || !surname || !nickname || !email || !password) {
-            setError("All fields are required");
+            setError(t('auth.allFieldsRequired'));
             return;
         }
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError(t('auth.passwordsDoNotMatch'));
             return;
         }
 
         if (password.length < 6) {
-            setError("Password must be at least 6 characters");
+            setError(t('auth.passwordTooShort'));
             return;
         }
 
@@ -64,59 +66,59 @@ export default function RegisterPage() {
 
             const authData = data.auth.registerUser;
             login({
-                id: authData.id,
+                id: Number(authData.id),
                 name: authData.name,
                 surname: authData.surname,
                 nickname: authData.nickname,
                 email: authData.email,
-                profilePic: authData.profilePic,
+                profilePicUrl: authData.profilePic,
                 isModerator: authData.isModerator
             });
             navigate("/");
         } catch (err) {
             console.error("Registration error:", err);
             const error = err as Error;
-            setError(error.message || "Error registering user");
+            setError(error.message || t('auth.registrationError'));
         }
     };
 
     return (
         <AuthLayout>
             <div className={authStyles.formCardWide}>
-                <h1>Register</h1>
+                <h1>{t('auth.register')}</h1>
                 <input
                     type="text"
-                    placeholder="First Name"
+                    placeholder={t('auth.firstName')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <input
                     type="text"
-                    placeholder="Last Name"
+                    placeholder={t('auth.lastName')}
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}
                 />
                 <input
                     type="text"
-                    placeholder="Nickname"
+                    placeholder={t('auth.nickname')}
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
                 />
                 <input
                     type="email"
-                    placeholder="Email"
+                    placeholder={t('auth.email')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder={t('auth.password')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <input
                     type="password"
-                    placeholder="Repeat Password"
+                    placeholder={t('auth.repeatPassword')}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
@@ -124,10 +126,10 @@ export default function RegisterPage() {
                 {error && <p className={authStyles.loginError}>{error}</p>}
 
                 <button className={authStyles.pillBtnRegister} onClick={handleSubmit}>
-                    Register
+                    {t('auth.register')}
                 </button>
                 <button className={authStyles.pillBtnLogin} type="button" onClick={() => navigate("/login")}>
-                    Back to Login
+                    {t('auth.backToLogin')}
                 </button>
             </div>
         </AuthLayout>

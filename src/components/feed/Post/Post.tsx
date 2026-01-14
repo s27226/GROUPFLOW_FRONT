@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import LazyImage from "../../ui/LazyImage";
 import styles from "./Post.module.css";
 import { MoreVertical, Heart, MessageCircle, Share2 } from "lucide-react";
@@ -12,9 +13,9 @@ import { sanitizeText } from "../../../utils/sanitize";
 import type { Like, Post as PostType } from "../../../types";
 
 interface CommentData {
-    id: string;
+    id: number;
     user?: string;
-    userId: string;
+    userId: number;
     author?: string;
     authorProfilePic?: string;
     profilePic?: string;
@@ -28,10 +29,10 @@ interface CommentData {
 }
 
 interface SharedPostData {
-    id: string;
+    id: number;
     author: string;
-    authorId?: string;
-    userId?: string;
+    authorId?: number;
+    userId?: number;
     authorProfilePic?: string;
     time: string;
     content: string;
@@ -39,9 +40,9 @@ interface SharedPostData {
 }
 
 interface PostProps {
-    id: string;
+    id: number;
     author: string;
-    authorId: string;
+    authorId: number;
     authorProfilePic?: string;
     time: string;
     content: string;
@@ -55,7 +56,7 @@ interface PostProps {
     projectId?: string | null;
     onHide?: () => void;
     onUndoHide?: () => void;
-    onSave?: (postId: string) => void;
+    onSave?: (postId: number) => void;
     onUpdate?: () => void;
 }
 
@@ -76,10 +77,11 @@ export default function Post({
     projectId = null,
     onHide = () => {},
     onUndoHide = () => {},
-    onSave = (_postId: string) => {},
+    onSave = (_postId: number) => {},
     onUpdate = () => {}
 }: PostProps) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
     const { showToast } = useToast();
@@ -130,7 +132,7 @@ export default function Post({
                     };
                 }
                 const response = await makeRequest<FriendshipResponse>(GRAPHQL_QUERIES.GET_FRIENDSHIP_STATUS, {
-                    friendId: parseInt(authorId, 10)
+                    friendId: authorId
                 });
 
                 if (!response.errors && response.data?.friendship?.friendshipstatus) {
@@ -156,11 +158,11 @@ export default function Post({
 
         try {
             const response = await makeRequest(GRAPHQL_MUTATIONS.BLOCK_USER, {
-                userIdToBlock: parseInt(authorId, 10)
+                userIdToBlock: authorId
             });
 
             if (!response.errors) {
-                showToast(`You have blocked ${author}. You will no longer see their posts.`, "success");
+                showToast(t('feed.userBlocked', { name: author }), "success");
                 setMenuOpen(false);
                 
                 if (onUpdate) {
@@ -169,12 +171,12 @@ export default function Post({
                 
                 window.location.reload();
             } else {
-                const errorMessage = response.errors[0]?.message || "Failed to block user";
+                const errorMessage = response.errors[0]?.message || t('feed.blockFailed');
                 showToast(errorMessage, "error");
             }
         } catch (error) {
             console.error("Error blocking user:", error);
-            showToast("An error occurred while blocking the user", "error");
+            showToast(t('feed.blockError'), "error");
         }
     };
 
@@ -188,7 +190,7 @@ export default function Post({
                 const newLike = await likePost(id);
                 if (newLike) {
                     setLikes(prev => [...prev, {
-                        userId: String(newLike.userId),
+                        userId: newLike.userId,
                         userName: newLike.userName
                     }]);
                 }
@@ -207,9 +209,9 @@ export default function Post({
             
             if (newComment && newComment.user) {
                 const commentData: CommentData = {
-                    id: String(newComment.id),
+                    id: newComment.id,
                     user: newComment.user.nickname || `${newComment.user.name || ''} ${newComment.user.surname || ''}`,
-                    userId: String(newComment.userId),
+                    userId: newComment.userId,
                     time: formatTime(newComment.createdAt || null),
                     text: newComment.content,
                     likes: [],
@@ -242,7 +244,7 @@ export default function Post({
             setMenuOpen(false);
         } catch (error) {
             console.error("Error saving/unsaving post:", error);
-            showToast("Failed to update saved status", "error");
+            showToast(t('feed.savedStatusFailed'), "error");
         }
     };
 
@@ -266,7 +268,7 @@ export default function Post({
 
     const handleReportPost = async () => {
         if (!reportReason.trim()) {
-            showToast("Please provide a reason for reporting this post", "error");
+            showToast(t('feed.provideReason'), "error");
             return;
         }
 
@@ -279,17 +281,17 @@ export default function Post({
             });
 
             if (!response.errors) {
-                showToast("Post reported successfully. Thank you for helping keep our community safe.", "success");
+                showToast(t('feed.postReported'), "success");
                 setShowReportDialog(false);
                 setReportReason("");
                 setMenuOpen(false);
             } else {
-                const errorMessage = response.errors[0]?.message || "Failed to report post";
+                const errorMessage = response.errors[0]?.message || t('feed.reportFailed');
                 showToast(errorMessage, "error");
             }
         } catch (error) {
             console.error("Error reporting post:", error);
-            showToast("An error occurred while reporting the post", "error");
+            showToast(t('feed.reportError'), "error");
         }
     };
 
@@ -297,7 +299,7 @@ export default function Post({
         <div className={styles.postCard}>
             <div className={styles.postHeader}>
                 <img
-                    src={authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${author}`}
+                    src={authorProfilePic}
                     alt={author}
                     className={styles.postAvatar}
                     style={{ cursor: "pointer" }}
@@ -329,17 +331,17 @@ export default function Post({
                     {menuOpen && (
                         <div className={styles.postDropdownMenu}>
                             <button onClick={handleSavePost}>
-                                {saved ? "Unsave Post" : "Save Post"}
+                                {saved ? t('feed.unsavePost') : t('feed.savePost')}
                             </button>
                             {!isFriend && authorId && authorId !== user?.id && (
-                                <button onClick={handleBlockUser}>Block User</button>
+                                <button onClick={handleBlockUser}>{t('feed.blockUser')}</button>
                             )}
                             {authorId !== user?.id && (
                                 <button onClick={() => {
                                     setShowReportDialog(true);
                                     setMenuOpen(false);
                                 }}>
-                                    Report
+                                    {t('feed.reportPost')}
                                 </button>
                             )}
                         </div>
@@ -360,12 +362,12 @@ export default function Post({
                 {sharedPost && (
                     <div className={styles.postSharedPreview}>
                         <div className={styles.postSharedHeader}>
-                            <span>Shared post from {sharedPost.author}</span>
+                            <span>{t('feed.sharedPostFrom')} {sharedPost.author}</span>
                         </div>
                         <div className={styles.postSharedContent}>
                             <div className={styles.postSharedInfo}>
                                 <img
-                                    src={sharedPost.authorProfilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${sharedPost.author}`}
+                                    src={sharedPost.authorProfilePic}
                                     alt={sharedPost.author}
                                     className={styles.postSharedAvatar}
                                 />
@@ -401,7 +403,7 @@ export default function Post({
                                     navigate(`/post/${sharedPost.id}`);
                                 }}
                             >
-                                View original post
+                                {t('feed.viewOriginal')}
                             </a>
                         </div>
                     </div>
@@ -439,19 +441,19 @@ export default function Post({
                 <div className={styles.commentSection}>
                     <div className={styles.commentInputRow}>
                         <img
-                            src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
+                            src={user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                             alt="You"
                             className={styles.commentAvatar}
                         />
                         <input
                             type="text"
-                            placeholder="Write a comment..."
+                            placeholder={t('feed.writeComment')}
                             value={commentInput}
                             onChange={(e) => setCommentInput(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && submitComment()}
                         />
                         <button className={styles.sendComment} onClick={submitComment}>
-                            Post
+                            {t('feed.post')}
                         </button>
                     </div>
 
@@ -478,12 +480,12 @@ export default function Post({
             {showReportDialog && (
                 <div className={styles.reportDialogOverlay} onClick={() => setShowReportDialog(false)}>
                     <div className={styles.reportDialog} onClick={(e) => e.stopPropagation()}>
-                        <h3>Report Post</h3>
-                        <p>Please tell us why you're reporting this post:</p>
+                        <h3>{t('feed.reportPost')}</h3>
+                        <p>{t('feed.reportReason')}</p>
                         <textarea
                             value={reportReason}
                             onChange={(e) => setReportReason(e.target.value)}
-                            placeholder="Enter your reason here..."
+                            placeholder={t('feed.reportPlaceholder')}
                             rows={4}
                         />
                         <div className={styles.reportDialogActions}>
@@ -494,10 +496,10 @@ export default function Post({
                                     setReportReason("");
                                 }}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             <button className={styles.btnReport} onClick={handleReportPost}>
-                                Submit Report
+                                {t('feed.submitReport')}
                             </button>
                         </div>
                     </div>
@@ -512,8 +514,8 @@ interface CommentComponentProps {
     comment: CommentData;
     update: (newData: CommentData) => void;
     depth?: number;
-    postId: string;
-    onDelete: (commentId: string) => void;
+    postId: number;
+    onDelete: (commentId: number) => void;
 }
 
 function Comment({ comment, update, depth = 0, postId, onDelete }: CommentComponentProps) {
@@ -523,6 +525,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const {
         likeComment,
         unlikeComment,
@@ -562,7 +565,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
                 const newLike = await likeComment(comment.id);
                 if (newLike) {
                     const formattedLike: Like = {
-                        userId: String(newLike.userId),
+                        userId: newLike.userId,
                         userName: newLike.userName
                     };
                     const newLikes = [...likes, formattedLike];
@@ -605,9 +608,9 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             
             if (newReply && newReply.user) {
                 const replyData: CommentData = {
-                    id: String(newReply.id),
+                    id: newReply.id,
                     user: newReply.user.nickname || `${newReply.user.name || ''} ${newReply.user.surname || ''}`,
-                    userId: String(newReply.userId),
+                    userId: newReply.userId,
                     time: formatTime(newReply.createdAt || null),
                     text: newReply.content,
                     likes: [],
@@ -636,7 +639,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         update({ ...comment, replies: updated });
     };
 
-    const deleteReply = (replyId: string) => {
+    const deleteReply = (replyId: number) => {
         const updated = (comment.replies || []).filter(reply => reply.id !== replyId);
         update({ ...comment, replies: updated });
     };
@@ -645,7 +648,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         <div className={styles.comment} style={{ marginLeft: `${leftMargin}px` }}>
             <div className={styles.commentHeader}>
                 <img
-                    src={comment.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${comment.user}`}
+                    src={comment.profilePic}
                     alt={comment.user}
                     className={styles.commentAvatar}
                 />
@@ -668,8 +671,8 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
 
                     {menuOpen && (
                         <div className={styles.commentDropdownMenu}>
-                            <button onClick={confirmDelete}>Delete</button>
-                            <button onClick={() => setMenuOpen(false)}>Report</button>
+                            <button onClick={confirmDelete}>{t('feed.deleteComment')}</button>
+                            <button onClick={() => setMenuOpen(false)}>{t('feed.reportComment')}</button>
                         </div>
                     )}
                 </div>
@@ -679,13 +682,13 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
 
             {showDeleteConfirm && (
                 <div className={styles.commentDeleteConfirm}>
-                    <p>Delete this comment? All replies will be deleted too.</p>
+                    <p>{t('feed.deleteCommentConfirm')}</p>
                     <div className={styles.commentDeleteActions}>
                         <button className={styles.btnCancel} onClick={() => setShowDeleteConfirm(false)}>
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button className={styles.btnDelete} onClick={handleDeleteComment}>
-                            Delete
+                            {t('common.delete')}
                         </button>
                     </div>
                 </div>
@@ -702,12 +705,12 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
                 </button>
 
                 <button className={styles.replyBtn} onClick={() => setReplyOpen(!replyOpen)}>
-                    Reply
+                    {t('feed.reply')}
                 </button>
 
                 {(comment.replies?.length ?? 0) > 0 && (
                     <button className={styles.replyBtn} onClick={() => setCollapsed(!collapsed)}>
-                        {collapsed ? `View replies (${comment.replies?.length ?? 0})` : "Hide replies"}
+                        {collapsed ? `${t('feed.viewReplies')} (${comment.replies?.length ?? 0})` : t('feed.hideReplies')}
                     </button>
                 )}
             </div>
@@ -715,19 +718,19 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             {replyOpen && (
                 <div className={styles.replyInputRow}>
                     <img
-                        src={user?.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
+                        src={user?.profilePicUrl || `https://api.dicebear.com/9.x/identicon/svg?seed=${user?.nickname || 'You'}`}
                         alt="You"
                         className={styles.commentAvatar}
                     />
                     <input
                         type="text"
-                        placeholder="Write a reply..."
+                        placeholder={t('feed.writeReply')}
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && submitReply()}
                     />
                     <button className={styles.sendComment} onClick={submitReply}>
-                        Reply
+                        {t('feed.reply')}
                     </button>
                 </div>
             )}

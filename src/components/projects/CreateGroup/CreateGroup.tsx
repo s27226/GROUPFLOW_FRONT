@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useGraphQL, useFriends } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
@@ -14,6 +15,7 @@ interface CreateProjectResponse {
 }
 
 export default function CreateGroup() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
     const [projectName, setProjectName] = useState("");
@@ -78,12 +80,12 @@ export default function CreateGroup() {
         setError("");
 
         if (!projectName.trim()) {
-            setError("Please enter a project name.");
+            setError(t('projects.pleaseEnterName'));
             return;
         }
 
         if (!projectDescription.trim()) {
-            setError("Please enter a project description.");
+            setError(t('projects.pleaseEnterDescription'));
             return;
         }
 
@@ -111,7 +113,7 @@ export default function CreateGroup() {
             }
         } catch (err) {
             console.error("Failed to create project:", err);
-            setError("Failed to create project. Please try again.");
+            setError(t('projects.createFailed'));
         } finally {
             setCreating(false);
         }
@@ -129,14 +131,14 @@ export default function CreateGroup() {
         <div className={styles.createGroupPage}>
             {/* Left section - form */}
             <div className={styles.leftSection}>
-                <h2>Create New Project</h2>
+                <h2>{t('projects.createNewProject')}</h2>
                 {error && <div className={styles.errorMessage}>{error}</div>}
                 <form onSubmit={handleSubmit} className={styles.createGroupForm}>
                     <div className={styles.formGroup}>
-                        <label>Project Name *</label>
+                        <label>{t('projects.projectNameRequired')}</label>
                         <input
                             type="text"
-                            placeholder="Enter project name..."
+                            placeholder={t('projects.enterProjectName')}
                             value={projectName}
                             onChange={(e) => setProjectName(e.target.value)}
                             required
@@ -144,9 +146,9 @@ export default function CreateGroup() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label>Description *</label>
+                        <label>{t('projects.descriptionRequired')}</label>
                         <textarea
-                            placeholder="Describe your project..."
+                            placeholder={t('projects.describeProject')}
                             value={projectDescription}
                             onChange={(e) => setProjectDescription(e.target.value)}
                             required
@@ -154,7 +156,7 @@ export default function CreateGroup() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label>Image URL (Optional)</label>
+                        <label>{t('projects.imageUrl')}</label>
                         <input
                             type="url"
                             placeholder="https://example.com/image.jpg"
@@ -164,11 +166,11 @@ export default function CreateGroup() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label>Skills (Optional)</label>
+                        <label>{t('projects.skillsOptional')}</label>
                         <div className={styles.tagInputContainer}>
                             <input
                                 type="text"
-                                placeholder="Add a skill..."
+                                placeholder={t('projects.addASkill')}
                                 value={skillInput}
                                 onChange={(e) => setSkillInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
@@ -186,11 +188,11 @@ export default function CreateGroup() {
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label>Interests (Optional)</label>
+                        <label>{t('projects.interestsOptional')}</label>
                         <div className={styles.tagInputContainer}>
                             <input
                                 type="text"
-                                placeholder="Add an interest..."
+                                placeholder={t('projects.addAnInterest')}
                                 value={interestInput}
                                 onChange={(e) => setInterestInput(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addInterest())}
@@ -214,15 +216,15 @@ export default function CreateGroup() {
                                 checked={isPublic}
                                 onChange={(e) => setIsPublic(e.target.checked)}
                             />
-                            <span>Make project public</span>
+                            <span>{t('projects.makePublic')}</span>
                         </label>
-                        <span className={styles.formHint}>Public projects can be viewed by anyone</span>
+                        <span className={styles.formHint}>{t('projects.publicDescription')}</span>
                     </div>
 
                     <div className={styles.selectedMembersSummary}>
-                        <h4>Selected Collaborators ({selectedUsers.length})</h4>
+                        <h4>{t('projects.selectedCollaborators')} ({selectedUsers.length})</h4>
                         {selectedUsers.length === 0 ? (
-                            <p className={styles.emptyState}>No collaborators selected yet</p>
+                            <p className={styles.emptyState}>{t('projects.noCollaboratorsSelected')}</p>
                         ) : (
                             <div className={styles.selectedChips}>
                                 {selectedUsers.map(user => (
@@ -253,7 +255,7 @@ export default function CreateGroup() {
                         className={styles.submitBtn}
                         disabled={creating}
                     >
-                        {creating ? "Creating..." : "Create Project"}
+                        {creating ? t('common.creating') : t('projects.createProject')}
                     </button>
                 </form>
             </div>
@@ -261,16 +263,16 @@ export default function CreateGroup() {
             {/* Right section - participants */}
             <div className={styles.rightSection}>
                 <div className={styles.participantsHeader}>
-                    <h3>Invite Collaborators</h3>
+                    <h3>{t('projects.inviteCollaborators')}</h3>
                     <span className={styles.count}>
-                        {selectedUsers.length} / {friends.length} selected
+                        {t('projects.selectedCount', { selected: selectedUsers.length, total: friends.length })}
                     </span>
                 </div>
 
                 <div className={styles.searchBox}>
                     <input
                         type="text"
-                        placeholder="Search friends..."
+                        placeholder={t('projects.searchFriends')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className={styles.searchInput}
@@ -279,11 +281,11 @@ export default function CreateGroup() {
 
                 {loading ? (
                     <div className={styles.loadingState}>
-                        <p>Loading friends...</p>
+                        <p>{t('projects.loadingFriends')}</p>
                     </div>
                 ) : filteredFriends.length === 0 ? (
                     <div className={styles.emptyState}>
-                        <p>{searchTerm ? "No friends match your search" : "You don't have any friends yet"}</p>
+                        <p>{searchTerm ? t('projects.noFriendsMatch') : t('projects.noFriendsYet')}</p>
                     </div>
                 ) : (
                     <div className={styles.participantsList}>

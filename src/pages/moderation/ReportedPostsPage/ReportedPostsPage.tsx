@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
@@ -7,12 +8,14 @@ import { useToast } from "../../../context/ToastContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { AlertTriangle, Trash2, XCircle, ChevronLeft, ShieldAlert } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ReportedPostsPage.module.css";
 
 interface ReportedUser {
     nickname?: string;
     name?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ReportedPost {
@@ -46,6 +49,7 @@ export default function ReportedPostsPage() {
     const { isModerator } = useAuth();
     const navigate = useNavigate();
     const { showToast } = useToast();
+    const { t } = useTranslation();
     const [actioningId, setActioningId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -64,7 +68,7 @@ export default function ReportedPostsPage() {
                 return typedData?.admin?.reportedPosts || [];
             },
             initialData: [],
-            onError: () => showToast("An error occurred while loading reported posts", "error")
+            onError: () => showToast(t('moderation.loadReportedError'), "error")
         }
     );
 
@@ -73,7 +77,7 @@ export default function ReportedPostsPage() {
     });
 
     const handleDeletePost = async (postId: string, reportId: string) => {
-        if (!window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
+        if (!window.confirm(t('moderation.deletePostConfirm'))) {
             return;
         }
 
@@ -84,10 +88,10 @@ export default function ReportedPostsPage() {
             }) as MutationResponse | null;
 
             if (!response?.errors) {
-                showToast("Post deleted successfully", "success");
+                showToast(t('moderation.postDeleted'), "success");
                 setReports((reports ?? []).filter(r => r.id !== reportId));
             } else {
-                const errorMessage = response.errors[0]?.message || "Failed to delete post";
+                const errorMessage = response.errors[0]?.message || t('moderation.postDeleteFailed');
                 showToast(errorMessage, "error");
             }
         } finally {
@@ -103,10 +107,10 @@ export default function ReportedPostsPage() {
             }) as MutationResponse | null;
 
             if (!response?.errors) {
-                showToast("Report discarded successfully", "success");
+                showToast(t('moderation.reportDiscarded'), "success");
                 setReports((reports ?? []).filter(r => r.id !== reportId));
             } else {
-                const errorMessage = response.errors[0]?.message || "Failed to discard report";
+                const errorMessage = response.errors[0]?.message || t('moderation.discardFailed');
                 showToast(errorMessage, "error");
             }
         } finally {
@@ -127,41 +131,40 @@ export default function ReportedPostsPage() {
                     <div className={styles.rppHeader}>
                         <button className={styles.rppBackButton} onClick={() => navigate(-1)}>
                             <ChevronLeft size={20} />
-                            <span>Back</span>
+                            <span>{t('common.back')}</span>
                         </button>
                         <div className={styles.rppHeaderTitle}>
                             <ShieldAlert size={28} className={styles.rppHeaderIcon} />
-                            <h1>Reported Posts</h1>
+                            <h1>{t('moderation.reportedPosts')}</h1>
                         </div>
                         <p className={styles.rppHeaderSubtitle}>
-                            Review and manage posts that have been reported by users
+                            {t('moderation.reportedPostsDescription')}
                         </p>
                     </div>
 
                     {loading ? (
                         <div className={styles.rppLoadingState}>
                             <div className={styles.rppSpinner}></div>
-                            <p>Loading reported posts...</p>
+                            <p>{t('moderation.loadingReportedPosts')}</p>
                         </div>
                     ) : (reports ?? []).length === 0 ? (
                         <div className={styles.rppEmptyState}>
                             <div className={styles.rppEmptyIcon}>
                                 <ShieldAlert size={64} strokeWidth={1.5} />
                             </div>
-                            <h2>No reported posts</h2>
+                            <h2>{t('moderation.noReportedPosts')}</h2>
                             <p className={styles.rppEmptyDescription}>
-                                There are no active reports at this time. When users report inappropriate content,
-                                it will appear here for moderation.
+                                {t('moderation.noReportsDescription')}
                             </p>
                             <div className={styles.rppInfoBox}>
                                 <AlertTriangle size={18} />
-                                <span>Keep the community safe by reviewing reports promptly</span>
+                                <span>{t('moderation.keepCommunitySafe')}</span>
                             </div>
                         </div>
                     ) : (
                         <>
                             <div className={styles.rppReportsCount}>
-                                <span>{(reports ?? []).length} {(reports ?? []).length === 1 ? 'report' : 'reports'} pending</span>
+                                <span>{t('moderation.reportsPending', { count: (reports ?? []).length })}</span>
                             </div>
                             <div className={styles.rppReportsGrid}>
                                 {(reports ?? []).map((report) => (
@@ -169,16 +172,13 @@ export default function ReportedPostsPage() {
                                         <div className={styles.rppReportHeaderInfo}>
                                             <div className={styles.rppReporterInfo}>
                                                 <img
-                                                    src={
-                                                        report.reportedByUser?.profilePic ||
-                                                        `https://api.dicebear.com/9.x/identicon/svg?seed=${report.reportedByUser?.nickname}`
-                                                    }
+                                                    src={getProfilePicUrl(report.reportedByUser?.profilePicUrl, report.reportedByUser?.nickname)}
                                                     alt={report.reportedByUser?.nickname}
                                                     className={styles.rppReporterAvatar}
                                                 />
                                                 <div>
                                                     <p className={styles.rppReportedBy}>
-                                                        Reported by <strong>{report.reportedByUser?.nickname}</strong>
+                                                        {t('moderation.reportedBy')} <strong>{report.reportedByUser?.nickname}</strong>
                                                     </p>
                                                     <p className={styles.rppReportDate}>{formatTime(report.createdAt)}</p>
                                                 </div>
@@ -189,17 +189,14 @@ export default function ReportedPostsPage() {
                                         </div>
 
                                         <div className={styles.rppReportReason}>
-                                            <strong>Reason:</strong>
+                                            <strong>{t('moderation.reason')}</strong>
                                             <p>{report.reason}</p>
                                         </div>
 
                                         <div className={styles.rppReportedPostPreview}>
                                             <div className={styles.rppPostAuthor}>
                                                 <img
-                                                    src={
-                                                        report.post?.user?.profilePic ||
-                                                        `https://api.dicebear.com/9.x/identicon/svg?seed=${report.post?.user?.nickname}`
-                                                    }
+                                                    src={getProfilePicUrl(report.post?.user?.profilePicUrl, report.post?.user?.nickname)}
                                                     alt={report.post?.user?.nickname}
                                                     className={styles.rppPostAuthorAvatar}
                                                 />
@@ -235,7 +232,7 @@ export default function ReportedPostsPage() {
                                                 ) : (
                                                     <>
                                                         <XCircle size={18} />
-                                                        <span>Discard</span>
+                                                        <span>{t('moderation.discard')}</span>
                                                     </>
                                                 )}
                                             </button>
@@ -249,7 +246,7 @@ export default function ReportedPostsPage() {
                                                 ) : (
                                                     <>
                                                         <Trash2 size={18} />
-                                                        <span>Delete Post</span>
+                                                        <span>{t('moderation.deletePost')}</span>
                                                     </>
                                                 )}
                                             </button>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { Post } from "../../../components/feed";
@@ -10,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts, useGraphQL } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl, getProjectImageUrl, getBannerUrl } from "../../../utils/profilePicture";
 import profileStyles from "./ProjectProfilePage.module.css";
 import feedStyles from "../../../components/feed/Feed/Feed.module.css";
 
@@ -18,6 +20,7 @@ interface ProjectOwner {
     name?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface Skill {
@@ -55,6 +58,7 @@ interface Collaborator {
         name?: string;
         nickname?: string;
         profilePic?: string;
+        profilePicUrl?: string;
     };
     role: string;
 }
@@ -78,14 +82,14 @@ interface GraphQLProjectResponse {
 }
 
 export default function ProjectProfilePage() {
+    const { t } = useTranslation();
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
-    const { user: authUser } = useAuth();
 
     const [project, setProject] = useState<ProjectState | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isOwner, setIsOwner] = useState(false);
+    const {user: currentUser} = useAuth();
 
     const { posts, loading: postsLoading } = useProjectPosts(projectId ?? '');
 
@@ -122,10 +126,8 @@ export default function ProjectProfilePage() {
                     id: projectData.id,
                     name: projectData.name,
                     description: projectData.description,
-                    banner: projectData.bannerUrl || `https://picsum.photos/900/200?random=${projectData.id}`,
-                    image:
-                        projectData.imageUrl ||
-                        `https://picsum.photos/200?random=${projectData.id}`,
+                    banner: getBannerUrl(projectData.bannerUrl, projectData.id),
+                    image: getProjectImageUrl(projectData.imageUrl, projectData.id, 200),
                     skills: projectData.skills || [],
                     interests: projectData.interests || [],
                     members: [
@@ -134,27 +136,18 @@ export default function ProjectProfilePage() {
                             userId: projectData.owner.id,
                             name: projectData.owner.nickname || projectData.owner.name || '',
                             role: "Owner",
-                            image:
-                                projectData.owner.profilePic ||
-                                `https://i.pravatar.cc/60?u=${projectData.owner.id}`
+                            image: getProfilePicUrl(projectData.owner.profilePicUrl, projectData.owner.nickname || projectData.owner.id)
                         },
                         // Add collaborators
                         ...(projectData.collaborators?.map((collab: Collaborator) => ({
                                 userId: collab.user.id,
                                 name: collab.user.nickname || collab.user.name || '',
                                 role: collab.role,
-                                image:
-                                    collab.user.profilePic ||
-                                    `https://i.pravatar.cc/60?u=${collab.user.id}`
+                                image: getProfilePicUrl(collab.user.profilePicUrl, collab.user.nickname || collab.user.id)
                             })) || [])
                     ],
                     owner: projectData.owner
                 });
-
-                // Check if current user is the owner
-                if (authUser && String(projectData.owner.id) === String(authUser.id)) {
-                    setIsOwner(true);
-                }
 
                 setLoading(false);
             } catch (err) {
@@ -164,7 +157,7 @@ export default function ProjectProfilePage() {
         };
 
         fetchProjectProfile();
-    }, [projectId, executeQuery, authUser]);
+    }, [projectId, executeQuery]);
 
     if (loading || postsLoading) {
         return (
@@ -214,7 +207,7 @@ export default function ProjectProfilePage() {
                 <div className={profileStyles.profileContent}>
                     <Sidebar />
                     <div className={profileStyles.profileMain}>
-                        <p>Project not found</p>
+                        <p>{t('projects.projectNotFound')}</p>
                     </div>
                 </div>
             </div>
@@ -234,12 +227,12 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className={profileStyles.profilePfp} />
                         <div className={profileStyles.profileInfo}>
                             <h2>{sanitizeText(project.name)}</h2>
-                            {isOwner && (
+                            {currentUser && String(projectId) === String(currentUser.id) && (
                                 <button
                                     className={profileStyles.editBtn}
                                     onClick={() => navigate(`/project/${projectId}/edit`)}
                                 >
-                                    Edit Frontpage
+                                    {t('projects.editFrontpage')}
                                 </button>
                             )}
                         </div>
@@ -248,13 +241,13 @@ export default function ProjectProfilePage() {
                     <div className={profileStyles.profileBody}>
                         <div className={profileStyles.profileLeft}>
                             <section className={profileStyles.aboutMe}>
-                                <h3>Description</h3>
+                                <h3>{t('projects.description')}</h3>
                                 <p>{sanitizeText(project.description)}</p>
                             </section>
 
                             {project.skills && project.skills.length > 0 && (
                                 <section className={profileStyles.aboutMe}>
-                                    <h3>Skills</h3>
+                                    <h3>{t('projects.skills')}</h3>
                                     <div className={profileStyles.tagsDisplay}>
                                         {project.skills.map((skill: Skill) => (
                                             <span key={skill.id} className={`${profileStyles.tag} ${profileStyles.skillTag}`}>
@@ -267,7 +260,7 @@ export default function ProjectProfilePage() {
 
                             {project.interests && project.interests.length > 0 && (
                                 <section className={profileStyles.aboutMe}>
-                                    <h3>Interests</h3>
+                                    <h3>{t('projects.interests')}</h3>
                                     <div className={profileStyles.tagsDisplay}>
                                         {project.interests.map((interest: Interest) => (
                                             <span key={interest.id} className={`${profileStyles.tag} ${profileStyles.interestTag}`}>
@@ -279,7 +272,7 @@ export default function ProjectProfilePage() {
                             )}
 
                             <section className={profileStyles.ownedProjects}>
-                                <h3>Members</h3>
+                                <h3>{t('projects.members')}</h3>
                                 <div className={profileStyles.profileMembersScroll}>
                                     {project.members?.map((member, index) => (
                                         <div
@@ -302,43 +295,43 @@ export default function ProjectProfilePage() {
 
                         <div className={profileStyles.profileRight}>
                             <div className={profileStyles.profilePosts}>
-                                <h3>Activity</h3>
+                                <h3>{t('projects.activity')}</h3>
                                 <div className={feedStyles.feedContainer}>
                                     {!posts || posts.length === 0 ? (
-                                        <p>No activity yet</p>
+                                        <p>{t('projects.noActivityYet')}</p>
                                     ) : (
                                         posts.map((post) => (
                                             <Post
                                                 key={post.id}
-                                                id={String(post.id)}
+                                                id={post.id}
                                                 author={post.author ?? ''}
-                                                authorId={String(post.authorId ?? '')}
+                                                authorId={post.authorId ?? 0}
                                                 authorProfilePic={post.authorProfilePic}
                                                 time={post.time ?? ''}
                                                 content={post.content ?? ''}
                                                 image={post.image}
                                                 comments={(post.comments ?? []).map((c) => ({
-                                                    id: String(c.id),
-                                                    userId: String(c.userId),
+                                                    id: c.id,
+                                                    userId: c.userId,
                                                     user: c.user,
                                                     profilePic: c.profilePic,
                                                     text: c.text,
                                                     time: c.time,
-                                                    likes: (c.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName })),
+                                                    likes: c.likes ?? [],
                                                     liked: c.liked,
                                                     menuOpen: c.menuOpen,
                                                     replies: []
                                                 }))}
                                                 saved={false}
                                                 sharedPost={post.sharedPost ? {
-                                                    id: String(post.sharedPost.id),
+                                                    id: post.sharedPost.id,
                                                     author: post.sharedPost.author,
-                                                    authorId: String(post.sharedPost.authorId ?? ''),
+                                                    authorId: post.sharedPost.authorId,
                                                     authorProfilePic: post.sharedPost.authorProfilePic,
                                                     time: post.sharedPost.time,
                                                     content: post.sharedPost.content ?? ''
                                                 } : null}
-                                                likes={(post.likes ?? []).map((l) => ({ userId: String(l.userId), userName: l.userName }))}
+                                                likes={post.likes ?? []}
                                                 projectId={projectId}
                                             />
                                         ))

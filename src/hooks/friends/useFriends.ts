@@ -4,15 +4,16 @@ import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../queries/graphql";
 
 interface Friend {
-    id: string;
+    id: number;
     name?: string;
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface FriendRequest {
-    id: string;
+    id: number;
     requester: Friend;
     name: string;
     nickname?: string;
@@ -71,7 +72,7 @@ export const useFriends = (options: UseFriendsOptions = {}) => {
     }, [friends, searchQuery]);
 
     const removeFriend = useCallback(
-        async (friendId: string): Promise<boolean> => {
+        async (friendId: number): Promise<boolean> => {
             try {
                 await executeMutation(GRAPHQL_MUTATIONS.REMOVE_FRIEND, { friendId });
                 // Update local state
@@ -86,7 +87,7 @@ export const useFriends = (options: UseFriendsOptions = {}) => {
     );
 
     const sendFriendRequest = useCallback(
-        async (requesteeId: string): Promise<boolean> => {
+        async (requesteeId: number): Promise<boolean> => {
             try {
                 await executeMutation(GRAPHQL_MUTATIONS.SEND_FRIEND_REQUEST, { requesteeId });
                 return true;
@@ -99,7 +100,7 @@ export const useFriends = (options: UseFriendsOptions = {}) => {
     );
 
     const checkFriendship = useCallback(
-        async (userId: string): Promise<boolean> => {
+        async (userId: number): Promise<boolean> => {
             try {
                 const data = await executeQuery(GRAPHQL_QUERIES.GET_FRIENDSHIP_STATUS, {
                     friendId: userId
@@ -114,7 +115,7 @@ export const useFriends = (options: UseFriendsOptions = {}) => {
     );
 
     const isFriend = useCallback(
-        (userId: string): boolean => {
+        (userId: number): boolean => {
             return (friends || []).some((friend: Friend) => friend.id === userId);
         },
         [friends]
@@ -152,7 +153,7 @@ export const useFriendRequests = (options: UseFriendRequestsOptions = {}) => {
             autoFetch: autoFetch,
             initialData: [],
             transform: (data: unknown): FriendRequest[] => {
-                const typedData = data as { friendRequest?: { allfriendrequests?: { nodes?: Array<{ id: string; requester: Friend; sent: string }> } } } | null;
+                const typedData = data as { friendRequest?: { allfriendrequests?: { nodes?: Array<{ id: number; requester: Friend; sent: string }> } } } | null;
                 const requests = typedData?.friendRequest?.allfriendrequests?.nodes || [];
                 return requests.map((req): FriendRequest => ({
                     id: req.id,
@@ -166,7 +167,7 @@ export const useFriendRequests = (options: UseFriendRequestsOptions = {}) => {
     );
 
     const acceptRequest = useCallback(
-        async (friendRequestId: string): Promise<boolean> => {
+        async (friendRequestId: number): Promise<boolean> => {
             try {
                 await executeMutation(GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST, {
                     friendRequestId
@@ -183,7 +184,7 @@ export const useFriendRequests = (options: UseFriendRequestsOptions = {}) => {
     );
 
     const rejectRequest = useCallback(
-        async (friendRequestId: string): Promise<boolean> => {
+        async (friendRequestId: number): Promise<boolean> => {
             try {
                 await executeMutation(GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST, {
                     friendRequestId

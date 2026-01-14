@@ -1,11 +1,12 @@
 // User types
 export interface User {
-  id: string;
+  id: number;
   name?: string;
   surname?: string;
   nickname: string;
   email?: string;
   profilePic?: string;
+  profilePicUrl?: string;
   isModerator?: boolean;
   bio?: string;
   skills?: string[];
@@ -15,9 +16,9 @@ export interface User {
 
 // Post types
 export interface Post {
-  id: string;
+  id: number;
   author: string;
-  authorId: string;
+  authorId: number;
   authorProfilePic?: string;
   title?: string;
   content: string;
@@ -26,19 +27,19 @@ export interface Post {
   likes?: Like[];
   comments?: Comment[];
   sharedPost?: Post | null;
-  projectId?: string;
+  projectId?: number;
   saved?: boolean;
   hidden?: boolean;
 }
 
 export interface Like {
-  userId: string;
+  userId: number;
   userName?: string;
 }
 
 export interface Comment {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   author: string;
   authorProfilePic?: string;
   content: string;
@@ -48,19 +49,19 @@ export interface Comment {
 
 // Project types
 export interface Project {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   image?: string;
   owner?: User;
-  ownerId?: string;
+  ownerId?: number;
   members?: ProjectMember[];
   createdAt?: string;
 }
 
 export interface ProjectMember {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   user: User;
   role: string;
   joinedAt?: string;
@@ -68,7 +69,7 @@ export interface ProjectMember {
 
 // Chat types
 export interface ChatMessage {
-  id: string;
+  id: number;
   text: string;
   from: string;
   sender?: User;
@@ -79,16 +80,16 @@ export interface ChatMessage {
 }
 
 export interface Chat {
-  id: string;
-  projectId?: string;
+  id: number;
+  projectId?: number;
   participants?: User[];
   messages?: ChatMessage[];
   lastMessage?: ChatMessage;
 }
 
 export interface UserChat {
-  id: string;
-  recipientId: string;
+  id: number;
+  recipientId: number;
   recipient: User;
   lastMessage?: string;
   lastMessageTime?: string;
@@ -97,9 +98,9 @@ export interface UserChat {
 
 // Friend types
 export interface Friendship {
-  id: string;
-  userId: string;
-  friendId: string;
+  id: number;
+  userId: number;
+  friendId: number;
   friend?: User;
   status: 'pending' | 'accepted' | 'blocked';
   createdAt?: string;
@@ -107,12 +108,12 @@ export interface Friendship {
 
 // Invitation types
 export interface Invitation {
-  id: string;
-  senderId: string;
+  id: number;
+  senderId: number;
   sender: User;
-  recipientId: string;
+  recipientId: number;
   recipient?: User;
-  projectId?: string;
+  projectId?: number;
   project?: Project;
   type: 'friend' | 'project';
   status: 'pending' | 'accepted' | 'declined';
@@ -121,7 +122,7 @@ export interface Invitation {
 
 // File types
 export interface ProjectFile {
-  id: string;
+  id: number;
   name: string;
   url: string;
   size?: number;
@@ -132,21 +133,21 @@ export interface ProjectFile {
 
 // Termin types
 export interface Termin {
-  id: string;
+  id: number;
   title: string;
   description?: string;
   date: string;
   time?: string;
-  projectId: string;
+  projectId: number;
   createdBy?: User;
 }
 
 // Moderation types
 export interface Report {
-  id: string;
-  postId: string;
+  id: number;
+  postId: number;
   post?: Post;
-  reporterId: string;
+  reporterId: number;
   reporter?: User;
   reason: string;
   status: 'pending' | 'resolved' | 'dismissed';
@@ -154,8 +155,8 @@ export interface Report {
 }
 
 export interface BlockedUser {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   user: User;
   reason?: string;
   expiresAt?: string;
@@ -210,7 +211,7 @@ export interface UseGraphQLOptions {
 
 // Notification types
 export interface Notification {
-  id: string;
+  id: number;
   type: 'like' | 'comment' | 'follow' | 'mention' | 'invitation';
   message: string;
   read: boolean;

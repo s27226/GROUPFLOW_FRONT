@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -78,6 +79,7 @@ interface TerminsViewProps {
 }
 
 const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
+    const { t } = useTranslation();
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [events, setEvents] = useState<EventData[]>([]);
     const [newEvent, setNewEvent] = useState<NewEventData>({ title: "", time: "", description: "" });
@@ -200,15 +202,15 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
     if (loading) {
         return (
             <div className={styles.terminsContainer}>
-                <h2 className={styles.terminsTitle}>🗓 Terminarz projektu</h2>
-                <p>Loading events...</p>
+                <h2 className={styles.terminsTitle}>{t('projects.projectCalendar')}</h2>
+                <p>{t('projects.loadingEvents')}</p>
             </div>
         );
     }
 
     return (
         <div className={styles.terminsContainer}>
-            <h2 className={styles.terminsTitle}>🗓 Terminarz projektu</h2>
+            <h2 className={styles.terminsTitle}>{t('projects.projectCalendar')}</h2>
 
             <div className={styles.calendarSection}>
                 <Calendar
@@ -226,25 +228,25 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
 
             <div className={styles.eventPanel}>
                 <h3>
-                    Wydarzenia w dniu{" "}
+                    {t('projects.eventsOnDate')}{" "}
                     <span className={styles.highlight}>{selectedDate.toLocaleDateString()}</span>
                 </h3>
 
                 <div className={styles.eventList}>
                     {selectedDateEvents.length === 0 ? (
-                        <p className={styles.noEvents}>Brak wydarzeń.</p>
+                        <p className={styles.noEvents}>{t('projects.noEvents')}</p>
                     ) : (
                         selectedDateEvents.map((ev) => (
                             <div key={ev.id} className={styles.eventItem}>
                                 <div className={styles.eventContent}>
-                                    <strong>{ev.time || "All day"}</strong> — {ev.title}
+                                    <strong>{ev.time || t('projects.allDay')}</strong> — {ev.title}
                                     {ev.description && <p>{ev.description}</p>}
                                 </div>
                                 {canDeleteEvent(ev) && (
                                     <button
                                         className={styles.deleteEventBtn}
                                         onClick={() => handleDeleteEvent(ev.id)}
-                                        title="Delete event"
+                                        title={t('projects.deleteEvent')}
                                     >
                                         ✕
                                     </button>
@@ -255,16 +257,16 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
                 </div>
 
                 <div className={styles.addEvent}>
-                    <h4>Dodaj wydarzenie</h4>
+                    <h4>{t('projects.addEvent')}</h4>
                     <input
                         type="text"
-                        placeholder="Nazwa wydarzenia"
+                        placeholder={t('projects.eventName')}
                         value={newEvent.title}
                         onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                     />
                     <input
                         type="text"
-                        placeholder="Opis (opcjonalnie)"
+                        placeholder={t('projects.descriptionOptional')}
                         value={newEvent.description}
                         onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                     />
@@ -274,17 +276,17 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
                         onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
                     />
                     <button onClick={handleAddEvent} disabled={!currentUserId}>
-                        Dodaj
+                        {t('projects.add')}
                     </button>
                 </div>
             </div>
 
             <ConfirmDialog
                 isOpen={deleteConfirm.show}
-                title="Delete Event"
-                message="Are you sure you want to delete this event? This action cannot be undone."
-                confirmText="Delete"
-                cancelText="Cancel"
+                title={t('projects.deleteEvent')}
+                message={t('projects.deleteEventConfirm')}
+                confirmText={t('common.delete')}
+                cancelText={t('common.cancel')}
                 danger={true}
                 onConfirm={confirmDeleteEvent}
                 onCancel={() => setDeleteConfirm({ show: false, eventId: null })}

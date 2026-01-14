@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
@@ -52,6 +53,7 @@ interface RemoveInterestResponse {
 }
 
 const ProfileTagsEditor: React.FC = () => {
+    const { t } = useTranslation();
     const [skillInput, setSkillInput] = useState("");
     const [interestInput, setInterestInput] = useState("");
     const { showToast } = useToast();
@@ -87,17 +89,17 @@ const ProfileTagsEditor: React.FC = () => {
                         interests: prev?.interests || []
                     }));
                     setSkillInput("");
-                    showToast("Skill added successfully", "success");
+                    showToast(t('profile.skillAdded'), "success");
                 }
             },
-            onError: () => showToast("Failed to add skill", "error")
+            onError: () => showToast(t('profile.skillAddFailed'), "error")
         }
     );
 
     const { mutate: removeSkillMutation } = useMutationQuery<RemoveSkillResponse>(
         GRAPHQL_MUTATIONS.REMOVE_SKILL,
         {
-            onError: () => showToast("Failed to remove skill", "error")
+            onError: () => showToast(t('profile.skillRemoveFailed'), "error")
         }
     );
 
@@ -111,17 +113,17 @@ const ProfileTagsEditor: React.FC = () => {
                         interests: [...(prev?.interests || []), data.userTag!.addinterest]
                     }));
                     setInterestInput("");
-                    showToast("Interest added successfully", "success");
+                    showToast(t('profile.interestAdded'), "success");
                 }
             },
-            onError: () => showToast("Failed to add interest", "error")
+            onError: () => showToast(t('profile.interestAddFailed'), "error")
         }
     );
 
     const { mutate: removeInterestMutation } = useMutationQuery<RemoveInterestResponse>(
         GRAPHQL_MUTATIONS.REMOVE_INTEREST,
         {
-            onError: () => showToast("Failed to remove interest", "error")
+            onError: () => showToast(t('profile.interestRemoveFailed'), "error")
         }
     );
 
@@ -137,7 +139,7 @@ const ProfileTagsEditor: React.FC = () => {
                 skills: (prev?.skills || []).filter((s: Skill) => s.id !== skillId),
                 interests: prev?.interests || []
             }));
-            showToast("Skill removed", "success");
+            showToast(t('profile.skillRemoved'), "success");
         }
     };
 
@@ -153,7 +155,7 @@ const ProfileTagsEditor: React.FC = () => {
                 skills: prev?.skills || [],
                 interests: (prev?.interests || []).filter((i: Interest) => i.id !== interestId)
             }));
-            showToast("Interest removed", "success");
+            showToast(t('profile.interestRemoved'), "success");
         }
     };
 
@@ -167,28 +169,27 @@ const ProfileTagsEditor: React.FC = () => {
 
     return (
         <div className={styles.profileTagsEditor}>
-            <h2>Your Profile Tags</h2>
+            <h2>{t('profile.yourProfileTags')}</h2>
             <p className={styles.tagsDescription}>
-                Add skills and interests to help others find you and get better friend
-                recommendations!
+                {t('profile.tagsDescription')}
             </p>
 
             <div className={styles.tagSection}>
-                <h3>Skills</h3>
+                <h3>{t('profile.skills')}</h3>
                 <p className={styles.sectionHint}>
-                    Technical abilities, programming languages, tools, etc.
+                    {t('profile.skillsDescription')}
                 </p>
 
                 <div className={styles.tagInputGroup}>
                     <input
                         type="text"
-                        placeholder="e.g., Python, JavaScript, Machine Learning..."
+                        placeholder={t('profile.skillsPlaceholder')}
                         value={skillInput}
                         onChange={(e) => setSkillInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && addSkill()}
                     />
                     <button onClick={addSkill} className={styles.addTagBtn}>
-                        Add Skill
+                        {t('profile.addSkill')}
                     </button>
                 </div>
 
@@ -200,34 +201,34 @@ const ProfileTagsEditor: React.FC = () => {
                                 <button
                                     onClick={() => removeSkill(skill.id)}
                                     className={styles.removeTagBtn}
-                                    title="Remove skill"
+                                    title={t('profile.removeSkill')}
                                 >
                                     ×
                                 </button>
                             </div>
                         ))
                     ) : (
-                        <p className={styles.noTags}>No skills added yet.</p>
+                        <p className={styles.noTags}>{t('profile.noSkills')}</p>
                     )}
                 </div>
             </div>
 
             <div className={styles.tagSection}>
-                <h3>Interests</h3>
+                <h3>{t('profile.interests')}</h3>
                 <p className={styles.sectionHint}>
-                    Hobbies, topics you're passionate about, activities you enjoy...
+                    {t('profile.interestsHint')}
                 </p>
 
                 <div className={styles.tagInputGroup}>
                     <input
                         type="text"
-                        placeholder="e.g., Photography, Gaming, Music..."
+                        placeholder={t('profile.interestsPlaceholder')}
                         value={interestInput}
                         onChange={(e) => setInterestInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && addInterest()}
                     />
                     <button onClick={addInterest} className={styles.addTagBtn}>
-                        Add Interest
+                        {t('profile.addInterest')}
                     </button>
                 </div>
 
@@ -239,23 +240,21 @@ const ProfileTagsEditor: React.FC = () => {
                                 <button
                                     onClick={() => removeInterest(interest.id)}
                                     className={styles.removeTagBtn}
-                                    title="Remove interest"
+                                    title={t('profile.removeInterest')}
                                 >
                                     ×
                                 </button>
                             </div>
                         ))
                     ) : (
-                        <p className={styles.noTags}>No interests added yet.</p>
+                        <p className={styles.noTags}>{t('profile.noInterests')}</p>
                     )}
                 </div>
             </div>
 
             <div className={styles.tagsSummary}>
                 <p>
-                    <strong>{skills.length}</strong> skill{skills.length !== 1 ? "s" : ""} and{" "}
-                    <strong>{interests.length}</strong> interest{interests.length !== 1 ? "s" : ""}{" "}
-                    added
+                    {t('profile.tagsSummary', { skillCount: skills.length, interestCount: interests.length })}
                 </p>
             </div>
         </div>

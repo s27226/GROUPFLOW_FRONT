@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
 import { Shield, UserX, ChevronLeft, AlertCircle } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./BlockedUsersPage.module.css";
 
 interface BlockedUser {
@@ -13,6 +15,7 @@ interface BlockedUser {
     name: string;
     surname: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface BlockedUsersResponse {
@@ -25,6 +28,7 @@ export default function BlockedUsersPage() {
     const [unblockingId, setUnblockingId] = useState<string | null>(null);
     const { showToast } = useToast();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const { data: blockedUsers, loading, setData: setBlockedUsers } = useQuery<BlockedUser[]>(
         GRAPHQL_QUERIES.GET_BLOCKED_USERS,
@@ -35,12 +39,12 @@ export default function BlockedUsersPage() {
                 return typedData?.blockedUser?.blockedusers || [];
             },
             initialData: [],
-            onError: () => showToast("Failed to load blocked users", "error")
+            onError: () => showToast(t('moderation.loadBlockedError'), "error")
         }
     );
 
     const { execute: unblockUser } = useMutationQuery({
-        onError: () => showToast("An error occurred while unblocking the user", "error")
+        onError: () => showToast(t('moderation.unblockError'), "error")
     });
 
     const handleUnblock = async (userId: string, userName: string) => {
@@ -52,9 +56,9 @@ export default function BlockedUsersPage() {
 
             if (!response?.errors) {
                 setBlockedUsers((blockedUsers ?? []).filter(user => user.id !== userId));
-                showToast(`${userName} has been unblocked`, "success");
+                showToast(t('moderation.userUnblocked', { name: userName }), "success");
             } else {
-                showToast("Failed to unblock user", "error");
+                showToast(t('moderation.unblockFailed'), "error");
             }
         } finally {
             setUnblockingId(null);
@@ -70,41 +74,40 @@ export default function BlockedUsersPage() {
                     <div className={styles.blockedUsersHeader}>
                         <button className={styles.backButton} onClick={() => navigate(-1)}>
                             <ChevronLeft size={20} />
-                            <span>Back</span>
+                            <span>{t('common.back')}</span>
                         </button>
                         <div className={styles.headerTitle}>
                             <Shield size={28} className={styles.headerIcon} />
-                            <h1>Blocked Users</h1>
+                            <h1>{t('moderation.blockedUsers')}</h1>
                         </div>
                         <p className={styles.headerSubtitle}>
-                            Manage users you've blocked from your account
+                            {t('moderation.blockedUsersDescription')}
                         </p>
                     </div>
 
                     {loading ? (
                         <div className={styles.loadingState}>
                             <div className={styles.spinner}></div>
-                            <p>Loading blocked users...</p>
+                            <p>{t('moderation.loadingBlockedUsers')}</p>
                         </div>
                     ) : (blockedUsers ?? []).length === 0 ? (
                         <div className={styles.emptyState}>
                             <div className={styles.emptyIcon}>
                                 <UserX size={64} strokeWidth={1.5} />
                             </div>
-                            <h2>No blocked users</h2>
+                            <h2>{t('moderation.noBlockedUsers')}</h2>
                             <p className={styles.emptyDescription}>
-                                You haven't blocked anyone yet. When you block someone, you won't see their posts 
-                                and they won't appear in your searches.
+                                {t('moderation.noBlockedUsersDescription')}
                             </p>
                             <div className={styles.infoBox}>
                                 <AlertCircle size={18} />
-                                <span>You can block users from the more options menu on their posts</span>
+                                <span>{t('moderation.blockFromMenu')}</span>
                             </div>
                         </div>
                     ) : (
                         <>
                             <div className={styles.blockedCount}>
-                                <span>{(blockedUsers ?? []).length} {(blockedUsers ?? []).length === 1 ? 'user' : 'users'} blocked</span>
+                                <span>{t('moderation.usersBlocked', { count: (blockedUsers ?? []).length })}</span>
                             </div>
                             <div className={styles.blockedUsersGrid}>
                                 {(blockedUsers ?? []).map(user => (
@@ -112,7 +115,7 @@ export default function BlockedUsersPage() {
                                         <div className={styles.cardContent}>
                                             <div className={styles.userAvatarWrapper}>
                                                 <img
-                                                    src={user.profilePic || `https://api.dicebear.com/9.x/identicon/svg?seed=${user.nickname}`}
+                                                    src={getProfilePicUrl(user.profilePicUrl, user.nickname)}
                                                     alt={user.nickname}
                                                     className={styles.userAvatar}
                                                     onClick={() => navigate(`/profile/${user.id}`)}
@@ -141,7 +144,7 @@ export default function BlockedUsersPage() {
                                             ) : (
                                                 <>
                                                     <UserX size={18} />
-                                                    <span>Unblock</span>
+                                                    <span>{t('moderation.unblock')}</span>
                                                 </>
                                             )}
                                         </button>
