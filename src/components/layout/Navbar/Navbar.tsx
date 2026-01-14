@@ -340,7 +340,7 @@ function Navbar() {
                                 </button>
                             </>
                         )}
-                        <button>{t('navigation.help')}</button>
+                        <button onClick={() => navigate("/help")}>{t('navigation.help')}</button>
                         <button
                             className="CreateGroup"
                             onClick={() => {

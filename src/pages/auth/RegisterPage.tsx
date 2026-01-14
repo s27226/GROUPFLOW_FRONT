@@ -5,7 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
 import { useGraphQL } from "../../hooks";
 import { AuthLayout, authStyles } from "../../components/layout";
-import { SocialLoginButtons } from "../../components/common";
 
 interface AuthResponse {
     auth: {
@@ -83,14 +82,6 @@ export default function RegisterPage() {
         }
     };
 
-    const handleGoogleLogin = () => {
-        setError(t('auth.googleNotImplemented'));
-    };
-
-    const handleFacebookLogin = () => {
-        setError(t('auth.facebookNotImplemented'));
-    };
-
     return (
         <AuthLayout>
             <div className={authStyles.formCardWide}>
@@ -140,11 +131,6 @@ export default function RegisterPage() {
                 <button className={authStyles.pillBtnLogin} type="button" onClick={() => navigate("/login")}>
                     {t('auth.backToLogin')}
                 </button>
-
-                <SocialLoginButtons
-                    onGoogleClick={handleGoogleLogin}
-                    onFacebookClick={handleFacebookLogin}
-                />
             </div>
         </AuthLayout>
     );
