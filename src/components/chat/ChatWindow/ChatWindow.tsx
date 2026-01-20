@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useChat } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ChatWindow.module.css";
 
 interface ChatWindowUser {
@@ -64,10 +65,10 @@ export default function ChatWindow({ user, currentUserId, onMinimize }: ChatWind
                     ) : (
                         messages.map((msg) => (
                             <div key={msg.id} className={`${styles.privChatMessageWrapper} ${msg.from === "me" ? styles.me : styles.them}`}>
-                                {msg.from !== "me" && msg.sender?.profilePic && (
+                                {msg.from !== "me" && (
                                     <img 
-                                        src={msg.sender.profilePic} 
-                                        alt={msg.sender.nickname}
+                                        src={getProfilePicUrl(msg.sender?.profilePic, msg.sender?.nickname || msg.sender?.id)} 
+                                        alt={msg.sender?.nickname}
                                         className={styles.chatMessageAvatar}
                                     />
                                 )}

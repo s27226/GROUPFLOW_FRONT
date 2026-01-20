@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BAN_USER, UNBAN_USER, SUSPEND_USER, UNSUSPEND_USER, RESET_PASSWORD, MANAGE_USER_ROLE } from '../../../queries/moderationQueries';
 import { useGraphQL } from '../../../hooks';
 import { ModerationUser } from '../../../hooks/moderation/useModeration';
+import { getProfilePicUrl } from '../../../utils/profilePicture';
 import styles from './UserManagement.module.css';
 
 interface UserManagementProps {
@@ -142,7 +143,7 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
           <div key={user.id} className={styles.userCard}>
             <div className={styles.userHeader}>
               <img
-                src={user.profilePic || '/default-avatar.png'}
+                src={getProfilePicUrl(user.profilePicUrl, user.nickname || user.id)}
                 alt={user.nickname}
                 className={styles.userAvatar}
               />

@@ -154,32 +154,24 @@ export const GRAPHQL_QUERIES = {
 
     // Trending Projects
     GET_TRENDING_PROJECTS: `
-    query GetTrendingProjects($first: Int = 5, $after: String) {
+    query GetTrendingProjects($first: Int = 5) {
       project {
-        trendingprojects(first: $first, after: $after) {
-          nodes {
+        trendingprojects(first: $first) {
+          id
+          name
+          description
+          imageUrl
+          created
+          owner {
             id
+            nickname
             name
-            description
-            imageUrl
-            created
-            owner {
-              id
-              nickname
-              name
-            }
-            totalPostLikes
-            views {
-              id
-            }
+            profilePicUrl
           }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
+          totalPostLikes
+          views {
+            id
           }
-          totalCount
         }
       }
     }
@@ -202,6 +194,7 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
+            profilePicUrl
           }
           collaborators {
             user {
@@ -209,6 +202,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePicUrl
             }
             role
           }
@@ -296,6 +290,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePicUrl
             }
           }
         }
@@ -332,6 +327,7 @@ export const GRAPHQL_QUERIES = {
                 nickname
                 name
                 surname
+                profilePicUrl
               }
             }
           }
@@ -425,32 +421,24 @@ export const GRAPHQL_QUERIES = {
 
     // All Projects with Pagination
     GET_ALL_PROJECTS: `
-    query GetAllProjects($first: Int, $after: String, $where: ProjectFilterInput, $order: [ProjectSortInput!]) {
+    query GetAllProjects {
       project {
-        allprojects(first: $first, after: $after, where: $where, order: $order) {
-          nodes {
+        allprojects {
+          id
+          name
+          description
+          imageUrl
+          created
+          lastUpdated
+          owner {
             id
+            nickname
             name
-            description
-            imageUrl
-            created
-            lastUpdated
-            owner {
-              id
-              nickname
-              name
-            }
-            views {
-              id
-            }
+            profilePicUrl
           }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
+          views {
+            id
           }
-          totalCount
         }
       }
     }
@@ -474,6 +462,7 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
+            profilePicUrl
           }
           skills {
             id
@@ -492,6 +481,7 @@ export const GRAPHQL_QUERIES = {
               nickname
               name
               surname
+              profilePicUrl
             }
             role
           }
@@ -554,31 +544,36 @@ export const GRAPHQL_QUERIES = {
 
     // Friend Requests
     GET_FRIEND_REQUESTS: `
-    query GetFriendRequests($first: Int, $after: String) {
+    query GetFriendRequests {
       friendRequest {
-        allfriendrequests(first: $first, after: $after) {
-          nodes {
+        allfriendrequests {
+          id
+          sent
+          requester {
             id
-            sent
-            requester {
-              id
-              nickname
-              name
-              surname
-            }
-            requestee {
-              id
-              nickname
-              name
-              surname
-            }
+            nickname
+            name
+            surname
+            profilePicUrl
           }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
+          requestee {
+            id
+            nickname
+            name
+            surname
+            profilePicUrl
           }
+        }
+      }
+    }
+  `,
+
+    // Friend Requests Count Only (lighter query for polling)
+    GET_FRIEND_REQUESTS_COUNT: `
+    query GetFriendRequestsCount {
+      friendRequest {
+        allfriendrequests {
+          id
         }
       }
     }
@@ -586,36 +581,41 @@ export const GRAPHQL_QUERIES = {
 
     // Group Invitations
     GET_GROUP_INVITATIONS: `
-    query GetGroupInvitations($first: Int, $after: String) {
+    query GetGroupInvitations {
       projectInvitation {
-        allprojectinvitations(first: $first, after: $after) {
-          nodes {
+        allprojectinvitations {
+          id
+          sent
+          project {
             id
-            sent
-            project {
-              id
-              name
-              description
-            }
-            inviting {
-              id
-              nickname
-              name
-              surname
-            }
-            invited {
-              id
-              nickname
-              name
-              surname
-            }
+            name
+            description
           }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
+          inviting {
+            id
+            nickname
+            name
+            surname
+            profilePicUrl
           }
+          invited {
+            id
+            nickname
+            name
+            surname
+            profilePicUrl
+          }
+        }
+      }
+    }
+  `,
+
+    // Group Invitations Count Only (lighter query for polling)
+    GET_GROUP_INVITATIONS_COUNT: `
+    query GetGroupInvitationsCount {
+      projectInvitation {
+        allprojectinvitations {
+          id
         }
       }
     }
@@ -623,17 +623,11 @@ export const GRAPHQL_QUERIES = {
 
     // All Chats
     GET_ALL_CHATS: `
-    query GetAllChats($first: Int, $after: String) {
+    query GetAllChats {
       chat {
-        allchats(first: $first, after: $after) {
-          nodes {
-            id
-            projectId
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
+        allchats {
+          id
+          projectId
         }
       }
     }
@@ -653,32 +647,22 @@ export const GRAPHQL_QUERIES = {
 
     // Get all entries (messages) for a specific chat
     GET_CHAT_ENTRIES: `
-    query GetChatEntries($chatId: Int!, $first: Int, $after: String) {
+    query GetChatEntries {
       entry {
-        allentries(
-          where: { userChat: { chatId: { eq: $chatId } } }
-          order: [{ sent: ASC }]
-          first: $first
-          after: $after
-        ) {
-          nodes {
+        allentries {
+          id
+          message
+          sent
+          public
+          userChat {
             id
-            message
-            sent
-            public
-            userChat {
+            user {
               id
-              user {
-                id
-                nickname
-                name
-                surname
-              }
+              nickname
+              name
+              surname
+              profilePicUrl
             }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
           }
         }
       }
@@ -726,30 +710,19 @@ export const GRAPHQL_QUERIES = {
 
     // Get events for a project
     GET_PROJECT_EVENTS: `
-    query GetProjectEvents($projectId: Int!, $first: Int, $after: String) {
+    query GetProjectEvents($projectId: Int!) {
       projectEvent {
-        eventsbyproject(
-          projectId: $projectId
-          order: [{ eventDate: ASC }]
-          first: $first
-          after: $after
-        ) {
-          nodes {
+        eventsbyproject(projectId: $projectId) {
+          id
+          title
+          description
+          eventDate
+          time
+          createdAt
+          createdById
+          createdBy {
             id
-            title
-            description
-            eventDate
-            time
-            createdAt
-            createdById
-            createdBy {
-              id
-              nickname
-            }
-          }
-          pageInfo {
-            hasNextPage
-            endCursor
+            nickname
           }
         }
       }
@@ -916,6 +889,7 @@ export const GRAPHQL_QUERIES = {
             nickname
             name
             surname
+            profilePicUrl
           }
           skills {
             id
@@ -1123,6 +1097,7 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
+            profilePicUrl
           }
         }
       }
@@ -1283,6 +1258,7 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
+            profilePicUrl
           }
         }
       }
@@ -1439,6 +1415,7 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
+            profilePicUrl
           }
           skills {
             id
@@ -1469,6 +1446,7 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
+            profilePicUrl
           }
         }
       }
@@ -1534,6 +1512,7 @@ export const GRAPHQL_MUTATIONS = {
             nickname
             name
             surname
+            profilePicUrl
           }
           skills {
             id

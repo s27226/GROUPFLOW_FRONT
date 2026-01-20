@@ -34,7 +34,7 @@ export default function ChatPage() {
     // Map friends to chat users format
     const users: ChatUser[] = (friends || []).map((friend) => ({
         id: friend.id,
-        name: `${friend.name || ''} ${friend.surname || ''}`.trim(),
+        name: friend.nickname || `${friend.name || ''} ${friend.surname || ''}`.trim(),
         nickname: friend.nickname,
         profilePic: friend.profilePicUrl,
         online: false // TODO: Implement online status

@@ -155,7 +155,7 @@ export const useProjectInvitations = (options: UseProjectsOptions = {}) => {
 
     const { data: invitations, loading, error, refetch, setData: setInvitations } = useQuery<ProjectInvitation[]>(
         GRAPHQL_QUERIES.GET_GROUP_INVITATIONS,
-        { first: 50 },
+        {},
         {
             skip: authLoading || !isAuthenticated || !autoFetch,
             autoFetch: autoFetch,
@@ -166,8 +166,8 @@ export const useProjectInvitations = (options: UseProjectsOptions = {}) => {
                     project: Project;
                     inviting: ProjectUser;
                 }
-                const typedData = data as { projectInvitation?: { allprojectinvitations?: { nodes?: RawInvitation[] } } } | null;
-                const invitationsData = typedData?.projectInvitation?.allprojectinvitations?.nodes || [];
+                const typedData = data as { projectInvitation?: { allprojectinvitations?: RawInvitation[] } } | null;
+                const invitationsData = typedData?.projectInvitation?.allprojectinvitations || [];
                 return invitationsData.map((inv): ProjectInvitation => ({
                     id: inv.id,
                     project: inv.project,

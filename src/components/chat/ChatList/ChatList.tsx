@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ChatList.module.css";
 
 interface ChatListUser {
     id: number;
     name: string;
+    nickname?: string;
     profilePic?: string;
     online?: boolean;
 }
@@ -27,13 +29,11 @@ export default function ChatList({ users, onSelectUser, selectedUser }: ChatList
                         className={selectedUser?.id === u.id ? styles.active : ""}
                     >
                         <div className={styles.chatUserInfo}>
-                            {u.profilePic && (
-                                <img 
-                                    src={u.profilePic} 
-                                    alt={u.name} 
-                                    className={styles.chatUserAvatar}
-                                />
-                            )}
+                            <img 
+                                src={getProfilePicUrl(u.profilePic, u.nickname || u.id)} 
+                                alt={u.name} 
+                                className={styles.chatUserAvatar}
+                            />
                             <div className={`${styles.chatStatus} ${u.online ? styles.online : styles.offline}`}></div>
                             <span>{u.name}</span>
                         </div>

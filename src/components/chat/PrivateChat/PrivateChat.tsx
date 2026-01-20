@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../../../hooks";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./PrivateChat.module.css";
 
 interface PrivateChatUser {
@@ -60,10 +61,10 @@ export default function PrivateChat({ user, currentUserId, onClose, onExpand }: 
                 ) : (
                     messages.map((msg) => (
                         <div key={msg.id} className={`${styles.privChatMessageWrapper} ${msg.from === "me" ? styles.me : styles.them}`}>
-                            {msg.from !== "me" && msg.sender?.profilePic && (
+                            {msg.from !== "me" && (
                                 <img 
-                                    src={msg.sender.profilePic} 
-                                    alt={msg.sender.nickname}
+                                    src={getProfilePicUrl(msg.sender?.profilePic, msg.sender?.nickname || msg.sender?.id)}
+                                    alt={msg.sender?.nickname}
                                     className={styles.privChatMessageAvatar}
                                     style={{ width: 24, height: 24, borderRadius: "50%", marginRight: 8 }}
                                 />

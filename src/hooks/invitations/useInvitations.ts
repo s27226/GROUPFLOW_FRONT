@@ -82,14 +82,14 @@ export const useInvitations = (options: UseInvitationsOptions = {}) => {
             }
             
             const [friendRequestsData, projectInvitationsData] = await Promise.all([
-                executeQuery(GRAPHQL_QUERIES.GET_FRIEND_REQUESTS, { first: 50 }) as Promise<{ friendRequest?: { allfriendrequests?: { nodes?: RawFriendRequest[] } } } | null>,
-                executeQuery(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, { first: 50 }) as Promise<{ projectInvitation?: { allprojectinvitations?: { nodes?: RawProjectInvitation[] } } } | null>
+                executeQuery(GRAPHQL_QUERIES.GET_FRIEND_REQUESTS, {}) as Promise<{ friendRequest?: { allfriendrequests?: RawFriendRequest[] } } | null>,
+                executeQuery(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, {}) as Promise<{ projectInvitation?: { allprojectinvitations?: RawProjectInvitation[] } } | null>
             ]);
 
             const friendReqs =
-                friendRequestsData?.friendRequest?.allfriendrequests?.nodes || [];
+                friendRequestsData?.friendRequest?.allfriendrequests || [];
             const projectInvs =
-                projectInvitationsData?.projectInvitation?.allprojectinvitations?.nodes || [];
+                projectInvitationsData?.projectInvitation?.allprojectinvitations || [];
 
             const formattedFriendRequests: FriendRequest[] = friendReqs.map((req): FriendRequest => ({
                 id: req.id,
@@ -179,21 +179,22 @@ export const useInvitationsPolling = (interval: number = 2 * 60 * 1000) => {
         setLoading(true);
         try {
             interface FriendRequestsResponse {
-                friendRequest?: { allfriendrequests?: { nodes?: unknown[] } };
+                friendRequest?: { allfriendrequests?: unknown[] };
             }
             interface ProjectInvitationsResponse {
-                projectInvitation?: { allprojectinvitations?: { nodes?: unknown[] } };
+                projectInvitation?: { allprojectinvitations?: unknown[] };
             }
             
+            // Use lighter count-only queries for polling
             const [friendRequestsData, groupInvitationsData] = await Promise.all([
-                executeQueryRef.current(GRAPHQL_QUERIES.GET_FRIEND_REQUESTS, { first: 50 }) as Promise<FriendRequestsResponse | null>,
-                executeQueryRef.current(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS, { first: 50 }) as Promise<ProjectInvitationsResponse | null>
+                executeQueryRef.current(GRAPHQL_QUERIES.GET_FRIEND_REQUESTS_COUNT, {}) as Promise<FriendRequestsResponse | null>,
+                executeQueryRef.current(GRAPHQL_QUERIES.GET_GROUP_INVITATIONS_COUNT, {}) as Promise<ProjectInvitationsResponse | null>
             ]);
 
             const friendRequestsCount =
-                friendRequestsData?.friendRequest?.allfriendrequests?.nodes?.length || 0;
+                friendRequestsData?.friendRequest?.allfriendrequests?.length || 0;
             const groupInvitationsCount =
-                groupInvitationsData?.projectInvitation?.allprojectinvitations?.nodes?.length || 0;
+                groupInvitationsData?.projectInvitation?.allprojectinvitations?.length || 0;
 
             const totalCount = friendRequestsCount + groupInvitationsCount;
             setCount(totalCount);

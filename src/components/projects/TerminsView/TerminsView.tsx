@@ -54,9 +54,7 @@ interface ProjectEventNode {
 
 interface ProjectEventsResponse {
     projectEvent: {
-        eventsbyproject: {
-            nodes: ProjectEventNode[];
-        };
+        eventsbyproject: ProjectEventNode[];
     };
 }
 
@@ -111,11 +109,10 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
         const fetchEvents = async () => {
             try {
                 const data = await executeQuery<ProjectEventsResponse>(GRAPHQL_QUERIES.GET_PROJECT_EVENTS, {
-                    projectId: parseInt(projectId),
-                    first: 50
+                    projectId: parseInt(projectId)
                 });
 
-                const eventsData = data.projectEvent.eventsbyproject.nodes || [];
+                const eventsData = data.projectEvent.eventsbyproject || [];
                 setEvents(
                     eventsData.map((event: ProjectEventNode) => ({
                         id: event.id,

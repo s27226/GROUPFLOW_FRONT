@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useGraphQL, useQuery } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../queries/graphql";
+import { getProfilePicUrl } from "../../utils/profilePicture";
 
 interface ChatUser {
     id: number;
@@ -9,6 +10,7 @@ interface ChatUser {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface UserChatData {
@@ -89,11 +91,15 @@ export const useChats = (options: UseChatsOptions = {}) => {
                     const otherUserChat = uc.chat.userChats?.find(
                         (chat) => chat.userId !== currentUserId
                     );
+                    const user = otherUserChat?.user;
                     
                     return {
                         id: uc.chat.id,
                         userChatId: uc.id,
-                        friend: otherUserChat?.user || {},
+                        friend: user ? {
+                            ...user,
+                            profilePic: getProfilePicUrl(user.profilePicUrl, user.nickname || user.id)
+                        } : {},
                         projectId: uc.chat.projectId,
                         lastMessage: "...",
                         unread: 0
@@ -159,14 +165,20 @@ export const useChatMessages = (chatId: number | string, options: UseChatMessage
                 const typedData = data as { entry?: { chatmessages?: ChatEntry[] } } | null;
                 const entries = typedData?.entry?.chatmessages || [];
                 const currentUserId = currentUser?.id ?? null;
-                return entries.map((entry): FormattedMessage => ({
-                    id: entry.id,
-                    from: entry.userChat.userId === currentUserId ? "me" : "them",
-                    text: entry.message,
-                    sent: entry.sent,
-                    sender: entry.userChat.user,
-                    public: entry.public
-                }));
+                return entries.map((entry): FormattedMessage => {
+                    const user = entry.userChat.user;
+                    return {
+                        id: entry.id,
+                        from: entry.userChat.userId === currentUserId ? "me" : "them",
+                        text: entry.message,
+                        sent: entry.sent,
+                        sender: {
+                            ...user,
+                            profilePic: getProfilePicUrl(user.profilePicUrl, user.nickname || user.id)
+                        },
+                        public: entry.public
+                    };
+                });
             }
         }
     );

@@ -147,14 +147,14 @@ export const useFriendRequests = (options: UseFriendRequestsOptions = {}) => {
 
     const { data: friendRequests, loading, error, refetch, setData: setFriendRequests } = useQuery<FriendRequest[]>(
         GRAPHQL_QUERIES.GET_FRIEND_REQUESTS,
-        { first: 50 },
+        {},
         {
             skip: !autoFetch,
             autoFetch: autoFetch,
             initialData: [],
             transform: (data: unknown): FriendRequest[] => {
-                const typedData = data as { friendRequest?: { allfriendrequests?: { nodes?: Array<{ id: number; requester: Friend; sent: string }> } } } | null;
-                const requests = typedData?.friendRequest?.allfriendrequests?.nodes || [];
+                const typedData = data as { friendRequest?: { allfriendrequests?: Array<{ id: number; requester: Friend; sent: string }> } } | null;
+                const requests = typedData?.friendRequest?.allfriendrequests || [];
                 return requests.map((req): FriendRequest => ({
                     id: req.id,
                     requester: req.requester,

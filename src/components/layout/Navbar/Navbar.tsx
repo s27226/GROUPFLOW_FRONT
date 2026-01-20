@@ -159,13 +159,13 @@ function Navbar() {
     const messages = (friends ?? []).slice(0, 5).map((friend) => ({
         id: friend.id,
         image: getProfilePicUrl(friend.profilePicUrl, friend.nickname),
-        name: `${friend.name} ${friend.surname}`,
+        name: `${friend.nickname}`,
         lastMessage: t('navigation.clickToChat'),
         time: "",
         onClick: () => {
             setActiveChat({
                 id: friend.id,
-                name: `${friend.name} ${friend.surname}`,
+                name: `${friend.nickname}`,
                 nickname: friend.nickname,
                 image: getProfilePicUrl(friend.profilePicUrl, friend.nickname)
             });

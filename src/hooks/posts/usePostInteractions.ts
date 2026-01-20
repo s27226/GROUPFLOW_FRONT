@@ -9,6 +9,7 @@ interface PostUser {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface PostLike {

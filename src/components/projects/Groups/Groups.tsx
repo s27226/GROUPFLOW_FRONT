@@ -22,9 +22,7 @@ interface ProjectData {
 
 interface AllProjectsGraphQLResponse {
     project?: {
-        allprojects?: {
-            nodes?: ProjectData[];
-        };
+        allprojects?: ProjectData[];
     };
 }
 
@@ -37,13 +35,13 @@ export default function Groups({ projects }: GroupsProps) {
 
     const { data: allProjects, loading, error } = useQuery<ProjectData[]>(
         GRAPHQL_QUERIES.GET_ALL_PROJECTS,
-        { first: 50 },
+        {},
         {
             autoFetch: true,
             initialData: [],
             transform: (data: unknown) => {
                 const typedData = data as AllProjectsGraphQLResponse;
-                const projectsData = typedData?.project?.allprojects?.nodes || [];
+                const projectsData = typedData?.project?.allprojects || [];
                 return projectsData.map((project: ProjectData) => ({
                     id: project.id,
                     name: project.name,

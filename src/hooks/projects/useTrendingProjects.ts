@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { GRAPHQL_QUERIES } from "../../queries/graphql";
-import { useGraphQL, useQuery } from "../core/useGraphQL";
+import { useQuery } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
 import { getProjectImageUrl } from "../../utils/profilePicture";
 
@@ -33,14 +33,6 @@ interface FormattedProject {
     owner?: ProjectOwner;
 }
 
-interface TrendingProjectsData {
-    nodes?: RawProject[];
-    pageInfo?: {
-        hasNextPage?: boolean;
-        endCursor?: string | null;
-    };
-}
-
 /**
  * Helper function to format project data
  * @param {Object} project - Raw project data from API
@@ -57,72 +49,44 @@ const formatProjectData = (project: RawProject): FormattedProject => ({
 });
 
 /**
- * Custom hook for fetching trending projects with pagination support
+ * Custom hook for fetching trending projects
  * Uses useQuery for unified loading/error state management
- * @param {number} pageSize - Number of projects to fetch per page (default: 5)
+ * @param {number} pageSize - Number of projects to display (default: 5)
  * @returns {Object} - { projects, loading, error, hasMore, loadMore, refresh }
  */
 export const useTrendingProjects = (pageSize: number = 5) => {
-    const [hasMore, setHasMore] = useState(false);
-    const [endCursor, setEndCursor] = useState<string | null>(null);
-    const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const { executeQuery } = useGraphQL();
+    const [displayCount, setDisplayCount] = useState(pageSize);
     const { isAuthenticated, authLoading } = useAuth();
-    const executeQueryRef = useRef(executeQuery);
-    
-    useEffect(() => {
-        executeQueryRef.current = executeQuery;
-    });
 
-    const { data: projects, loading, error, refetch, setData: setProjects } = useQuery<FormattedProject[]>(
+    const { data: allProjects, loading, error, refetch } = useQuery<FormattedProject[]>(
         GRAPHQL_QUERIES.GET_TRENDING_PROJECTS,
-        { first: pageSize, after: null },
+        {},
         {
             skip: authLoading || !isAuthenticated,
             autoFetch: true,
             initialData: [],
             transform: (data: unknown): FormattedProject[] => {
-                const typedData = data as { project?: { trendingprojects?: TrendingProjectsData } } | null;
-                const trendingData = typedData?.project?.trendingprojects;
-                if (trendingData) {
-                    setHasMore(trendingData.pageInfo?.hasNextPage || false);
-                    setEndCursor(trendingData.pageInfo?.endCursor || null);
-                }
-                const fetchedProjects = trendingData?.nodes || [];
+                const typedData = data as { project?: { trendingprojects?: RawProject[] } } | null;
+                const fetchedProjects = typedData?.project?.trendingprojects || [];
                 return fetchedProjects.map(formatProjectData);
             }
         }
     );
 
-    const loadMore = useCallback(async (): Promise<void> => {
-        if (!hasMore || isLoadingMore || !endCursor || !isAuthenticated) return;
-        
-        setIsLoadingMore(true);
-        try {
-            const data = await executeQueryRef.current(GRAPHQL_QUERIES.GET_TRENDING_PROJECTS, {
-                first: pageSize,
-                after: endCursor
-            }) as { project?: { trendingprojects?: TrendingProjectsData } } | null;
+    // Slice projects based on displayCount for "load more" behavior
+    const projects = allProjects?.slice(0, displayCount) || [];
+    const hasMore = (allProjects?.length || 0) > displayCount;
 
-            const trendingData = data?.project?.trendingprojects;
-            const fetchedProjects = trendingData?.nodes || [];
-            const formattedProjects = fetchedProjects.map(formatProjectData);
-
-            setProjects((prev) => [...(prev || []), ...formattedProjects]);
-            setHasMore(trendingData?.pageInfo?.hasNextPage || false);
-            setEndCursor(trendingData?.pageInfo?.endCursor || null);
-        } catch (err) {
-            console.error("Failed to load more projects:", err);
-        } finally {
-            setIsLoadingMore(false);
+    const loadMore = useCallback((): void => {
+        if (hasMore) {
+            setDisplayCount(prev => prev + pageSize);
         }
-    }, [hasMore, isLoadingMore, endCursor, isAuthenticated, pageSize, setProjects]);
+    }, [hasMore, pageSize]);
 
     const refresh = useCallback((): void => {
-        setEndCursor(null);
-        setHasMore(false);
+        setDisplayCount(pageSize);
         refetch();
-    }, [refetch]);
+    }, [refetch, pageSize]);
 
     return {
         projects,
@@ -131,6 +95,6 @@ export const useTrendingProjects = (pageSize: number = 5) => {
         hasMore,
         loadMore,
         refresh,
-        isLoadingMore
+        isLoadingMore: false
     };
 };

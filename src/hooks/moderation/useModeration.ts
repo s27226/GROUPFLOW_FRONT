@@ -17,6 +17,7 @@ export interface ModerationUser {
     suspendedUntil?: string;
     bannedAt?: string;
     profilePic?: string;
+    profilePicUrl?: string;
     isModerator?: boolean;
     banReason?: string;
     banExpiresAt?: string;

@@ -3,6 +3,7 @@ import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../queries/graphql";
 import { useGraphQL } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
 import { User } from "../../types";
+import { getProfilePicUrl } from "../../utils/profilePicture";
 
 interface ChatUser {
     id: number;
@@ -10,6 +11,7 @@ interface ChatUser {
     surname?: string;
     nickname?: string;
     profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ChatMessageEntry {
@@ -68,13 +70,19 @@ export function useChat(user: ChatUser | null, currentUserId: number | null): Us
 
             const entries = data.entry.chatmessages || [];
             setMessages(
-                entries.map((entry): FormattedMessage => ({
-                    id: entry.id,
-                    from: entry.userChat.userId === currentUserId ? "me" : "them",
-                    text: entry.message,
-                    sent: entry.sent,
-                    sender: entry.userChat.user
-                }))
+                entries.map((entry): FormattedMessage => {
+                    const user = entry.userChat.user;
+                    return {
+                        id: entry.id,
+                        from: entry.userChat.userId === currentUserId ? "me" : "them",
+                        text: entry.message,
+                        sent: entry.sent,
+                        sender: {
+                            ...user,
+                            profilePic: getProfilePicUrl(user.profilePicUrl, user.nickname || user.id)
+                        }
+                    };
+                })
             );
         } catch (err) {
             console.error("Failed to load messages:", err);

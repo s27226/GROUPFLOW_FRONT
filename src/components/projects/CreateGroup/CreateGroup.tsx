@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useGraphQL, useFriends } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { User } from "@/types";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./CreateGroup.module.css";
 
 interface CreateProjectResponse {
@@ -42,7 +43,7 @@ export default function CreateGroup() {
         name: friend.name,
         surname: friend.surname,
         nickname: friend.nickname ?? '',
-        profilePic: friend.profilePic
+        profilePic: getProfilePicUrl(friend.profilePicUrl, friend.nickname || friend.id)
     }));
 
     const toggleUser = (user: User): void => {

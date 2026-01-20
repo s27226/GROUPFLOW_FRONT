@@ -10,6 +10,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { useToast } from "../../../context/ToastContext";
 import { sanitizeText } from "../../../utils/sanitize";
+import { getProfilePicUrl } from "../../../utils/profilePicture";
 import type { Like, Post as PostType } from "../../../types";
 
 interface CommentData {
@@ -212,6 +213,7 @@ export default function Post({
                     id: newComment.id,
                     user: newComment.user.nickname || `${newComment.user.name || ''} ${newComment.user.surname || ''}`,
                     userId: newComment.userId,
+                    profilePic: getProfilePicUrl(newComment.user.profilePicUrl, newComment.user.nickname || newComment.user.id),
                     time: formatTime(newComment.createdAt || null),
                     text: newComment.content,
                     likes: [],
@@ -299,7 +301,7 @@ export default function Post({
         <div className={styles.postCard}>
             <div className={styles.postHeader}>
                 <img
-                    src={authorProfilePic}
+                    src={getProfilePicUrl(authorProfilePic, author || authorId)}
                     alt={author}
                     className={styles.postAvatar}
                     style={{ cursor: "pointer" }}
@@ -367,7 +369,7 @@ export default function Post({
                         <div className={styles.postSharedContent}>
                             <div className={styles.postSharedInfo}>
                                 <img
-                                    src={sharedPost.authorProfilePic}
+                                    src={getProfilePicUrl(sharedPost.authorProfilePic, sharedPost.author || sharedPost.userId)}
                                     alt={sharedPost.author}
                                     className={styles.postSharedAvatar}
                                 />
@@ -611,6 +613,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
                     id: newReply.id,
                     user: newReply.user.nickname || `${newReply.user.name || ''} ${newReply.user.surname || ''}`,
                     userId: newReply.userId,
+                    profilePic: getProfilePicUrl(newReply.user.profilePicUrl, newReply.user.nickname || newReply.user.id),
                     time: formatTime(newReply.createdAt || null),
                     text: newReply.content,
                     likes: [],
@@ -648,7 +651,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
         <div className={styles.comment} style={{ marginLeft: `${leftMargin}px` }}>
             <div className={styles.commentHeader}>
                 <img
-                    src={comment.profilePic}
+                    src={getProfilePicUrl(comment.profilePic, comment.user || comment.userId)}
                     alt={comment.user}
                     className={styles.commentAvatar}
                 />

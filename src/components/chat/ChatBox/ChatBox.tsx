@@ -107,7 +107,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     API_CONFIG.GRAPHQL_ENDPOINT,
                     {
                         query: GRAPHQL_QUERIES.GET_ALL_CHATS,
-                        variables: { first: 50 }
+                        variables: {}
                     },
                     {
                         headers: getAuthHeaders(),
@@ -116,7 +116,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                 );
 
                 if (!chatsRes.data.errors) {
-                    const allChats = chatsRes.data.data.chat.allchats.nodes || [];
+                    const allChats = chatsRes.data.data.chat.allchats || [];
                     const projectChat = allChats.find(
                         (chat: ChatData) => chat.projectId === parseInt(projectId)
                     );
@@ -185,7 +185,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     API_CONFIG.GRAPHQL_ENDPOINT,
                     {
                         query: GRAPHQL_QUERIES.GET_CHAT_ENTRIES,
-                        variables: { chatId: chatId, first: 50 }
+                        variables: { chatId: chatId }
                     },
                     {
                         headers: getAuthHeaders(),
@@ -197,7 +197,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                     throw new Error(res.data.errors[0].message);
                 }
 
-                const entries: ChatEntry[] = res.data.data.entry.allentries.nodes || [];
+                const entries: ChatEntry[] = res.data.data.entry.allentries || [];
                 const formattedMessages: ChatBoxMessage[] = entries.map((entry) => ({
                     id: entry.id,
                     user: entry.userChat.user.nickname,
@@ -258,7 +258,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                 API_CONFIG.GRAPHQL_ENDPOINT,
                 {
                     query: GRAPHQL_QUERIES.GET_CHAT_ENTRIES,
-                    variables: { chatId: chatId, first: 50 }
+                    variables: { chatId: chatId }
                 },
                 {
                     headers: getAuthHeaders(),
@@ -267,7 +267,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
             );
 
             if (!messagesRes.data.errors) {
-                const entries: ChatEntry[] = messagesRes.data.data.entry.allentries.nodes || [];
+                const entries: ChatEntry[] = messagesRes.data.data.entry.allentries || [];
                 const formattedMessages: ChatBoxMessage[] = entries.map((entry) => ({
                     id: entry.id,
                     user: entry.userChat.user.nickname,

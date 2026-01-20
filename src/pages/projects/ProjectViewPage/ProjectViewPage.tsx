@@ -15,7 +15,7 @@ interface ProjectOwner {
     name?: string;
     surname?: string;
     nickname?: string;
-    profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface ProjectUser {
@@ -23,7 +23,7 @@ interface ProjectUser {
     name?: string;
     surname?: string;
     nickname?: string;
-    profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface Collaborator {
@@ -45,7 +45,7 @@ interface RawProjectOwner {
     name?: string;
     surname?: string;
     nickname?: string;
-    profilePic?: string;
+    profilePicUrl?: string;
 }
 
 interface RawCollaborator {
@@ -55,7 +55,7 @@ interface RawCollaborator {
         name?: string;
         surname?: string;
         nickname?: string;
-        profilePic?: string;
+        profilePicUrl?: string;
     };
     role: string;
 }
@@ -124,7 +124,7 @@ export default function ProjectsViewPage() {
                         name: rawProjectData.owner.name,
                         surname: rawProjectData.owner.surname,
                         nickname: rawProjectData.owner.nickname,
-                        profilePic: rawProjectData.owner.profilePic
+                        profilePicUrl: rawProjectData.owner.profilePicUrl
                     } : undefined,
                     collaborators: rawProjectData.collaborators?.map((c) => ({
                         user: {
@@ -132,7 +132,7 @@ export default function ProjectsViewPage() {
                             name: c.user.name,
                             surname: c.user.surname,
                             nickname: c.user.nickname,
-                            profilePic: c.user.profilePic
+                            profilePicUrl: c.user.profilePicUrl
                         },
                         role: c.role
                     }))
