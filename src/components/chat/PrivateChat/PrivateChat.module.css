@@ -95,6 +95,7 @@
     align-items: flex-end;
     gap: 4px;
     width: 100%;
+    min-width: 0;
 }
 
 .privChatMessageWrapper.me {
@@ -110,6 +111,9 @@
     border-radius: 12px;
     max-width: 70%;
     word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
     display: inline-block;
 }
 

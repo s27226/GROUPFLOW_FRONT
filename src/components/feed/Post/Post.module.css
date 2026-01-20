@@ -17,6 +17,7 @@ html,
     box-sizing: border-box;
     overflow: visible;
     max-height: none;
+    min-width: 0;
 }
 
 .postImage {
@@ -42,6 +43,8 @@ html,
     gap: 4px;
     margin-bottom: 20px;
     width: 100%;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .postHeader {
@@ -85,6 +88,10 @@ html,
     margin-top: 12px;
     font-family: "Poppins", sans-serif;
     font-family: var(--font-family), serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
 }
 
 .postContent p {
@@ -92,6 +99,10 @@ html,
     padding: 8px;
     margin: -8px;
     border-radius: 8px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .postContent p:hover {
@@ -263,6 +274,8 @@ html,
     border-radius: 12px;
     margin-top: 6px;
     border: 1px solid var(--border-color);
+    min-width: 0;
+    overflow: hidden;
 }
 
 /* Comment header (pfp + user + time + dots) */
@@ -271,11 +284,14 @@ html,
     align-items: center;
     gap: 8px;
     position: relative;
+    min-width: 0;
 }
 
 .commentInfo {
     display: flex;
     gap: 6px;
+    min-width: 0;
+    flex-wrap: wrap;
 }
 
 .commentUser {
@@ -295,6 +311,10 @@ html,
 .commentText {
     margin-top: 6px;
     margin-bottom: 6px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .commentDots button {
@@ -433,12 +453,14 @@ html,
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-width: 0;
 }
 
 .postSharedInfo {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 
 .postSharedAvatar {
@@ -462,6 +484,10 @@ html,
     color: var(--text-primary);
     font-size: 0.9rem;
     line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .postSharedImage {
