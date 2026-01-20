@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
@@ -254,7 +254,11 @@ const ProfileTagsEditor: React.FC = () => {
 
             <div className={styles.tagsSummary}>
                 <p>
-                    {t('profile.tagsSummary', { skillCount: skills.length, interestCount: interests.length })}
+                    <Trans
+                        i18nKey="profile.tagsSummary"
+                        values={{ skillCount: skills.length, interestCount: interests.length }}
+                        components={[<strong />, <strong />]}
+                    />
                 </p>
             </div>
         </div>
