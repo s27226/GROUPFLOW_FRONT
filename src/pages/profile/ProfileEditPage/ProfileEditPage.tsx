@@ -14,14 +14,12 @@ import { getProfilePicUrl, getBannerUrl } from "../../../utils/profilePicture";
 interface UserProfile {
     id: string;
     name?: string;
+    surname?: string;
     nickname?: string;
     bio?: string;
-    about?: string;
     bannerPicUrl?: string;
-    bannerPicBlobId?: string;
     profilePic?: string;
     profilePicUrl?: string;
-    profilePicBlobId?: string;
 }
 
 interface UserProfileResponse {
@@ -38,12 +36,13 @@ export default function ProfileEditPage() {
     const { showToast } = useToast();
 
     const [name, setName] = useState("");
-    const [bio, setBio] = useState("");
+    const [surname, setSurname] = useState("");
+    const [nickname, setNickname] = useState("");
+    const [aboutMe, setAboutMe] = useState("");
     const [banner, setBanner] = useState("");
     const [bannerFile, setBannerFile] = useState<File | null>(null);
     const [pfp, setPfp] = useState("");
     const [pfpFile, setPfpFile] = useState<File | null>(null);
-    const [abt, setAbt] = useState("");
 
     const { data: user, loading } = useQuery<UserProfile | null>(
         GRAPHQL_QUERIES.GET_CURRENT_USER,
@@ -67,10 +66,11 @@ export default function ProfileEditPage() {
     useEffect(() => {
         if (user) {
             setName(user.name || "");
-            setBio(user.bio || "");
+            setSurname(user.surname || "");
+            setNickname(user.nickname || "");
+            setAboutMe(user.bio || "");
             setBanner(getBannerUrl(user.bannerPicUrl, 10));
             setPfp(getProfilePicUrl(user.profilePicUrl, user.nickname));
-            setAbt(user.about || "");
         }
     }, [user]);
 
@@ -80,12 +80,11 @@ export default function ProfileEditPage() {
     };
 
     const handleProfileImageRemove = async () => {
-        // If user has a blob ID, delete the blob from S3
-        if (user?.profilePicBlobId) {
-            await deleteBlob(parseInt(user.profilePicBlobId));
+        // Reset profile picture to default
+        if (user) {
             await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE_IMAGE, {
                 input: { 
-                    userId: user.id,
+                    userId: parseInt(user.id),
                     profilePicBlobId: null 
                 }
             });
@@ -101,12 +100,11 @@ export default function ProfileEditPage() {
     };
 
     const handleBannerImageRemove = async () => {
-        // If user has a blob ID, delete the blob from S3
-        if (user?.bannerPicBlobId) {
-            await deleteBlob(parseInt(user.bannerPicBlobId));
+        // Reset banner to default
+        if (user) {
             await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_BANNER_IMAGE, {
                 input: { 
-                    userId: user.id,
+                    userId: parseInt(user.id),
                     bannerPicBlobId: null 
                 }
             });
@@ -120,11 +118,13 @@ export default function ProfileEditPage() {
         if (!user) return;
         
         await saveProfile(async () => {
-            // Update basic profile info (name, bio)
+            // Update basic profile info (name, surname, nickname, aboutMe)
             await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE, {
                 input: {
                     name: name,
-                    bio: bio
+                    surname: surname,
+                    nickname: nickname,
+                    bio: aboutMe
                 }
             });
 
@@ -134,7 +134,7 @@ export default function ProfileEditPage() {
                 if (blobData) {
                     await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_PROFILE_IMAGE, {
                         input: { 
-                            userId: user.id,
+                            userId: parseInt(user.id),
                             profilePicBlobId: blobData.id 
                         }
                     });
@@ -148,7 +148,7 @@ export default function ProfileEditPage() {
                 if (blobData) {
                     await executeMutation(GRAPHQL_MUTATIONS.UPDATE_USER_BANNER_IMAGE, {
                         input: { 
-                            userId: user.id,
+                            userId: parseInt(user.id),
                             bannerPicBlobId: blobData.id 
                         }
                     });
@@ -221,13 +221,26 @@ export default function ProfileEditPage() {
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>{t('profile.bio')}</label>
-                        <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+                        <label>{t('profile.surname')}</label>
+                        <input
+                            className={styles.nameInput}
+                            value={surname}
+                            onChange={(e) => setSurname(e.target.value)}
+                        />
                     </div>
 
                     <div className={styles.optionSection}>
-                        <label>{t('profile.about')}</label>
-                        <textarea value={abt} onChange={(e) => setAbt(e.target.value)} />
+                        <label>{t('profile.nickname')}</label>
+                        <input
+                            className={styles.nameInput}
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                        />
+                    </div>
+
+                    <div className={styles.optionSection}>
+                        <label>{t('profile.aboutMe')}</label>
+                        <textarea value={aboutMe} onChange={(e) => setAboutMe(e.target.value)} />
                     </div>
 
                     <button className={styles.editBtn} onClick={handleSave} disabled={blobUploading || saving}>

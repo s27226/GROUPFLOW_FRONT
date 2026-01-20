@@ -14,10 +14,9 @@ export interface UserProfileData {
     nickname: string;
     email?: string;
     handle: string;
-    bio: string;
+    aboutMe: string;
     banner: string;
     pfp: string;
-    abt: string;
     joined?: string;
     dateOfBirth?: string;
 }
@@ -31,6 +30,7 @@ interface RawUserData {
     surname?: string;
     nickname?: string;
     email?: string;
+    bio?: string;
     joined?: string;
     dateOfBirth?: string;
     profilePic?: string;
@@ -61,10 +61,9 @@ const transformUserData = (userInfo: RawUserData): UserProfileData => {
         nickname: userInfo.nickname || '',
         email: userInfo.email,
         handle: `@${userInfo.nickname || 'unknown'}`,
-        bio: "Professional developer", // TODO: Add bio field to backend
+        aboutMe: userInfo.bio || '',
         banner: getBannerUrl(userInfo.bannerPicUrl, userInfo.id),
         pfp: getProfilePicUrl(userInfo.profilePicUrl, userInfo.nickname || userInfo.id),
-        abt: `Member since ${userInfo.joined ? new Date(userInfo.joined).toLocaleDateString() : 'Unknown'}`,
         joined: userInfo.joined,
         dateOfBirth: userInfo.dateOfBirth
     };

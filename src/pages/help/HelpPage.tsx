@@ -90,7 +90,7 @@ export default function HelpPage() {
                             <h3>How do I customize my profile?</h3>
                             <p>
                                 Click on your profile picture or go to "Edit Profile" to update your information, 
-                                upload a profile picture, add a banner image, and write a bio that showcases your 
+                                upload a profile picture, add a banner image, and write an "About Me" section that showcases your 
                                 background and interests.
                             </p>
                         </div>

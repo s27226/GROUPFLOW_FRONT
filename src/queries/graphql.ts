@@ -352,6 +352,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
+          bio
           profilePicUrl
           bannerPicUrl
         }
@@ -371,6 +372,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
+          bio
           profilePicUrl
           bannerPicUrl
         }
@@ -390,6 +392,7 @@ export const GRAPHQL_QUERIES = {
           email
           joined
           dateOfBirth
+          bio
           profilePicUrl
           bannerPicUrl
         }
@@ -1631,7 +1634,6 @@ export const GRAPHQL_MUTATIONS = {
       updateUserProfileImage(input: $input) {
         id
         profilePicUrl
-        profilePicBlobId
       }
     }
   `,
@@ -1641,7 +1643,6 @@ export const GRAPHQL_MUTATIONS = {
       updateUserBannerImage(input: $input) {
         id
         bannerPicUrl
-        bannerPicBlobId
       }
     }
   `,

@@ -215,7 +215,6 @@ export default function ProfilePage() {
                                 {sanitizeText(user.name)} {sanitizeText(user.surname)}
                             </h2>
                             <p className={styles.username}>{sanitizeText(user.handle)}</p>
-                            <p className={styles.bio}>{sanitizeText(user.bio)}</p>
                             {currentUser && user.id === currentUser.id && (
                                 <button
                                     className={styles.editBtn}
@@ -239,7 +238,7 @@ export default function ProfilePage() {
                         <div className={styles.profileLeft}>
                             <section className={styles.aboutMe}>
                                 <h3>{t('profile.aboutMe')}</h3>
-                                <p>{user.abt}</p>
+                                <p>{user.aboutMe}</p>
                             </section>
 
                             <section className={styles.ownedProjects}>
