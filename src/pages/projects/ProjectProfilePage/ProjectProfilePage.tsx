@@ -227,7 +227,7 @@ export default function ProjectProfilePage() {
                         <img src={project.image} alt="Project" className={profileStyles.profilePfp} />
                         <div className={profileStyles.profileInfo}>
                             <h2>{sanitizeText(project.name)}</h2>
-                            {currentUser && String(projectId) === String(currentUser.id) && (
+                            {currentUser && project.owner && Number(project.owner.id) === currentUser.id && (
                                 <button
                                     className={profileStyles.editBtn}
                                     onClick={() => navigate(`/project/${projectId}/edit`)}

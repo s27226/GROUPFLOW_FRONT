@@ -58,7 +58,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
         try {
             await executeMutation(GRAPHQL_MUTATIONS.REMOVE_PROJECT_MEMBER, {
                 projectId: parseInt(projectId),
-                userId: memberId
+                userId: parseInt(memberId!)
             });
 
             // Reload the page to refresh the members list
