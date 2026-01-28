@@ -74,7 +74,7 @@ export const useGraphQL = () => {
                 return response.data as T;
             } catch (error) {
                 // Log for debugging but let calling code handle it via onError callbacks
-                if (process.env.NODE_ENV === 'development') {
+                if (import.meta.env.DEV) {
                     console.debug("GraphQL error:", (error as Error)?.message);
                 }
                 throw error;
