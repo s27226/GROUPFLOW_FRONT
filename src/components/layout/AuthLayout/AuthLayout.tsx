@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./AuthLayout.module.css";
 
 interface AuthLayoutProps {
@@ -9,20 +10,17 @@ interface AuthLayoutProps {
  * Shared authentication layout component for login and registration pages
  */
 export default function AuthLayout({ children }: AuthLayoutProps) {
+    const { t } = useTranslation();
+    
     return (
         <div className={styles.authContainer}>
             <div className={styles.authLeft}>
-                <h1 className={styles.authTitle}>Welcome to GroupFlow</h1>
+                <h1 className={styles.authTitle}>{t('auth.welcomeToGroupFlow')}</h1>
                 <p className={styles.authDesc}>
-                    Connect, collaborate, and bring your projects to life with GroupFlow. 
-                    Join a vibrant community of creators, developers, and innovators working 
-                    together on exciting projects. Share ideas, find teammates, showcase your 
-                    work, and build something amazing together.
+                    {t('auth.welcomeDescription1')}
                 </p>
                 <p className={styles.authDesc}>
-                    Whether you're looking to contribute to existing projects or start your own, 
-                    GroupFlow provides the perfect platform to connect with like-minded individuals 
-                    and turn your vision into reality.
+                    {t('auth.welcomeDescription2')}
                 </p>
             </div>
 

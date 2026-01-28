@@ -76,7 +76,11 @@
         "passwordUpdated": "Hasło zostało pomyślnie zaktualizowane!",
         "passwordResetFailed": "Nie udało się zresetować hasła",
         "loginWithGoogle": "Zaloguj się przez Google",
-        "loginWithFacebook": "Zaloguj się przez Facebook"
+        "loginWithFacebook": "Zaloguj się przez Facebook",
+        "tokenRefreshFailed": "Odświeżanie sesji nie powiodło się. Zaloguj się ponownie.",
+        "welcomeToGroupFlow": "Witamy w GroupFlow",
+        "welcomeDescription1": "Łącz się, współpracuj i realizuj swoje projekty z GroupFlow. Dołącz do tętniącej życiem społeczności twórców, programistów i innowatorów pracujących razem nad ekscytującymi projektami. Dziel się pomysłami, znajdź współpracowników, prezentuj swoją pracę i buduj coś niesamowitego razem.",
+        "welcomeDescription2": "Niezależnie od tego, czy chcesz dołączyć do istniejących projektów, czy rozpocząć własny, GroupFlow zapewnia idealną platformę do łączenia się z podobnie myślącymi osobami i przekształcania Twojej wizji w rzeczywistość."
     },
     "navigation": {
         "groupFlow": "GroupFlow",
@@ -182,6 +186,7 @@
     },
     "projects": {
         "myProjects": "Moje projekty",
+        "viewProjectProfile": "Zobacz profil projektu",
         "manageDescription": "Zarządzaj i współpracuj przy swoich projektach",
         "noProjectsYet": "Nie masz jeszcze żadnych projektów.",
         "createNewProject": "Utwórz nowy projekt",
@@ -535,6 +540,25 @@
         "INVALID_BASE64_DATA": "Nieprawidłowe dane pliku",
         "FILE_SIZE_EXCEEDED": "Rozmiar pliku przekracza maksymalny dozwolony limit (25 MB)",
         "FILE_TYPE_NOT_ALLOWED": "Ten typ pliku nie jest dozwolony",
-        "BLOBFILE_NOT_FOUND": "Nie znaleziono pliku"
+        "BLOBFILE_NOT_FOUND": "Nie znaleziono pliku",
+        "UPLOAD_FAILED": "Nie udało się przesłać pliku. Spróbuj ponownie.",
+        "COMMENT_EMPTY": "Treść komentarza nie może być pusta",
+        "REPLY_EMPTY": "Treść odpowiedzi nie może być pusta",
+        "CHAT_CREATE_FAILED": "Nie udało się utworzyć lub pobrać czatu",
+        "CHAT_USER_FAILED": "Nie udało się pobrać czatu użytkownika",
+        "MESSAGE_SEND_FAILED": "Nie udało się wysłać wiadomości",
+        "TOKEN_REFRESH_FAILED": "Odświeżanie sesji nie powiodło się",
+        "SESSION_EXPIRED": "Sesja wygasła. Zaloguj się ponownie.",
+        "TITLE_REQUIRED": "Tytuł jest wymagany",
+        "TITLE_TOO_LONG": "Tytuł nie może przekraczać 100 znaków",
+        "CONTENT_REQUIRED": "Treść jest wymagana",
+        "CONTENT_TOO_SHORT": "Treść musi mieć co najmniej 10 znaków",
+        "DESCRIPTION_TOO_LONG": "Opis nie może przekraczać 300 znaków",
+        "INVALID_URL": "Podaj prawidłowy adres URL",
+        "INVALID_PROJECT_ID": "Wybrano nieprawidłowy projekt",
+        "INVALID_SHARED_POST_ID": "Nieprawidłowy udostępniony post",
+        "INVALID_POST_ID": "Wybrano nieprawidłowy post",
+        "REASON_REQUIRED": "Powód jest wymagany",
+        "REASON_INVALID_LENGTH": "Powód musi mieć od 10 do 500 znaków"
     }
 }

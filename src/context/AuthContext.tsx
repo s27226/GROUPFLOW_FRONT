@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from "react";
+import { translateError } from "../utils/errorTranslation";
 
 interface User {
     id: number;
@@ -129,7 +130,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
                 return false;
             } catch (error) {
-                console.error("Token refresh failed:", error);
+                const errorMessage = (error as Error)?.message || '';
+                console.error("Token refresh failed:", translateError(errorMessage, 'auth.tokenRefreshFailed'));
                 return false;
             } finally {
                 isRefreshing.current = false;

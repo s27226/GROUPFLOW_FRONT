@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import styles from "./ProjectInfoPanel.module.css";
 import { useNavigate } from "react-router-dom";
 import { getProjectImageUrl } from "../../../utils/profilePicture";
@@ -19,6 +20,7 @@ interface ProjectInfoPanelProps {
 }
 
 export default function ProjectInfoPanel({ project, projectId }: ProjectInfoPanelProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     if (!project) return null;
@@ -34,7 +36,7 @@ export default function ProjectInfoPanel({ project, projectId }: ProjectInfoPane
                 <div className={styles.projectInfoDetails}>
                     <h3>{project.name}</h3>
                     <p className={styles.projectInfoOwner}>
-                        by{" "}
+                        {t('common.by')}{" "}
                         <span
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -46,7 +48,7 @@ export default function ProjectInfoPanel({ project, projectId }: ProjectInfoPane
                                 fontWeight: "500"
                             }}
                         >
-                            {project.owner?.nickname || "Unknown"}
+                            {project.owner?.nickname || t('common.unknown')}
                         </span>
                     </p>
                 </div>
@@ -56,7 +58,7 @@ export default function ProjectInfoPanel({ project, projectId }: ProjectInfoPane
                 className={styles.viewProjectProfileBtn}
                 onClick={() => navigate(`/project/${projectId}`)}
             >
-                View Project Profile
+                {t('projects.viewProjectProfile')}
             </button>
         </div>
     );

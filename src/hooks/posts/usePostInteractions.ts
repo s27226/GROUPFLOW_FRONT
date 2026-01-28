@@ -90,7 +90,7 @@ export const usePostInteractions = () => {
      */
     const addComment = useCallback(async (postId: number | string, content: string, parentCommentId: number | string | null = null) => {
         if (!content || !content.trim()) {
-            throw new Error("Comment content cannot be empty");
+            throw new Error("errors.COMMENT_EMPTY");
         }
 
         try {
@@ -118,7 +118,7 @@ export const usePostInteractions = () => {
      */
     const replyToComment = useCallback(async (postId: number | string, content: string, parentCommentId: number | string) => {
         if (!content || !content.trim()) {
-            throw new Error("Reply content cannot be empty");
+            throw new Error("errors.REPLY_EMPTY");
         }
 
         try {

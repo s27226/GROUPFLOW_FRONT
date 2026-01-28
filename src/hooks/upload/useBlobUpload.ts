@@ -42,7 +42,7 @@ export const useBlobUpload = () => {
     const uploadBlob = useCallback(async (file: File, blobType: BlobType, projectId: number | null = null, postId: number | null = null): Promise<UploadedBlob | null> => {
         return execute(async () => {
             if (file.size > MAX_FILE_SIZE) {
-                throw new Error(`File size exceeds 25 MB limit. Your file is ${(file.size / (1024 * 1024)).toFixed(2)} MB.`);
+                throw new Error("errors.FILE_SIZE_EXCEEDED");
             }
 
             const base64Data = await fileToBase64(file);
@@ -59,7 +59,7 @@ export const useBlobUpload = () => {
             const response = await executeMutation(GRAPHQL_MUTATIONS.UPLOAD_BLOB, { input }) as { uploadBlob?: UploadedBlob } | null;
 
             if (!response?.uploadBlob) {
-                throw new Error("Failed to upload file");
+                throw new Error("errors.UPLOAD_FAILED");
             }
 
             return response.uploadBlob;

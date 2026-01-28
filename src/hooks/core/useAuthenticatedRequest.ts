@@ -55,7 +55,7 @@ export const useAuthenticatedRequest = () => {
                             const refreshed = await refreshAccessToken();
                             
                             if (!refreshed) {
-                                throw new Error("Token refresh failed");
+                                throw new Error("errors.TOKEN_REFRESH_FAILED");
                             }
                             
                             // Retry the original request with new access token
@@ -67,7 +67,7 @@ export const useAuthenticatedRequest = () => {
                             return retryData;
                         } catch (refreshError) {
                             logout();
-                            throw new Error("Session expired. Please log in again.");
+                            throw new Error("errors.SESSION_EXPIRED");
                         }
                     }
                 }

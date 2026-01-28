@@ -76,7 +76,11 @@
         "passwordUpdated": "Password successfully updated!",
         "passwordResetFailed": "Failed to reset password",
         "loginWithGoogle": "Login with Google",
-        "loginWithFacebook": "Login with Facebook"
+        "loginWithFacebook": "Login with Facebook",
+        "tokenRefreshFailed": "Session refresh failed. Please log in again.",
+        "welcomeToGroupFlow": "Welcome to GroupFlow",
+        "welcomeDescription1": "Connect, collaborate, and bring your projects to life with GroupFlow. Join a vibrant community of creators, developers, and innovators working together on exciting projects. Share ideas, find teammates, showcase your work, and build something amazing together.",
+        "welcomeDescription2": "Whether you're looking to contribute to existing projects or start your own, GroupFlow provides the perfect platform to connect with like-minded individuals and turn your vision into reality."
     },
     "navigation": {
         "groupFlow": "GroupFlow",
@@ -182,6 +186,7 @@
     },
     "projects": {
         "myProjects": "My Projects",
+        "viewProjectProfile": "View Project Profile",
         "manageDescription": "Manage and collaborate on your projects",
         "noProjectsYet": "You don't have any projects yet.",
         "createNewProject": "Create New Project",
@@ -535,6 +540,25 @@
         "INVALID_BASE64_DATA": "Invalid file data",
         "FILE_SIZE_EXCEEDED": "File size exceeds the maximum allowed limit (25 MB)",
         "FILE_TYPE_NOT_ALLOWED": "This file type is not allowed",
-        "BLOBFILE_NOT_FOUND": "File not found"
+        "BLOBFILE_NOT_FOUND": "File not found",
+        "UPLOAD_FAILED": "Failed to upload file. Please try again.",
+        "COMMENT_EMPTY": "Comment content cannot be empty",
+        "REPLY_EMPTY": "Reply content cannot be empty",
+        "CHAT_CREATE_FAILED": "Failed to create or retrieve chat",
+        "CHAT_USER_FAILED": "Failed to get user chat",
+        "MESSAGE_SEND_FAILED": "Failed to send message",
+        "TOKEN_REFRESH_FAILED": "Session refresh failed",
+        "SESSION_EXPIRED": "Session expired. Please log in again.",
+        "TITLE_REQUIRED": "Title is required",
+        "TITLE_TOO_LONG": "Title cannot exceed 100 characters",
+        "CONTENT_REQUIRED": "Content is required",
+        "CONTENT_TOO_SHORT": "Content must be at least 10 characters",
+        "DESCRIPTION_TOO_LONG": "Description cannot exceed 300 characters",
+        "INVALID_URL": "Please enter a valid URL",
+        "INVALID_PROJECT_ID": "Invalid project selected",
+        "INVALID_SHARED_POST_ID": "Invalid shared post",
+        "INVALID_POST_ID": "Invalid post selected",
+        "REASON_REQUIRED": "Reason is required",
+        "REASON_INVALID_LENGTH": "Reason must be between 10 and 500 characters"
     }
 }

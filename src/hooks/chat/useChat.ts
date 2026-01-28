@@ -119,7 +119,7 @@ export function useChat(user: ChatUser | null, currentUserId: number | null): Us
 
                 const chat = chatData?.chat?.getorcreatedirectchat;
                 if (!chat) {
-                    throw new Error("Failed to create or retrieve chat");
+                    throw new Error("errors.CHAT_CREATE_FAILED");
                 }
 
                 setChatId(chat.id);
@@ -131,7 +131,7 @@ export function useChat(user: ChatUser | null, currentUserId: number | null): Us
 
                 const myUserChat = userChatData?.userChat?.myuserchat;
                 if (!myUserChat) {
-                    throw new Error("Failed to get user chat");
+                    throw new Error("errors.CHAT_USER_FAILED");
                 }
                 setUserChatId(myUserChat.id);
 
@@ -179,7 +179,7 @@ export function useChat(user: ChatUser | null, currentUserId: number | null): Us
 
             const newEntry = data?.entry?.createEntry;
             if (!newEntry) {
-                throw new Error("Failed to send message");
+                throw new Error("errors.MESSAGE_SEND_FAILED");
             }
 
             // Add the new message to the list

@@ -116,12 +116,8 @@ export default function NewPostPage() {
             isPublic: isPublic
         };
 
-        const response = await createPost(GRAPHQL_MUTATIONS.CREATE_POST, { input });
-
-        // Response is already unwrapped by useMutationQuery - onSuccess/onError handles navigation/toast
-        if (!response?.post?.createPost) {
-            console.error("Failed to create post:", response);
-        }
+        await createPost(GRAPHQL_MUTATIONS.CREATE_POST, { input });
+        // onSuccess/onError callbacks handle navigation and toast
     };
 
     return (

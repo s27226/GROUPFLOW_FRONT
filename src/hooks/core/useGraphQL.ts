@@ -1,9 +1,18 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useAuthenticatedRequest } from "./useAuthenticatedRequest";
 
+interface GraphQLError {
+    message: string;
+    extensions?: {
+        code?: string;
+        errors?: Record<string, string[]>;
+        field?: string;
+    };
+}
+
 interface GraphQLResponse<T = unknown> {
     data?: T;
-    errors?: Array<{ message: string }>;
+    errors?: GraphQLError[];
 }
 
 interface QueryOptions<T = unknown> {
@@ -44,13 +53,30 @@ export const useGraphQL = () => {
 
                 // Check for GraphQL errors
                 if (response.errors && response.errors.length > 0) {
-                    throw new Error(response.errors[0].message || "GraphQL request failed");
+                    const error = response.errors[0];
+                    const errorCode = error.extensions?.code;
+                    
+                    // Handle validation errors with field-specific messages
+                    if (errorCode === 'VALIDATION_ERROR' && error.extensions?.errors) {
+                        const fieldErrors = error.extensions.errors;
+                        const firstField = Object.keys(fieldErrors)[0];
+                        if (firstField && fieldErrors[firstField]?.[0]) {
+                            // Use field-specific error code if available
+                            throw new Error(fieldErrors[firstField][0]);
+                        }
+                    }
+                    
+                    // Use the error message (which should be an error code like errors.XXX)
+                    throw new Error(error.message || "errors.INTERNAL_ERROR");
                 }
 
                 // Return the data portion of the response
                 return response.data as T;
             } catch (error) {
-                console.error("GraphQL request error:", error);
+                // Log for debugging but let calling code handle it via onError callbacks
+                if (process.env.NODE_ENV === 'development') {
+                    console.debug("GraphQL error:", (error as Error)?.message);
+                }
                 throw error;
             }
         },
