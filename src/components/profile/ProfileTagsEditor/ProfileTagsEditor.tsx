@@ -3,6 +3,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import styles from "./ProfileTagsEditor.module.css";
 
@@ -92,14 +93,14 @@ const ProfileTagsEditor: React.FC = () => {
                     showToast(t('profile.skillAdded'), "success");
                 }
             },
-            onError: () => showToast(t('profile.skillAddFailed'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'profile.skillAddFailed'), "error")
         }
     );
 
     const { mutate: removeSkillMutation } = useMutationQuery<RemoveSkillResponse>(
         GRAPHQL_MUTATIONS.REMOVE_SKILL,
         {
-            onError: () => showToast(t('profile.skillRemoveFailed'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'profile.skillRemoveFailed'), "error")
         }
     );
 
@@ -116,14 +117,14 @@ const ProfileTagsEditor: React.FC = () => {
                     showToast(t('profile.interestAdded'), "success");
                 }
             },
-            onError: () => showToast(t('profile.interestAddFailed'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'profile.interestAddFailed'), "error")
         }
     );
 
     const { mutate: removeInterestMutation } = useMutationQuery<RemoveInterestResponse>(
         GRAPHQL_MUTATIONS.REMOVE_INTEREST,
         {
-            onError: () => showToast(t('profile.interestRemoveFailed'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'profile.interestRemoveFailed'), "error")
         }
     );
 

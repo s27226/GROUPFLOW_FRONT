@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { usePosts, useGraphQL, useFriends, useMyProjects, useUserProjects, useUserProfile } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { sanitizeText } from "../../../utils/sanitize";
 import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./ProfilePage.module.css";
@@ -133,7 +134,7 @@ export default function ProfilePage() {
             setShowInviteModal(false);
         } catch (err) {
             console.error("Failed to send invitation:", err);
-            const errorMessage = (err as Error)?.message || t('profile.invitationFailed');
+            const errorMessage = translateError((err as Error)?.message, 'profile.invitationFailed');
             showToast(errorMessage, 'error');
         } finally {
             setInviting(false);

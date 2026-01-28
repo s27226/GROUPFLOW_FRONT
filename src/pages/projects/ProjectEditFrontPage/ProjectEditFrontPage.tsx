@@ -9,6 +9,7 @@ import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery, useBlobUpload, useMutation } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 
 interface ProjectOwner {
     id: number;
@@ -69,12 +70,12 @@ export default function ProjectEditPage() {
                 const projectArray = typedData?.project?.projectbyid;
                 return Array.isArray(projectArray) ? projectArray[0] : projectArray ?? null;
             },
-            onError: () => setError("Failed to load project data")
+            onError: (err: Error) => setError(translateError(err.message, 'projects.loadProjectFailed'))
         }
     );
 
     const { execute: executeMutation } = useMutationQuery({
-        onError: (err) => setError(err.message || "An error occurred")
+        onError: (err) => setError(translateError(err.message, 'common.errorOccurred'))
     });
 
     const { execute: saveProject, loading: saving } = useMutation();
@@ -186,7 +187,7 @@ export default function ProjectEditPage() {
             if (err.message?.includes("permission") || err.message?.includes("not authenticated")) {
                 setError(t('projects.noPermissionEdit'));
             } else {
-                setError(err.message || t('projects.saveChangesFailed'));
+                setError(translateError(err.message, 'projects.saveChangesFailed'));
             }
         });
     };
@@ -204,7 +205,7 @@ export default function ProjectEditPage() {
             if (err.message?.includes("permission") || err.message?.includes("not authenticated")) {
                 setError(t('projects.noPermissionDelete'));
             } else {
-                setError(err.message || t('projects.deleteProjectFailed'));
+                setError(translateError(err.message, 'projects.deleteProjectFailed'));
             }
         });
     };

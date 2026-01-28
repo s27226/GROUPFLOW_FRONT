@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Image, X, Link as LinkIcon } from "lucide-react";
 import styles from "./ImageUploadButton.module.css";
 
@@ -42,6 +43,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
     showUrlInput = true,
     acceptedTypes = "image/*"
 }) => {
+    const { t } = useTranslation();
     const [error, setError] = useState<string>("");
     const [uploading, setUploading] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -54,13 +56,13 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
 
         // Validate file size
         if (file.size > MAX_FILE_SIZE) {
-            setError(`File size exceeds maximum allowed size of 25 MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)} MB.`);
+            setError(t('common.fileSizeExceeded', { size: (file.size / (1024 * 1024)).toFixed(2) }));
             return;
         }
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-            setError("Please select a valid image file.");
+            setError(t('common.invalidImageFile'));
             return;
         }
 
@@ -106,7 +108,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
                         type="button"
                         className={styles.removeBtn}
                         onClick={handleRemove}
-                        title="Remove image"
+                        title={t('common.removeImage')}
                     >
                         <X size={20} />
                     </button>
@@ -116,7 +118,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
             <div className={styles.buttons}>
                 <label htmlFor={`file-input-${type}`} className={styles.btn}>
                     <Image size={20} />
-                    <span>Upload Image</span>
+                    <span>{t('common.uploadImage')}</span>
                 </label>
                 <input
                     ref={fileInputRef}
@@ -133,7 +135,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
                             type="text"
                             value={urlValue}
                             onChange={handleUrlInputChange}
-                            placeholder="Or enter image URL"
+                            placeholder={t('common.enterImageUrl')}
                             className={styles.urlInput}
                         />
                         <LinkIcon size={18} style={{ color: 'var(--text-secondary)' }} />
@@ -142,7 +144,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
             </div>
 
             <div className={styles.sizeWarning}>
-                Maximum file size: 25 MB
+                {t('common.maxFileSizeInfo')}
             </div>
 
             {error && (
@@ -154,7 +156,7 @@ const ImageUploadButton: React.FC<ImageUploadButtonProps> = ({
             {uploading && (
                 <div className={styles.loading}>
                     <div className={styles.spinner}></div>
-                    <span>Uploading...</span>
+                    <span>{t('common.uploading')}</span>
                 </div>
             )}
         </div>

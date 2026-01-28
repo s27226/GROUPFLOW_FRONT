@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
 import { useGraphQL } from "../../hooks";
 import { AuthLayout, authStyles } from "../../components/layout";
+import { translateError } from "../../utils/errorTranslation";
 
 interface AuthResponse {
     auth: {
@@ -55,7 +56,7 @@ export default function LoginPage() {
         } catch (err) {
             console.error("Login error:", err);
             const error = err as Error;
-            setError(error.message || t('auth.invalidCredentials'));
+            setError(translateError(error.message, 'auth.invalidCredentials'));
         }
     };
 

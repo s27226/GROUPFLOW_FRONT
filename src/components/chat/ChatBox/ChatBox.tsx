@@ -8,6 +8,8 @@ import { sanitizeText } from "../../../utils/sanitize";
 import { useAuth } from "../../../context/AuthContext";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
 import styles from "./ChatBox.module.css";
+import { translateError } from "../../../utils/errorTranslation";
+import { useToast } from "../../../context/ToastContext";
 
 interface ChatBoxProps {
     projectId: string;
@@ -46,6 +48,7 @@ interface UserChatData {
 
 const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const { user: currentUser } = useAuth();
     const [messages, setMessages] = useState<ChatBoxMessage[]>([]);
     const [input, setInput] = useState("");
@@ -95,6 +98,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                 const project = projectRes.data.data.project.projectbyid;
                 if (!project) {
                     console.error("Project not found");
+                    showToast(translateError('PROJECT_NOT_FOUND', 'projects.projectNotFound'), 'error');
                     setLoading(false);
                     return;
                 }
@@ -129,6 +133,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch project chat:", err);
+                showToast(translateError((err as Error)?.message || '', 'chat.loadChatFailed'), 'error');
                 setLoading(false);
             }
         };
@@ -279,6 +284,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ projectId }) => {
             }
         } catch (err) {
             console.error("Failed to send message:", err);
+            showToast(translateError((err as Error)?.message || '', 'chat.sendMessageFailed'), 'error');
         }
     };
 

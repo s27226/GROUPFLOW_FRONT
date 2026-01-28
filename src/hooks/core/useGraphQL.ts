@@ -139,8 +139,10 @@ export const useQuery = <T = unknown>(query: string, variables: Record<string, u
             
             return transformedData;
         } catch (err) {
-            const errorMessage = (err as Error)?.message || "An unexpected error occurred";
-            setError(errorMessage);
+            // Preserve error codes (errors.XXX) for translation, otherwise use generic error code
+            const rawMessage = (err as Error)?.message || '';
+            const errorCode = rawMessage.startsWith('errors.') ? rawMessage : 'errors.INTERNAL_ERROR';
+            setError(errorCode);
             
             if (onErrorRef.current) {
                 onErrorRef.current(err as Error);
@@ -195,13 +197,14 @@ export const useQuery = <T = unknown>(query: string, variables: Record<string, u
  * @example
  * // Pattern 1: With mutation upfront
  * const { mutate, loading } = useMutationQuery(CREATE_POST, {
- *   onSuccess: (data) => showToast('Post created!')
+ *   onSuccess: (data) => showToast(t('feed.postCreated'), 'success')
  * });
  * await mutate({ input: { title, content } });
  * 
- * // Pattern 2: Dynamic mutations
+ * // Pattern 2: Dynamic mutations with proper error translation
+ * // Always use translateError() for error messages to ensure proper i18n
  * const { execute, loading } = useMutationQuery({
- *   onError: (err) => showToast(err.message, 'error')
+ *   onError: (err) => showToast(translateError(err.message, 'common.errorOccurred'), 'error')
  * });
  * await execute(DELETE_POST, { id: postId });
  */

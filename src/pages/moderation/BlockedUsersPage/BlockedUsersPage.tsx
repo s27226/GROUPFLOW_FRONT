@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { Shield, UserX, ChevronLeft, AlertCircle } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
@@ -39,12 +40,12 @@ export default function BlockedUsersPage() {
                 return typedData?.blockedUser?.blockedusers || [];
             },
             initialData: [],
-            onError: () => showToast(t('moderation.loadBlockedError'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'moderation.loadBlockedError'), "error")
         }
     );
 
     const { execute: unblockUser } = useMutationQuery({
-        onError: () => showToast(t('moderation.unblockError'), "error")
+        onError: (error: Error) => showToast(translateError(error.message, 'moderation.unblockError'), "error")
     });
 
     const handleUnblock = async (userId: string, userName: string) => {
@@ -52,13 +53,14 @@ export default function BlockedUsersPage() {
         try {
             const response = await unblockUser(GRAPHQL_MUTATIONS.UNBLOCK_USER, {
                 userIdToUnblock: userId
-            }) as { errors?: unknown[] } | null;
+            }) as { errors?: Array<{ message: string }> } | null;
 
             if (!response?.errors) {
                 setBlockedUsers((blockedUsers ?? []).filter(user => user.id !== userId));
                 showToast(t('moderation.userUnblocked', { name: userName }), "success");
             } else {
-                showToast(t('moderation.unblockFailed'), "error");
+                const errorMessage = translateError(response.errors[0]?.message || '', 'moderation.unblockFailed');
+                showToast(errorMessage, "error");
             }
         } finally {
             setUnblockingId(null);

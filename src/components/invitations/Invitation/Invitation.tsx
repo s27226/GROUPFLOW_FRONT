@@ -1,6 +1,7 @@
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./Invitation.module.css";
 
 interface InvitationData {
@@ -21,7 +22,7 @@ export default function Invitation({ data, onRemove }: InvitationProps) {
         GRAPHQL_MUTATIONS.ACCEPT_FRIEND_REQUEST,
         {
             onSuccess: () => onRemove(data.id, data.type),
-            onError: (err) => showToast(err.message || "Failed to accept invitation. Please try again.", "error")
+            onError: (err) => showToast(translateError(err.message, 'invitations.acceptFailed'), "error")
         }
     );
 
@@ -29,7 +30,7 @@ export default function Invitation({ data, onRemove }: InvitationProps) {
         GRAPHQL_MUTATIONS.ACCEPT_PROJECT_INVITATION,
         {
             onSuccess: () => onRemove(data.id, data.type),
-            onError: (err) => showToast(err.message || "Failed to accept invitation. Please try again.", "error")
+            onError: (err) => showToast(translateError(err.message, 'invitations.acceptFailed'), "error")
         }
     );
 
@@ -37,7 +38,7 @@ export default function Invitation({ data, onRemove }: InvitationProps) {
         GRAPHQL_MUTATIONS.REJECT_FRIEND_REQUEST,
         {
             onSuccess: () => onRemove(data.id, data.type),
-            onError: (err) => showToast(err.message || "Failed to reject invitation. Please try again.", "error")
+            onError: (err) => showToast(translateError(err.message, 'invitations.rejectFailed'), "error")
         }
     );
 
@@ -45,7 +46,7 @@ export default function Invitation({ data, onRemove }: InvitationProps) {
         GRAPHQL_MUTATIONS.REJECT_PROJECT_INVITATION,
         {
             onSuccess: () => onRemove(data.id, data.type),
-            onError: (err) => showToast(err.message || "Failed to reject invitation. Please try again.", "error")
+            onError: (err) => showToast(translateError(err.message, 'invitations.rejectFailed'), "error")
         }
     );
 

@@ -4,6 +4,7 @@ import { FileText, Download, Trash2, Upload, X } from "lucide-react";
 import { useBlobUpload, useFetch } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
 import { useAuth } from "../../../context/AuthContext";
+import { translateError } from "../../../utils/errorTranslation";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import styles from "./FilesView.module.css";
 
@@ -68,7 +69,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
             setShowUploadDialog(false);
         } catch (error) {
             console.error("Upload error:", error);
-            showToast(error instanceof Error ? error.message : t('projects.fileUploadFailed'), "error");
+            showToast(translateError(error instanceof Error ? error.message : '', 'projects.fileUploadFailed'), "error");
         }
     };
 
@@ -93,7 +94,7 @@ const FilesView: React.FC<FilesViewProps> = ({ projectId, isOwner, isCollaborato
             refetch();
         } catch (error) {
             console.error("Delete error:", error);
-            showToast(t('projects.fileDeleteFailed'), "error");
+            showToast(translateError(error instanceof Error ? error.message : '', 'projects.fileDeleteFailed'), "error");
         }
     };
 

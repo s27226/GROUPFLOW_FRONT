@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useGraphQL, useQuery, useMutationQuery } from "../core/useGraphQL";
 import { useAuth } from "../../context/AuthContext";
 import { GRAPHQL_QUERIES } from "../../queries/graphql";
+import { translateError } from "../../utils/errorTranslation";
 
 interface InvitationUser {
     id: number;
@@ -120,7 +121,7 @@ export const useInvitations = (options: UseInvitationsOptions = {}) => {
             };
         } catch (err) {
             console.error("Failed to fetch invitations:", err);
-            const errorMessage = err instanceof Error ? err.message : "Failed to fetch invitations";
+            const errorMessage = translateError(err instanceof Error ? err.message : '', 'invitations.fetchFailed');
             setError(errorMessage);
             setFriendRequests([]);
             setProjectInvitations([]);

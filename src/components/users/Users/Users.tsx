@@ -6,11 +6,14 @@ import UserSearchFilters from "../UserSearchFilters/UserSearchFilters";
 import UserSearchResults from "../UserSearchResults/UserSearchResults";
 import SuggestedUsersList from "../SuggestedUsersList/SuggestedUsersList";
 import styles from "./Users.module.css";
+import { translateError } from "../../../utils/errorTranslation";
+import { useToast } from "../../../context/ToastContext";
 
 type TabType = 'search' | 'suggested';
 
 export default function Users() {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -98,6 +101,7 @@ export default function Users() {
             setSentRequests((prev) => new Set([...prev, userId]));
         } catch (err) {
             console.error("Failed to send friend request:", err);
+            showToast(translateError((err as Error)?.message || '', 'friends.sendRequestFailed'), 'error');
         }
     };
 

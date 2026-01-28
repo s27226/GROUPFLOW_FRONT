@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery, useBlobUpload, useMutation } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { getProfilePicUrl, getBannerUrl } from "../../../utils/profilePicture";
 
 interface UserProfile {
@@ -52,12 +53,12 @@ export default function ProfileEditPage() {
                 const typedData = data as UserProfileResponse;
                 return typedData?.users?.me || null;
             },
-            onError: () => console.error("Failed to fetch user")
+            onError: (error: Error) => showToast(translateError(error.message, 'common.errorOccurred'), 'error')
         }
     );
 
     const { execute: executeMutation } = useMutationQuery({
-        onError: (error) => showToast(error.message || "An error occurred", "error")
+        onError: (error) => showToast(translateError(error.message, 'common.errorOccurred'), "error")
     });
 
     const { execute: saveProfile, loading: saving } = useMutation();

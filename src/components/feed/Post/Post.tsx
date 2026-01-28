@@ -9,6 +9,7 @@ import { GRAPHQL_MUTATIONS, GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useAuth } from "../../../context/AuthContext";
 import { formatTime } from "../../../utils/dateFormatter";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { sanitizeText } from "../../../utils/sanitize";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
 import type { Like, Post as PostType } from "../../../types";
@@ -141,6 +142,7 @@ export default function Post({
                 }
             } catch (error) {
                 console.error("Error checking friendship status:", error);
+                // Silent fail for background friendship check
             } finally {
                 setCheckingFriendship(false);
             }
@@ -172,12 +174,12 @@ export default function Post({
                 
                 window.location.reload();
             } else {
-                const errorMessage = response.errors[0]?.message || t('feed.blockFailed');
+                const errorMessage = translateError(response.errors[0]?.message || '', 'feed.blockFailed');
                 showToast(errorMessage, "error");
             }
         } catch (error) {
             console.error("Error blocking user:", error);
-            showToast(t('feed.blockError'), "error");
+            showToast(translateError((error as Error)?.message || '', 'feed.blockError'), "error");
         }
     };
 
@@ -199,6 +201,7 @@ export default function Post({
             }
         } catch (error) {
             console.error("Error toggling like:", error);
+            showToast(translateError((error as Error)?.message || '', 'feed.likeFailed'), 'error');
         }
     };
 
@@ -231,6 +234,7 @@ export default function Post({
             }
         } catch (error) {
             console.error("Error adding comment:", error);
+            showToast(translateError((error as Error)?.message || '', 'feed.commentFailed'), 'error');
         }
     };
 
@@ -246,7 +250,7 @@ export default function Post({
             setMenuOpen(false);
         } catch (error) {
             console.error("Error saving/unsaving post:", error);
-            showToast(t('feed.savedStatusFailed'), "error");
+            showToast(translateError((error as Error)?.message || '', 'feed.savedStatusFailed'), "error");
         }
     };
 
@@ -288,12 +292,12 @@ export default function Post({
                 setReportReason("");
                 setMenuOpen(false);
             } else {
-                const errorMessage = response.errors[0]?.message || t('feed.reportFailed');
+                const errorMessage = translateError(response.errors[0]?.message || '', 'feed.reportFailed');
                 showToast(errorMessage, "error");
             }
         } catch (error) {
             console.error("Error reporting post:", error);
-            showToast(t('feed.reportError'), "error");
+            showToast(translateError((error as Error)?.message || '', 'feed.reportError'), "error");
         }
     };
 
@@ -526,6 +530,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
     const leftMargin = safeDepth * 20;
     const { makeRequest } = useAuthenticatedRequest();
     const { user } = useAuth();
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const {
@@ -578,6 +583,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             }
         } catch (error) {
             console.error("Error toggling comment like:", error);
+            showToast(translateError((error as Error)?.message || '', 'feed.likeFailed'), 'error');
         }
     };
 
@@ -594,6 +600,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             setShowDeleteConfirm(false);
         } catch (error) {
             console.error("Error deleting comment:", error);
+            showToast(translateError((error as Error)?.message || '', 'feed.deleteCommentFailed'), 'error');
         }
     };
 
@@ -633,6 +640,7 @@ function Comment({ comment, update, depth = 0, postId, onDelete }: CommentCompon
             }
         } catch (error) {
             console.error("Error adding reply:", error);
+            showToast(translateError((error as Error)?.message || '', 'feed.replyFailed'), 'error');
         }
     };
 

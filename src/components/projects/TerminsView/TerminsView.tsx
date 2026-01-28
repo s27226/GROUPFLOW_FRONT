@@ -6,6 +6,8 @@ import "react-calendar/dist/Calendar.css";
 import styles from "./TerminsView.module.css";
 import { useGraphQL } from "../../../hooks";
 import ConfirmDialog from "../../ui/ConfirmDialog";
+import { translateError } from "../../../utils/errorTranslation";
+import { useToast } from "../../../context/ToastContext";
 
 interface ProjectOwner {
     id: string;
@@ -78,6 +80,7 @@ interface TerminsViewProps {
 
 const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [events, setEvents] = useState<EventData[]>([]);
     const [newEvent, setNewEvent] = useState<NewEventData>({ title: "", time: "", description: "" });
@@ -96,6 +99,7 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
                 setCurrentUserId(userData?.id ?? null);
             } catch (err) {
                 console.error("Failed to fetch current user:", err);
+                showToast(translateError((err as Error)?.message || '', 'common.errorOccurred'), 'error');
             }
         };
 
@@ -126,6 +130,7 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch events:", err);
+                showToast(translateError((err as Error)?.message || '', 'projects.loadEventsFailed'), 'error');
                 setLoading(false);
             }
         };
@@ -162,6 +167,7 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
             setNewEvent({ title: "", time: "", description: "" });
         } catch (err) {
             console.error("Failed to create event:", err);
+            showToast(translateError((err as Error)?.message || '', 'projects.eventCreateFailed'), 'error');
         }
     };
 
@@ -181,6 +187,7 @@ const TerminsView: React.FC<TerminsViewProps> = ({ projectId, project }) => {
             setEvents(events.filter(e => e.id !== eventId));
         } catch (err) {
             console.error("Failed to delete event:", err);
+            showToast(translateError((err as Error)?.message || '', 'projects.eventDeleteFailed'), 'error');
         }
     };
 

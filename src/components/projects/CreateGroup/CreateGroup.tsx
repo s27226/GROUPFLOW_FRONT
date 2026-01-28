@@ -5,6 +5,7 @@ import { useGraphQL, useFriends } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { User } from "@/types";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./CreateGroup.module.css";
 
 interface CreateProjectResponse {
@@ -114,7 +115,8 @@ export default function CreateGroup() {
             }
         } catch (err) {
             console.error("Failed to create project:", err);
-            setError(t('projects.createFailed'));
+            const errorMessage = translateError((err as Error)?.message || '', 'projects.createFailed');
+            setError(errorMessage);
         } finally {
             setCreating(false);
         }

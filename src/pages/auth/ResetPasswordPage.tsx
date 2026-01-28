@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { authStyles } from "../../components/layout";
 import { useGraphQL } from "../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../queries/graphql";
+import { translateError } from "../../utils/errorTranslation";
 
 interface ChangePasswordResponse {
     auth?: {
@@ -55,8 +56,8 @@ export default function ResetPasswordPage() {
                 setError(t('auth.passwordResetFailed'));
             }
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : t('auth.passwordResetFailed');
-            setError(errorMessage);
+            const error = err instanceof Error ? err : new Error();
+            setError(translateError(error.message, 'auth.passwordResetFailed'));
         } finally {
             setLoading(false);
         }

@@ -7,6 +7,8 @@ import { useGraphQL } from "../../../hooks";
 import { GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import { getProfilePicUrl } from "../../../utils/profilePicture";
+import { translateError } from "../../../utils/errorTranslation";
+import { useToast } from "../../../context/ToastContext";
 
 interface ProjectUser {
     id: string;
@@ -40,6 +42,7 @@ interface MembersPanelProps {
 
 export default function MembersPanel({ project, projectId }: MembersPanelProps) {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { user } = useAuth();
     const { executeMutation } = useGraphQL();
@@ -65,6 +68,7 @@ export default function MembersPanel({ project, projectId }: MembersPanelProps) 
             window.location.reload();
         } catch (error) {
             console.error("Failed to remove member:", error);
+            showToast(translateError((error as Error)?.message || '', 'projects.removeMemberFailed'), 'error');
         }
     };
 

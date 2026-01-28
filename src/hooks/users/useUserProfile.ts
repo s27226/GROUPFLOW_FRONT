@@ -108,7 +108,7 @@ export const useUserProfile = (
 
             if (!userData || !userData.users) {
                 console.error("User not found");
-                setError("User not found");
+                setError("errors.USER_NOT_FOUND");
                 setLoading(false);
                 return null;
             }
@@ -117,7 +117,7 @@ export const useUserProfile = (
 
             if (!userInfo) {
                 console.error("User not found");
-                setError("User not found");
+                setError("errors.USER_NOT_FOUND");
                 setLoading(false);
                 return null;
             }
@@ -128,7 +128,7 @@ export const useUserProfile = (
             return transformedUser;
         } catch (err) {
             console.error("Failed to fetch user profile:", err);
-            setError("Failed to fetch user profile");
+            setError((err as Error)?.message?.startsWith('errors.') ? (err as Error).message : 'errors.INTERNAL_ERROR');
             setLoading(false);
             return null;
         }
@@ -198,7 +198,7 @@ export const useUserProfileByNickname = (
 
             if (!userData?.users?.userbynickname) {
                 console.error("User not found");
-                setError("User not found");
+                setError("errors.USER_NOT_FOUND");
                 setLoading(false);
                 return null;
             }
@@ -209,7 +209,7 @@ export const useUserProfileByNickname = (
             return transformedUser;
         } catch (err) {
             console.error("Failed to fetch user profile:", err);
-            setError("Failed to fetch user profile");
+            setError((err as Error)?.message?.startsWith('errors.') ? (err as Error).message : 'errors.INTERNAL_ERROR');
             setLoading(false);
             return null;
         }

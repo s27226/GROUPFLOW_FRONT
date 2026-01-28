@@ -10,6 +10,8 @@ import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProjectPosts, useGraphQL } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { sanitizeText } from "../../../utils/sanitize";
 import { getProfilePicUrl, getProjectImageUrl, getBannerUrl } from "../../../utils/profilePicture";
 import profileStyles from "./ProjectProfilePage.module.css";
@@ -86,6 +88,7 @@ export default function ProjectProfilePage() {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
+    const { showToast } = useToast();
 
     const [project, setProject] = useState<ProjectState | null>(null);
     const [loading, setLoading] = useState(true);
@@ -108,6 +111,7 @@ export default function ProjectProfilePage() {
 
                 if (!data) {
                     console.error("No data received");
+                    showToast(translateError('', 'projects.loadProjectFailed'), 'error');
                     setLoading(false);
                     return;
                 }
@@ -118,6 +122,7 @@ export default function ProjectProfilePage() {
 
                 if (!projectData) {
                     console.error("Project not found - projectData is null");
+                    showToast(translateError('PROJECT_NOT_FOUND', 'projects.projectNotFound'), 'error');
                     setLoading(false);
                     return;
                 }
@@ -152,12 +157,13 @@ export default function ProjectProfilePage() {
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch project profile:", err);
+                showToast(translateError((err as Error)?.message || '', 'projects.loadProjectFailed'), 'error');
                 setLoading(false);
             }
         };
 
         fetchProjectProfile();
-    }, [projectId, executeQuery]);
+    }, [projectId, executeQuery, showToast]);
 
     if (loading || postsLoading) {
         return (

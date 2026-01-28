@@ -5,6 +5,8 @@ import { ChatBox } from "../../../components/chat";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useGraphQL } from "../../../hooks";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { sanitizeText } from "../../../utils/sanitize";
 import styles from "./ProjectViewPage.module.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -81,6 +83,7 @@ export default function ProjectsViewPage() {
     const navigate = useNavigate();
     const { executeQuery } = useGraphQL();
     const { user: authUser } = useAuth();
+    const { showToast } = useToast();
     const [activeTab, setActiveTab] = useState("messages");
     const [project, setProject] = useState<ProjectData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -101,6 +104,7 @@ export default function ProjectsViewPage() {
 
                 if (!data) {
                     console.error("No data received");
+                    showToast(translateError('', 'projects.loadProjectFailed'), 'error');
                     setLoading(false);
                     return;
                 }
@@ -109,6 +113,7 @@ export default function ProjectsViewPage() {
                 const rawProjectData = Array.isArray(projectArray) ? projectArray[0] : projectArray;
                 if (!rawProjectData) {
                     console.error("Project not found");
+                    showToast(translateError('PROJECT_NOT_FOUND', 'projects.projectNotFound'), 'error');
                     setLoading(false);
                     return;
                 }
@@ -150,12 +155,13 @@ export default function ProjectsViewPage() {
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch project:", err);
+                showToast(translateError((err as Error)?.message || '', 'projects.loadProjectFailed'), 'error');
                 setLoading(false);
             }
         };
 
         fetchProject();
-    }, [id, executeQuery, authUser]);
+    }, [id, executeQuery, authUser, showToast]);
 
     const renderContent = () => {
         const projectIdStr = id ?? '';

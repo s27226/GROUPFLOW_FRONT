@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Layout } from "../../../components/layout";
 import { Image, X } from "lucide-react";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./NewPostPage.module.css";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useMutationQuery, useMyProjects } from "../../../hooks";
@@ -52,7 +53,7 @@ export default function NewPostPage() {
                 navigate("/");
             }
         },
-        onError: () => showToast(t('feed.postCreateFailed'), "error")
+        onError: (error: Error) => showToast(translateError(error.message, 'feed.postCreateFailed'), "error")
     });
 
     useEffect(() => {

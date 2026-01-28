@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
+import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { sanitizeText } from "../../../utils/sanitize";
 import { getProfilePicUrl, getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./SearchDropdown.module.css";
@@ -34,6 +36,7 @@ interface SearchUsersResponse {
 
 export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdownProps) {
     const navigate = useNavigate();
+    const { showToast } = useToast();
     
     const [users, setUsers] = useState<SearchResult[]>([]);
     const [projects, setProjects] = useState<Project[]>([]);
@@ -46,7 +49,7 @@ export default function SearchDropdown({ query, onClose, isOpen }: SearchDropdow
                 setUsers(userResults.slice(0, 5));
             },
             onError: (err: Error) => {
-                console.error("Failed to search users:", err);
+                showToast(translateError(err.message, 'common.errorOccurred'), 'error');
                 setUsers([]);
             }
         }

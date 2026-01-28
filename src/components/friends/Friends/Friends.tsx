@@ -5,6 +5,8 @@ import LoadingSpinner from "../../ui/LoadingSpinner";
 import ConfirmDialog from "../../ui/ConfirmDialog";
 import styles from "./Friends.module.css";
 import { useSearchQuery, useFriends } from "../../../hooks";
+import { translateError } from "../../../utils/errorTranslation";
+import { useToast } from "../../../context/ToastContext";
 
 interface RemoveConfirmState {
     show: boolean;
@@ -14,6 +16,7 @@ interface RemoveConfirmState {
 
 export default function Friends() {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const [removeConfirm, setRemoveConfirm] = useState<RemoveConfirmState>({ show: false, friendId: null, friendName: "" });
     const searchQuery = useSearchQuery();
     const navigate = useNavigate();
@@ -39,6 +42,7 @@ export default function Friends() {
             // Hook automatically updates state
         } catch (err) {
             console.error("Failed to remove friend:", err);
+            showToast(translateError((err as Error)?.message || '', 'friends.removeFriendFailed'), 'error');
         }
     };
 

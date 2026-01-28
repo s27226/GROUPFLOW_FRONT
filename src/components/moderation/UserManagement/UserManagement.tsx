@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BAN_USER, UNBAN_USER, SUSPEND_USER, UNSUSPEND_USER, RESET_PASSWORD, MANAGE_USER_ROLE } from '../../../queries/moderationQueries';
 import { useGraphQL } from '../../../hooks';
+import { useToast } from '../../../context/ToastContext';
+import { translateError } from '../../../utils/errorTranslation';
 import { ModerationUser } from '../../../hooks/moderation/useModeration';
 import { getProfilePicUrl } from '../../../utils/profilePicture';
 import styles from './UserManagement.module.css';
@@ -21,6 +24,8 @@ type ModalType = '' | 'ban' | 'unban' | 'suspend' | 'unsuspend' | 'resetPassword
 
 const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
   const { executeQuery } = useGraphQL();
+  const { showToast } = useToast();
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<ModalType>('');
   const [selectedUser, setSelectedUser] = useState<ModerationUser | null>(null);
@@ -51,10 +56,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
         },
       };
       await executeQuery(BAN_USER, variables);
+      showToast(t('moderation.userBanned'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error banning user:', error);
+      showToast(translateError((error as Error).message, 'moderation.banError'), 'error');
     }
   };
 
@@ -62,10 +69,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
     if (!selectedUser) return;
     try {
       await executeQuery(UNBAN_USER, { userId: selectedUser.id });
+      showToast(t('moderation.userUnbanned'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error unbanning user:', error);
+      showToast(translateError((error as Error).message, 'moderation.unbanError'), 'error');
     }
   };
 
@@ -79,10 +88,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
         },
       };
       await executeQuery(SUSPEND_USER, variables);
+      showToast(t('moderation.userSuspended'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error suspending user:', error);
+      showToast(translateError((error as Error).message, 'moderation.suspendError'), 'error');
     }
   };
 
@@ -90,10 +101,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
     if (!selectedUser) return;
     try {
       await executeQuery(UNSUSPEND_USER, { userId: selectedUser.id });
+      showToast(t('moderation.userUnsuspended'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error unsuspending user:', error);
+      showToast(translateError((error as Error).message, 'moderation.unsuspendError'), 'error');
     }
   };
 
@@ -107,10 +120,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
         },
       };
       await executeQuery(RESET_PASSWORD, variables);
+      showToast(t('moderation.passwordReset'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error resetting password:', error);
+      showToast(translateError((error as Error).message, 'moderation.resetPasswordError'), 'error');
     }
   };
 
@@ -124,10 +139,12 @@ const UserManagement = ({ users, onRefresh }: UserManagementProps) => {
         },
       };
       await executeQuery(MANAGE_USER_ROLE, variables);
+      showToast(t(isModerator ? 'moderation.madeModeratorSuccess' : 'moderation.removedModeratorSuccess'), 'success');
       closeModal();
       onRefresh();
     } catch (error) {
       console.error('Error managing user role:', error);
+      showToast(translateError((error as Error).message, 'moderation.roleError'), 'error');
     }
   };
 

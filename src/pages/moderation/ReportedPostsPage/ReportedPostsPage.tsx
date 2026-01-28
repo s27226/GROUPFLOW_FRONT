@@ -5,6 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { GRAPHQL_QUERIES, GRAPHQL_MUTATIONS } from "../../../queries/graphql";
 import { useQuery, useMutationQuery } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import { formatTime } from "../../../utils/dateFormatter";
 import { AlertTriangle, Trash2, XCircle, ChevronLeft, ShieldAlert } from "lucide-react";
 import { Navbar, Sidebar } from "../../../components/layout";
@@ -68,12 +69,12 @@ export default function ReportedPostsPage() {
                 return typedData?.admin?.reportedPosts || [];
             },
             initialData: [],
-            onError: () => showToast(t('moderation.loadReportedError'), "error")
+            onError: (error: Error) => showToast(translateError(error.message, 'moderation.loadReportedError'), "error")
         }
     );
 
     const { execute: executeMutation } = useMutationQuery({
-        onError: (error: Error) => showToast(error.message || "An error occurred", "error")
+        onError: (error: Error) => showToast(translateError(error.message), "error")
     });
 
     const handleDeletePost = async (postId: string, reportId: string) => {
@@ -91,7 +92,7 @@ export default function ReportedPostsPage() {
                 showToast(t('moderation.postDeleted'), "success");
                 setReports((reports ?? []).filter(r => r.id !== reportId));
             } else {
-                const errorMessage = response.errors[0]?.message || t('moderation.postDeleteFailed');
+                const errorMessage = translateError(response.errors[0]?.message || '', 'moderation.postDeleteFailed');
                 showToast(errorMessage, "error");
             }
         } finally {
@@ -110,7 +111,7 @@ export default function ReportedPostsPage() {
                 showToast(t('moderation.reportDiscarded'), "success");
                 setReports((reports ?? []).filter(r => r.id !== reportId));
             } else {
-                const errorMessage = response.errors[0]?.message || t('moderation.discardFailed');
+                const errorMessage = translateError(response.errors[0]?.message || '', 'moderation.discardFailed');
                 showToast(errorMessage, "error");
             }
         } finally {

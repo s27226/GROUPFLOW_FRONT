@@ -4,6 +4,7 @@ import { Post } from "../../../components/feed";
 import SkeletonPost from "../../../components/ui/SkeletonPost";
 import { useSavedPosts } from "../../../hooks";
 import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./SavedPage.module.css";
 
 export default function SavedPage() {
@@ -41,7 +42,7 @@ export default function SavedPage() {
                         {t('feed.savedPosts')}
                     </h2>
                     <p className={styles.errorMessage}>
-                        {t('common.error')}: {error}
+                        {translateError(error, 'common.errorOccurred')}
                     </p>
                     <button
                         onClick={() => fetchSavedPosts()}

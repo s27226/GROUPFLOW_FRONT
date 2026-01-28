@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { useMutationQuery } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../../context/ToastContext";
+import { translateError } from "../../../utils/errorTranslation";
 import LoadingSpinner from "../../ui/LoadingSpinner";
 import { getProjectImageUrl } from "../../../utils/profilePicture";
 import styles from "./Projects.module.css";
@@ -41,6 +43,7 @@ interface SearchProjectsResponse {
 
 export default function Projects() {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -58,7 +61,7 @@ export default function Projects() {
                 setSearchResults(results);
             },
             onError: (err) => {
-                console.error("Search failed:", err);
+                showToast(translateError(err.message, 'common.errorOccurred'), 'error');
             }
         }
     );

@@ -5,6 +5,7 @@ import { Post } from "../../../components/feed";
 import SkeletonPost from "../../../components/ui/SkeletonPost";
 import { ArrowLeft } from "lucide-react";
 import { usePost } from "../../../hooks";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./PostPage.module.css";
 
 export default function PostPage() {
@@ -25,7 +26,7 @@ export default function PostPage() {
                     {loading ? (
                         <SkeletonPost count={1} />
                     ) : error ? (
-                        <p className={styles.errorMessage}>{error}</p>
+                        <p className={styles.errorMessage}>{translateError(error, 'common.errorOccurred')}</p>
                     ) : post ? (
                         <Post
                             id={post.id}

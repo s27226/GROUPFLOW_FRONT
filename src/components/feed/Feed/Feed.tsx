@@ -4,6 +4,7 @@ import Post from "../Post";
 import SkeletonPost from "../../ui/SkeletonPost";
 import { GRAPHQL_QUERIES } from "../../../queries/graphql";
 import { usePosts, useGraphQL } from "../../../hooks";
+import { translateError } from "../../../utils/errorTranslation";
 import styles from "./Feed.module.css";
 
 interface SavedPostResponse {
@@ -52,7 +53,7 @@ export default function Feed() {
             {loading ? (
                 <SkeletonPost count={3} />
             ) : error ? (
-                <p className={styles.errorMessage}>{error}</p>
+                <p className={styles.errorMessage}>{translateError(error, 'common.errorOccurred')}</p>
             ) : posts?.length === 0 ? (
                 <p>{t('feed.noPosts')}</p>
             ) : (
